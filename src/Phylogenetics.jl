@@ -1,5 +1,11 @@
 module Phylogenetics
 
-# package code goes here
+# using
 
-end # module
+# export
+
+include("type.jl")
+include("simulate.jl")
+include("infer.jl")
+
+end
