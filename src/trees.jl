@@ -1,14 +1,4 @@
 """
-Phylogenetic tree object
-"""
-type Tree
-  nodes::Vector{Node}
-  branches::Vector{Branch}
-  Tree() = new()
-end
-
-
-"""
 Node of phylogenetic tree
 """
 type Node
@@ -27,6 +17,16 @@ type Branch
   length::Float64
   source::Int64
   target::Int64
+end
+
+
+"""
+Phylogenetic tree object
+"""
+type Tree
+  nodes::Vector{Node}
+  branches::Vector{Branch}
+  Tree(Node[], Branches[]) = new()
 end
 
 
