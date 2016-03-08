@@ -26,7 +26,7 @@ Phylogenetic tree object
 type Tree
   nodes::Vector{Node}
   branches::Vector{Branch}
-  Tree(Node[], Branches[]) = new()
+  Tree(Node[], Branch[]) = new()
 end
 
 
@@ -85,11 +85,11 @@ end
 """
 Add a node without a specified sequence
 """
-AddNode!(tree::Tree, length::Float64) = AddNode!(tree, fill(0., (4,length)))
+AddNode!(tree::Tree, length::Int64) = AddNode!(tree, fill(0., (4,length)))
 
 
 """
-Find the root of a phylogenetic tree
+The first encountered root of a phylogenetic tree
 """
 function findroot(tree::Tree)
   root = Int64[]
@@ -97,14 +97,30 @@ function findroot(tree::Tree)
     if length(i.in_branches) == 0
       push!(root, i.id)
     end
+    length(root) > 0 && break
   end
-  if length(root) > 1
-    warn("Multiple roots detected")
-    return root
-  elseif length(root) == 0
+  if length(root) == 0
     warn("No roots detected")
   else
     return root[1]
+  end
+end
+
+
+"""
+Find the leaves of a phylogenetic tree
+"""
+function findleaves(tree::Tree)
+  leaves = Int64[]
+  for i = tree.nodes
+    if length(i.out_branches) == 0
+      push!(leaves, i.id)
+    end
+  end
+  if length(leaves) == 0
+    warn("No leaves detected")
+  else
+    return leaves
   end
 end
 

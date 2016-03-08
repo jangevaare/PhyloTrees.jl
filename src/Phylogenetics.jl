@@ -6,6 +6,8 @@ module Phylogenetics
     Tree,
     AddNode!,
     AddBranch!,
+    findroot,
+    findleaves,
     postorder,
     preorder
 
