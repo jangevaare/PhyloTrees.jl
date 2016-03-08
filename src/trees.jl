@@ -72,13 +72,40 @@ end
 Add a node with a specified sequence
 """
 function AddNode!(tree::Tree, seq::Array{Float64, 2})
+  node_count = length(tree.nodes)
+  if node_count == 0
+    tree.nodes = [Node(1, seq, Int64[], Int64[])]
+  else
+    push!(tree.nodes, Node(node_count + 1, seq, Int64[], Int64[]))
+  end
+  return tree
 end
 
 
 """
 Add a node without a specified sequence
 """
-function AddNode!(tree::Tree)
+AddNode!(tree::Tree, length::Float64) = AddNode!(tree, fill(0., (4,length)))
+
+
+"""
+Find the root of a phylogenetic tree
+"""
+function findroot(tree::Tree)
+  root = Int64[]
+  for i = tree.nodes
+    if length(i.in_branches) == 0
+      push!(root, i.id)
+    end
+  end
+  if length(root) > 1
+    warn("Multiple roots detected")
+    return root
+  elseif length(root) == 0
+    warn("No roots detected")
+  else
+    return root[1]
+  end
 end
 
 
@@ -90,6 +117,7 @@ function postorder(tree::Tree)
   while !all(visited)
   end
 end
+
 
 """
 Function to visit nodes of phylogenetic tree with postorder traversal
