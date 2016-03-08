@@ -1,12 +1,15 @@
 module Phylogenetics
 
-  using Distributions, Graphs
+  using Distributions
 
   export
-  Tree,
-  Node
+    Tree,
+    AddNode!,
+    AddBranch!,
+    postorder,
+    preorder
 
-  include("type.jl")
-  include("simulate.jl")
-  include("infer.jl")
+  include("trees.jl")
+  include("simulation.jl")
+  include("inference.jl")
 end
