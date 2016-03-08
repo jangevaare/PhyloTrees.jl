@@ -21,8 +21,6 @@ module Phylogenetics
     preorder,
 
   # Utilities
-    find_root,
-    find_leaves
 
   # Simulation
 
