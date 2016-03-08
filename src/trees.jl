@@ -29,11 +29,37 @@ type Tree
   Tree(Node[], Branch[]) = new()
 end
 
+"""
+Add a node with a specified sequence
+"""
+function add_node!(tree::Tree, seq::Array{Float64, 2})
+  node_count = length(tree.nodes)
+  if node_count == 0
+    tree.nodes = [Node(1, seq, Int64[], Int64[])]
+  else
+    push!(tree.nodes, Node(tree.nodes[node_count].id + 1, seq, Int64[], Int64[]))
+  end
+  return tree
+end
+
+
+"""
+Add a node without a specified sequence
+"""
+add_node!(tree::Tree, length::Int64) = add_node!(tree, fill(0., (4,length)))
+
+
+"""
+Remove a node
+"""
+function remove_node!(tree::Tree, node_id::Int64)
+end
+
 
 """
 Add a branch
 """
-function AddBranch!(tree::Tree, length::Float64, source::Int64, target::Int64)
+function add_branch!(tree::Tree, length::Float64, source::Int64, target::Int64)
   node_count = length(tree.nodes)
   branch_count = length(tree.branches)
   if node_count <= 1
@@ -51,7 +77,7 @@ function AddBranch!(tree::Tree, length::Float64, source::Int64, target::Int64)
   if branch_count == 0
     tree.branches = [Branch(1, length, source, target)]
   else
-    push!(tree.branches, Branch(branch_count+1, length, source, target))
+    push!(tree.branches, Branch(tree.branches[branch_count].id + 1, length, source, target))
   end
   if length(tree.nodes[source].out_branches) == 0
     tree.nodes[source].out_branches = tree.branches[end].id
@@ -69,23 +95,10 @@ end
 
 
 """
-Add a node with a specified sequence
+Remove a branch
 """
-function AddNode!(tree::Tree, seq::Array{Float64, 2})
-  node_count = length(tree.nodes)
-  if node_count == 0
-    tree.nodes = [Node(1, seq, Int64[], Int64[])]
-  else
-    push!(tree.nodes, Node(node_count + 1, seq, Int64[], Int64[]))
-  end
-  return tree
+function remove_branch!(tree::Tree, branch_id::Int64)
 end
-
-
-"""
-Add a node without a specified sequence
-"""
-AddNode!(tree::Tree, length::Int64) = AddNode!(tree, fill(0., (4,length)))
 
 
 """
@@ -93,7 +106,7 @@ The first encountered root of a phylogenetic tree
 """
 function findroot(tree::Tree)
   root = Int64[]
-  for i = tree.nodes
+  for i in tree.nodes
     if length(i.in_branches) == 0
       push!(root, i.id)
     end
@@ -112,7 +125,7 @@ Find the leaves of a phylogenetic tree
 """
 function findleaves(tree::Tree)
   leaves = Int64[]
-  for i = tree.nodes
+  for i in tree.nodes
     if length(i.out_branches) == 0
       push!(leaves, i.id)
     end
@@ -130,16 +143,21 @@ Function to visit nodes of phylogenetic tree with preorder traversal
 """
 function postorder(tree::Tree)
   visited = fill(false, length(tree.nodes))
+  visit_order = Int64[]
+  i = tree.nodes[1]
   while !all(visited)
-  end
-end
+    for j in tree.branches[i.out_branches]
+      visited[j.target]
+
+    if all(visted[])
 
 
 """
 Function to visit nodes of phylogenetic tree with postorder traversal
 """
-function postorder(tree::Tree)
+function preorder(tree::Tree)
   visited = fill(false, length(tree.nodes))
+  visit_order = Int64[]
   while !all(visited)
   end
 end

@@ -4,8 +4,10 @@ module Phylogenetics
 
   export
     Tree,
-    AddNode!,
-    AddBranch!,
+    add_node!,
+    remove_node!,
+    add_branch!,
+    remove_branch!,
     findroot,
     findleaves,
     postorder,
