@@ -29,6 +29,7 @@ type Tree
   Tree(Node[], Branch[]) = new()
 end
 
+
 """
 Add a node with a specified sequence
 """
@@ -47,13 +48,6 @@ end
 Add a node without a specified sequence
 """
 add_node!(tree::Tree, length::Int64) = add_node!(tree, fill(0., (4,length)))
-
-
-"""
-Remove a node
-"""
-function remove_node!(tree::Tree, node_id::Int64)
-end
 
 
 """
@@ -91,73 +85,4 @@ function add_branch!(tree::Tree, length::Float64, source::Int64, target::Int64)
     warn("The in degree of the target node is >1")
   end
   return tree
-end
-
-
-"""
-Remove a branch
-"""
-function remove_branch!(tree::Tree, branch_id::Int64)
-end
-
-
-"""
-The first encountered root of a phylogenetic tree
-"""
-function findroot(tree::Tree)
-  root = Int64[]
-  for i in tree.nodes
-    if length(i.in_branches) == 0
-      push!(root, i.id)
-    end
-    length(root) > 0 && break
-  end
-  if length(root) == 0
-    warn("No roots detected")
-  else
-    return root[1]
-  end
-end
-
-
-"""
-Find the leaves of a phylogenetic tree
-"""
-function findleaves(tree::Tree)
-  leaves = Int64[]
-  for i in tree.nodes
-    if length(i.out_branches) == 0
-      push!(leaves, i.id)
-    end
-  end
-  if length(leaves) == 0
-    warn("No leaves detected")
-  else
-    return leaves
-  end
-end
-
-
-"""
-Function to visit nodes of phylogenetic tree with preorder traversal
-"""
-function postorder(tree::Tree)
-  visited = fill(false, length(tree.nodes))
-  visit_order = Int64[]
-  i = tree.nodes[1]
-  while !all(visited)
-    for j in tree.branches[i.out_branches]
-      visited[j.target]
-
-    if all(visted[])
-
-
-"""
-Function to visit nodes of phylogenetic tree with postorder traversal
-"""
-function preorder(tree::Tree)
-  visited = fill(false, length(tree.nodes))
-  visit_order = Int64[]
-  while !all(visited)
-  end
 end
