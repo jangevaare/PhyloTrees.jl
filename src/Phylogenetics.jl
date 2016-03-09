@@ -19,10 +19,14 @@ module Phylogenetics
     # Traversal algorithms
     postorder,
     breadth_first,
-    preorder
+    preorder,
 
     # Utilities
-
+    node_index,
+    branch_index,
+    node_id,
+    branch_id
+    
     # Mutation
 
     # Simulation
