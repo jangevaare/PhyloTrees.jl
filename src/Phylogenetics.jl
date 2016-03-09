@@ -18,6 +18,7 @@ module Phylogenetics
 
     # Traversal algorithms
     postorder,
+    breadth_first,
     preorder
 
     # Utilities
