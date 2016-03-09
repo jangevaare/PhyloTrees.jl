@@ -24,7 +24,7 @@ Phylogenetic tree object
 type Tree
   nodes::Vector{Node}
   branches::Vector{Branch}
-  Tree(Node[], Branch[]) = new()
+  Tree() = new(Node[], Branch[])
 end
 
 
@@ -40,13 +40,13 @@ end
 """
 Add a node without a specified sequence
 """
-add_node!(tree::Tree, length::Int64) = add_node!(tree, fill(0., (4,length)))
+add_node!(tree::Tree, seq_length::Int64) = add_node!(tree, fill(0., (4,seq_length)))
 
 
 """
 Add a branch
 """
-function add_branch!(tree::Tree, length::Float64, source::Int64, target::Int64)
+function add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::Int64)
   node_count = length(tree.nodes)
   branch_count = length(tree.branches)
 
@@ -59,12 +59,12 @@ function add_branch!(tree::Tree, length::Float64, source::Int64, target::Int64)
   if !(1 <= target <= node_count)
     error("Invalid branch target node specified")
   end
-  if length <= 0
+  if branch_length <= 0.
     error("Branch length must be positive")
   end
 
   # Add the branch
-  push!(tree.branches, Branch(length, source, target))
+  push!(tree.branches, Branch(branch_length, source, target))
 
   # Update the associated source and target nodes
   push!(tree.nodes[source].out_branches, length(tree.branches))
