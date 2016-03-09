@@ -23,6 +23,8 @@ module Phylogenetics
 
     # Utilities
 
+    # Mutation
+
     # Simulation
 
     # Inference
@@ -31,6 +33,7 @@ module Phylogenetics
   include("modify_tree.jl")
   include("traversal.jl")
   include("utilities.jl")
+  include("mutation.jl")
   include("simulation.jl")
   include("inference.jl")
 end
