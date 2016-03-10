@@ -24,6 +24,7 @@ Phylogenetic tree object
 type Tree
   nodes::Vector{Node}
   branches::Vector{Branch}
+  
   Tree() = new(Node[], Branch[])
 end
 

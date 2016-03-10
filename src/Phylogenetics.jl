@@ -25,9 +25,17 @@ module Phylogenetics
     node_index,
     branch_index,
     node_id,
-    branch_id
-    
+    branch_id,
+
     # Mutation
+    JC69,
+    K80,
+    F81,
+    F84,
+    HKY85,
+    TN93,
+    GTR,
+    UNREST
 
     # Simulation
 
