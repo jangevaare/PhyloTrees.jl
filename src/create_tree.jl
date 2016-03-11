@@ -75,7 +75,7 @@ function add_branch!(tree::Tree, branch_length::Float64, rate::Float64, source::
   end
 
   # Add the branch
-  push!(tree.branches, Branch(branch_length, source, target))
+  push!(tree.branches, Branch(branch_length, rate, source, target))
 
   # Update the associated source and target nodes
   push!(tree.nodes[source].out_branches, length(tree.branches))
@@ -89,4 +89,4 @@ function add_branch!(tree::Tree, branch_length::Float64, rate::Float64, source::
 end
 
 
-add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::Int64) = add_branch!(tree, branch_length, source, target)
+add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::Int64) = add_branch!(tree, branch_length, 1.0, source, target)
