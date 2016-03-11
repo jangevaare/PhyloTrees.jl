@@ -1,7 +1,7 @@
 """
 Hasegawa et al. 1984 substitution model
 
-Θ= [α, β]
+Θ = [α, β]
 """
 type HKY85 <: Substitution_Model
   Θ::Vector{Float64}
@@ -33,7 +33,7 @@ type HKY85 <: Substitution_Model
 end
 
 
-function Q(hky85:::HKY85)
+function Q(hky85::HKY85)
   α = hky85.Θ[1]
   β = hky85.Θ[2]
   # TODO
