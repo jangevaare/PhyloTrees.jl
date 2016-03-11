@@ -34,14 +34,17 @@ function Q(jc69::JC69)
 end
 
 
-function P(jc69::JC69, t::Float64)
+function P(jc69::JC69, t::Float64, scale=1.0::Float64)
   if t < 0
     error("Time must be positive")
   end
+  if scale < 0
+    error("Rate scaler must be positive")
+  end
 
-  λ = jc69.Θ[1]
-  p0 = 0.25 + 0.75*exp(-t*λ*4)
-  p1 = 0.25 - 0.25*exp(-t*λ*4)
+  λ = jc69.Θ[1] * scale
+  p0 = 0.25 + 0.75 * exp(-t * λ * 4)
+  p1 = 0.25 - 0.25 * exp(-t * λ * 4)
 
   return [[p0 p1 p1 p1]
           [p1 p0 p1 p1]

@@ -13,10 +13,12 @@ Directed branch connecting two nodes of phylogenetic tree
 """
 type Branch
   length::Float64
+  rate::Float64
   source::Int64
   target::Int64
 end
 
+Branch(branch_length::Float64, source::Int64, target::Int64) = Branch(branch_length, 1.0, source, target)
 
 """
 Phylogenetic tree object
@@ -24,8 +26,10 @@ Phylogenetic tree object
 type Tree
   nodes::Vector{Node}
   branches::Vector{Branch}
+  site_rates::Vector{Float64}
 
-  Tree() = new(Node[], Branch[])
+  Tree(sites::Int64) = new(Node[], Branch[], fill(1.0, sites))
+  Tree(site_rates::Vector{Float64}) = new(Node[], Branch[], site_rates)
 end
 
 
@@ -33,6 +37,9 @@ end
 Add a node with a specified sequence
 """
 function add_node!(tree::Tree, seq::Array{Float64, 2})
+  if size(seq, 2) !== length(tree.site_rates)
+    error("Mismatch in sequence length and site rates")
+  end
   push!(tree.nodes, Node(seq, Int64[], Int64[]))
   return tree
 end
@@ -41,16 +48,19 @@ end
 """
 Add a node without a specified sequence
 """
-add_node!(tree::Tree, seq_length::Int64) = add_node!(tree, fill(0., (4,seq_length)))
+add_node!(tree::Tree) = add_node!(tree, fill(0., (4, length(tree.site_rates))))
 
 
 """
 Add a branch
 """
-function add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::Int64)
+function add_branch!(tree::Tree, branch_length::Float64, rate::Float64, source::Int64, target::Int64)
   node_count = length(tree.nodes)
   branch_count = length(tree.branches)
 
+  if rate < 0
+    error("Rate must be positive")
+  end
   if node_count <= 1
     error("Tree requires at least 2 nodes to form a branch")
   end
@@ -77,3 +87,6 @@ function add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::
 
   return tree
 end
+
+
+add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::Int64) = add_branch!(tree, branch_length, source, target)
