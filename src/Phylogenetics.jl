@@ -28,6 +28,8 @@ module Phylogenetics
     branch_id,
 
     # Mutation
+    Q,
+    P,
     JC69,
     K80,
     F81,
