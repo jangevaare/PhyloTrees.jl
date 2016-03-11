@@ -24,7 +24,7 @@ Phylogenetic tree object
 type Tree
   nodes::Vector{Node}
   branches::Vector{Branch}
-  
+
   Tree() = new(Node[], Branch[])
 end
 
@@ -72,7 +72,7 @@ function add_branch!(tree::Tree, branch_length::Float64, source::Int64, target::
   push!(tree.nodes[target].in_branches, length(tree.branches))
 
   if length(tree.nodes[target].in_branches) > 1
-    warn("The in degree of the target node is >1")
+    warn("The in degree of the target node is > 1")
   end
 
   return tree

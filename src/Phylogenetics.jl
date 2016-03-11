@@ -22,14 +22,14 @@ module Phylogenetics
     preorder,
 
     # Utilities
+    find_root,
+    find_leaves,
     node_index,
     branch_index,
     node_id,
     branch_id,
 
     # Mutation
-    Q,
-    P,
     JC69,
     K80,
     F81,
@@ -37,9 +37,12 @@ module Phylogenetics
     HKY85,
     TN93,
     GTR,
-    UNREST
+    UNREST,
+    Q,
+    P,
 
     # Simulation
+    simulate!
 
     # Inference
 
