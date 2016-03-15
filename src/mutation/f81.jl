@@ -1,7 +1,7 @@
 """
 Felsenstein 1981 substitution model
 
-Θ = [λ]
+Θ = [β]
 """
 type F81 <: Substitution_Model
   Θ::Vector{Float64}
@@ -32,42 +32,21 @@ type F81 <: Substitution_Model
   end
 end
 
+
+F81(π::Vector{Float64}) = F81([1.], π)
+
+
 function Q(f81::F81)
-  α_1 = f81.Θ[1]
-  α_2 = f81.Θ[1]
   β = f81.Θ[1]
   π_T = f81.π[1]
   π_C = f81.π[2]
   π_A = f81.π[3]
   π_G = f81.π[4]
 
-  π_R = π_A + π_G
-  π_Y = π_T + π_C
-
-  Q_TT = -((α_1 * π_C) + (β * π_R))
-  Q_TC = α_1 * π_C
-  Q_TA = β * π_A
-  Q_TG = β * π_G
-
-  Q_CT = α_1 * π_T
-  Q_CC = -((α_1 * π_T) + (β * π_R))
-  Q_CA = Q_TA
-  Q_CG = Q_TG
-
-  Q_AT = β * π_T
-  Q_AC = β * π_C
-  Q_AA = -((α_2 * π_G) + (β * π_Y))
-  Q_AG = α_2 * π_G
-
-  Q_GT = Q_AT
-  Q_GC = Q_AC
-  Q_GA = α_2 * π_A
-  Q_GG = -((α_2 * π_A) + (β * π_Y))
-
-  return [[Q_TT Q_TC Q_TA Q_TG]
-          [Q_CT Q_CC Q_CA Q_CG]
-          [Q_AT Q_AC Q_AA Q_AG]
-          [Q_GT Q_GC Q_GA Q_GG]]
+  return β * [[-(π_C + π_A + π_G) π_C π_A π_G]
+              [π_T -(π_T + π_A + π_G) π_A π_G]
+              [π_T π_C -(π_T + π_C + π_G) π_G]
+              [π_T π_C π_A -(π_T + π_C + π_A)]]
 end
 
 
