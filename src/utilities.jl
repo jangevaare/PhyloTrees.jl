@@ -1,10 +1,46 @@
 """
+Is a particular node a root?
+"""
+function is_root(node::Node)
+  if length(node.out_branches) > 0 && length(node.in_branches) == 0
+    return true
+  else
+    return false
+  end
+end
+
+
+"""
+Is a particular node a leaf?
+"""
+function is_leaf(node::Node)
+  if length(node.out_branches) == 0 && length(node.in_branches) == 1
+    return true
+  else
+    return false
+  end
+end
+
+
+"""
+Is a particular node an internal node?
+"""
+function is_node(node::Node)
+  if length(node.out_branches) > 0 && length(node.in_branches) == 1
+    return true
+  else
+    return false
+  end
+end
+
+
+"""
 The first encountered root of a phylogenetic tree
 """
 function find_root(tree::Tree)
   root = Int64[]
   for i in tree.nodes
-    if length(i.in_branches) == 0
+    if is_root(i)
       push!(root, i.id)
     end
     length(root) > 0 && break
@@ -23,7 +59,7 @@ Find the leaves of a phylogenetic tree
 function find_leaves(tree::Tree)
   leaves = Int64[]
   for i in tree.nodes
-    if length(i.out_branches) == 0
+    if is_leaf(i)
       push!(leaves, i.id)
     end
   end
@@ -41,7 +77,7 @@ Find the internal nodes of a phylogenetic tree
 function find_nodes(tree::Tree)
   nodes = Int64[]
   for i in tree.nodes
-    if length(i.out_branches) > 0
+    if is_node(i)
       push!(nodes, i.id)
     end
   end

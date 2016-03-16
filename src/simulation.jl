@@ -19,3 +19,21 @@ function simulate!(tree::Tree, mod::Substitution_Model)
   end
   return tree
 end
+
+
+"""
+Make observations from leaves of phylogenetic tree
+"""
+function observe(tree::Tree, nodes::Vector{Int64})
+  obs = Array{Float64}[]
+  for i in nodes
+    if is_leaf(tree.nodes[i])
+      error("Node $i is not a leaf, and can not be observed")
+    end
+    push!(obs, tree.nodes[i].seq)
+  end
+  return obs
+end
+
+
+observe(tree::Tree) = observe(tree, find_leaves(tree))

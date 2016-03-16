@@ -22,6 +22,9 @@ module Phylogenetics
     preorder,
 
     # Utilities
+    is_root,
+    is_leaf,
+    is_node,
     find_root,
     find_leaves,
     find_nodes,
