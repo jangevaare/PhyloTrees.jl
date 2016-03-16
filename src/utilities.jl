@@ -37,6 +37,24 @@ end
 
 
 """
+Find the internal nodes of a phylogenetic tree
+"""
+function find_nodes(tree::Tree)
+  nodes = Int64[]
+  for i in tree.nodes
+    if length(i.out_branches) > 0
+      push!(nodes, i.id)
+    end
+  end
+  if length(nodes) == 0
+    warn("No internal nodes detected")
+  else
+    return nodes
+  end
+end
+
+
+"""
 Convert node reference id to a node tree index
 """
 function node_index(tree, id::Int64)

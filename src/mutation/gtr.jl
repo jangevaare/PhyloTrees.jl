@@ -77,6 +77,6 @@ function P(gtr::GTR, t::Float64)
   if t < 0
     error("Time must be positive")
   end
-  
+
   return expm(Q(gtr)*t)
 end

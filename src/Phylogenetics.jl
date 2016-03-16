@@ -24,6 +24,7 @@ module Phylogenetics
     # Utilities
     find_root,
     find_leaves,
+    find_nodes,
     node_index,
     branch_index,
     node_id,
