@@ -1,4 +1,3 @@
-
 """
 The first encountered root of a phylogenetic tree
 """
@@ -55,32 +54,25 @@ end
 
 
 """
-Convert node reference id to a node tree index
+Check for a valid phylogenetic tree topology
 """
-function node_index(tree, id::Int64)
-  # TODO
-end
-
-
-"""
-Convert branch reference id to a branch tree index
-"""
-function branch_index(tree, id::Int64)
-  # TODO
-end
-
-
-"""
-Convert node tree index to a node reference id
-"""
-function node_id(tree, index::Int64)
-  # TODO
-end
-
-
-"""
-Convert branch tree index to a branch reference id
-"""
-function branch_id(tree, index::Int64)
-  # TODO
+function check_tree(tree:Tree)
+  if length(find_root(tree)) > 1
+    warn("Multiple roots detected")
+  end
+  if length(find_leaves(tree)) - 1 !== length(find_nodes(tree))
+    warn("Unexpected quantity of internal nodes (assuming bifurcating tree)")
+  end
+  for i = 1:length(tree.nodes)
+    if length(tree.nodes[i].out_branches) > 2
+      warn("out degree of node $i > 2")
+    end
+    if length(tree.nodes[i].in_branches) > 1
+      warn("in degree of node $i > 1")
+    end
+    if size(tree.nodes[i].seq) !== (4, length(tree.site_rates))
+      warn("Unexpected sequence dimensions at node $i")
+    end
+  end
+  info("Check of phylogenetic tree complete")
 end

@@ -25,10 +25,7 @@ module Phylogenetics
     find_root,
     find_leaves,
     find_nodes,
-    node_index,
-    branch_index,
-    node_id,
-    branch_id,
+    check_tree,
 
     # Mutation
     JC69,
@@ -43,9 +40,10 @@ module Phylogenetics
     P,
 
     # Simulation
-    simulate!
+    simulate!,
 
     # Inference
+    loglikelihood
 
   include("create_tree.jl")
   include("modify_tree.jl")
