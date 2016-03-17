@@ -1,5 +1,6 @@
 using Phylogenetics
 using Base.Test
+using Distributions
 
 # 1.0 Substitution models
 # 1.1 JC69
