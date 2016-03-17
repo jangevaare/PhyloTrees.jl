@@ -42,8 +42,8 @@ function P(k80::K80, t::Float64)
     error("Time must be positive")
   end
 
-  α = k80.Θ[1] * scale
-  β = k80.Θ[2] * scale
+  α = k80.Θ[1]
+  β = k80.Θ[2]
 
   P_0 = 0.25 + 0.25 * exp(-4 * β * t) + 0.5 * exp(-2 * (α + β) * t)
   P_1 = 0.25 + 0.25 * exp(-4 * β * t) - 0.5 * exp(-2 * (α + β) * t)

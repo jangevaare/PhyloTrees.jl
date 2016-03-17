@@ -8,8 +8,8 @@ a = JC69()
 @test P((a), Inf)[:,1] == a.π
 
 # 1.2 K80
-@test Q(K80([1. 1.])) == Q(JC69())
-b = K80([1. 2.])
+@test Q(K80([1., 1.])) == Q(JC69())
+b = K80([1., 2.])
 @test maximum(abs(expm(Q(b)) .- P((b), 1.0))) < 1e-15
 @test P((b), Inf)[:,1] == b.π
 

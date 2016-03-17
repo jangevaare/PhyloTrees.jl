@@ -92,7 +92,7 @@ end
 """
 Check for a valid phylogenetic tree topology
 """
-function check_tree(tree:Tree)
+function check_tree(tree::Tree)
   if length(find_root(tree)) > 1
     warn("Multiple roots detected")
   end
