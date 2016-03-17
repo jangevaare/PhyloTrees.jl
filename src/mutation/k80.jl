@@ -21,6 +21,7 @@ type K80 <: Substitution_Model
     end
 
     π = [0.25, 0.25, 0.25, 0.25]
+    
     new(Θ, π)
   end
 end

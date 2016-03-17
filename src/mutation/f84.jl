@@ -11,11 +11,11 @@ type F84 <: Substitution_Model
     if length(Θ) !== 2
       error("Θ must have a length of 2")
     end
-    if Θ[1] <= 0
+    if Θ[1] <= 0.
       error("κ must be > 0")
     end
 
-    if Θ[2] <= 0
+    if Θ[2] <= 0.
       error("β must be > 0")
     end
 
@@ -23,11 +23,11 @@ type F84 <: Substitution_Model
       error("π must be of length 4")
     end
 
-    if !all(0 .< π .< 1)
+    if !all(0. .< π .< 1.)
       error("All base proportions must be between 0 and 1")
     end
 
-    if sum(π) !== 1
+    if sum(π) !== 1.
       error("Base proportions must sum to 1")
     end
 
@@ -92,7 +92,7 @@ function P(f84::F84, t::Float64)
   α_2 = (1 + κ/π_R) * β
   π_R = π_A + π_G
   π_Y = π_T + π_C
-  
+
   e_2 = exp(-β * t)
   e_3 = exp(-((π_R * α_2) + (π_Y * β)) * t)
   e_4 = exp(-((π_Y * α_1) + (π_R * β)) * t)
@@ -103,7 +103,7 @@ function P(f84::F84, t::Float64)
   P_TG = π_G * (1 - e_2)
 
   P_CT = π_T + ((π_T * π_R)/π_Y) * e_2 - (π_T/π_Y) * e_4
-  P_CC = π_C + ((π_T * π_R)/π_Y) * e_2 - (π_T/π_Y) * e_4
+  P_CC = π_C + ((π_T * π_R)/π_Y) * e_2 + (π_T/π_Y) * e_4
   P_CA = π_A * (1 - e_2)
   P_CG = π_G * (1 - e_2)
 
