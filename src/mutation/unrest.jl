@@ -5,9 +5,9 @@ Unrestricted substitution model (Yang 1994)
 """
 type UNREST <: Substitution_Model
   Θ::Vector{Float64}
-  π::Vector{Float64}
+  # π::Vector{Float64}
 
-  function UNREST(Θ::Vector{Float64}, π::Vector{Float64})
+  function UNREST(Θ::Vector{Float64})
     if length(Θ) !== 9
       error("Θ must be of length 12")
     end
@@ -16,19 +16,8 @@ type UNREST <: Substitution_Model
       error("a, b, c, d, e, f, g, h, i, j, k and l must all be > 0")
     end
 
-    if length(π) !== 4
-      error("π must be of length 4")
-    end
-
-    if !all(0 .< π .< 1)
-      error("All base proportions must be between 0 and 1")
-    end
-
-    if sum(π) !== 1
-      error("Base proportions must sum to 1")
-    end
-
-    new(Θ, π)
+    # new(Θ, π)
+    new(Θ)
   end
 end
 

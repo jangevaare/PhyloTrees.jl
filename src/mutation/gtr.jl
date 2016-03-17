@@ -12,7 +12,7 @@ type GTR <: Substitution_Model
       error("Θ must be of length 6")
     end
 
-    if any(Θ .<= 0)
+    if any(Θ .<= 0.)
       error("a, b, c, d, e and f must all be > 0")
     end
 
@@ -20,11 +20,11 @@ type GTR <: Substitution_Model
       error("π must be of length 4")
     end
 
-    if !all(0 .< π .< 1)
+    if !all(0. .< π .< 1.)
       error("All base proportions must be between 0 and 1")
     end
 
-    if sum(π) !== 1
+    if sum(π) !== 1.
       error("Base proportions must sum to 1")
     end
 

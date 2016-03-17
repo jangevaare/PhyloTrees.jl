@@ -4,18 +4,23 @@ using Base.Test
 # 1.0 Substitution models
 # 1.1 JC69
 a = JC69()
-@test maximum(abs(expm(Q(a)) .- P((a), 1.0))) < 1e-15
-@test P((a), Inf)[:,1] == a.π
+@test maximum(abs(expm(Q(a)) .- P(a, 1.0))) < 1e-15
+@test P(a, Inf) * rand(Multinomial(1, [0.25, 0.25, 0.25, 0.25])) == a.π
 
 # 1.2 K80
-@test Q(K80([1., 1.])) == Q(JC69())
+@test Q(K80([1., 1.])) == Q(a)
 b = K80([1., 2.])
-@test maximum(abs(expm(Q(b)) .- P((b), 1.0))) < 1e-15
-@test P((b), Inf)[:,1] == b.π
+@test maximum(abs(expm(Q(b)) .- P(b, 1.0))) < 1e-15
+@test P(b, Inf) * rand(Multinomial(1, [0.25, 0.25, 0.25, 0.25])) == b.π
 
 # 1.3 F81
+@test Q(F81([4.], [0.25, 0.25, 0.25, 0.25])) == Q(a)
+c = F81([1.], [0.3, 0.3, 0.2, 0.2])
+@test maximum(abs(expm(Q(c)) .- P(c, 1.0))) < 1e-15
+@test P(c, Inf) * rand(Multinomial(1, [0.25, 0.25, 0.25, 0.25])) == c.π
 
 # 1.4 F84
+
 
 # 1.5 HKY85
 
