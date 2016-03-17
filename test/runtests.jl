@@ -5,7 +5,7 @@ using Distributions
 # 1.0 Substitution models
 # 1.1 JC69
 t = rand(Gamma(10.))
-a = JC69([])
+a = JC69([1.])
 @test maximum(abs(expm(Q(a * t)) .- P(a, t))) < 1e-15
 @test P(a, Inf) * rand(Multinomial(1, [0.25, 0.25, 0.25, 0.25])) == a.π
 
