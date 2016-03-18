@@ -14,7 +14,7 @@ function simulate!(tree::Tree, mod::Substitution_Model)
     for j in 1:seq_length
       site_rate = tree.site_rates[j]
       p = P(mod, branch_length * branch_rate * site_rate)
-      tree.nodes[i].seq[:,j] = rand(Multinomial(1, p * tree.nodes[source].seq[:,j]))
+      tree.nodes[i].seq[:,j] = rand(Multinomial(1, (tree.nodes[source].seq[:,j]' * p)[:]))
     end
   end
   return tree

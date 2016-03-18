@@ -14,7 +14,7 @@ function loglikelihood(tree::Tree, mod::Substitution_Model)
     branch = tree.branches[tree.nodes[i].in_branches[1]]
     for j in 1:seq_length
       site_rate = tree.site_rates[j]
-      tree.nodes[branch.source].seq[:,j] = tree.nodes[branch.source].seq[:,j] .* (P(mod, branch.length * branch.rate * site_rate) * tree.nodes[i].seq[:,j])
+      tree.nodes[branch.source].seq[:,j] = tree.nodes[branch.source].seq[:,j] .* (tree.nodes[i].seq[:,j]' * P(mod, branch.length * branch.rate * site_rate))[:]
     end
 
   end

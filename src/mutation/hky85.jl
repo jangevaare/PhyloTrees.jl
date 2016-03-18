@@ -40,6 +40,7 @@ function Q(hky85::HKY85)
   π_C = hky85.π[2]
   π_A = hky85.π[3]
   π_G = hky85.π[4]
+
   π_R = π_A + π_G
   π_Y = π_T + π_C
 
@@ -81,6 +82,7 @@ function P(hky85::HKY85, t::Float64)
   π_C = hky85.π[2]
   π_A = hky85.π[3]
   π_G = hky85.π[4]
+  
   π_R = π_A + π_G
   π_Y = π_T + π_C
 
