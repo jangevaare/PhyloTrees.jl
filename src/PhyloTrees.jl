@@ -1,4 +1,4 @@
-module Phylogenetics
+module PhyloTrees
 
   # Dependencies
   using Distributions
