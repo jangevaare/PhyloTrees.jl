@@ -1,4 +1,4 @@
-using Phylogenetics
+using PhyloTrees
 using Base.Test
 using Distributions
 
