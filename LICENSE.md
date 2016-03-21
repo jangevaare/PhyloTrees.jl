@@ -1,4 +1,4 @@
-The Phylogenetics.jl package is licensed under the MIT "Expat" License:
+The PhyloTrees.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2016: Justin Angevaare.
 >
