@@ -15,3 +15,8 @@ Currently the following substitution models are supported by Phylogenetics.jl:
 * UNREST
 
 These substitution models may be utilized in conjunction with rate variation amongst nucleotide sites or branches of the phylogenetic tree.
+
+## Installation
+    Pkg.update()
+    Pkg.add("PhyloTrees")
+    using PhyloTrees
