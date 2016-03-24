@@ -39,9 +39,9 @@ The first encountered root of a phylogenetic tree
 """
 function find_root(tree::Tree)
   root = Int64[]
-  for i in tree.nodes
-    if is_root(i)
-      push!(root, i.id)
+  for i in 1:length(tree.nodes)
+    if is_root(tree.nodes[i])
+      push!(root, i)
     end
     length(root) > 0 && break
   end
@@ -58,9 +58,9 @@ Find the leaves of a phylogenetic tree
 """
 function find_leaves(tree::Tree)
   leaves = Int64[]
-  for i in tree.nodes
-    if is_leaf(i)
-      push!(leaves, i.id)
+  for i in 1:length(tree.nodes)
+    if is_leaf(tree.nodes[i])
+      push!(leaves, i)
     end
   end
   if length(leaves) == 0
@@ -76,9 +76,9 @@ Find the internal nodes of a phylogenetic tree
 """
 function find_nodes(tree::Tree)
   nodes = Int64[]
-  for i in tree.nodes
-    if is_node(i)
-      push!(nodes, i.id)
+  for i in 1:length(tree.nodes)
+    if is_node(tree.nodes[i])
+      push!(nodes, i)
     end
   end
   if length(nodes) == 0
