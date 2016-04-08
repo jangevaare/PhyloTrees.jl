@@ -1,39 +1,70 @@
 """
-Simulate sequences at all nodes in a phylogenetic tree following a specified
+Simulate sequences for all nodes in a phylogenetic tree following a specified
 substitution model
 """
-function simulate!(tree::Tree, mod::Substitution_Model)
+function simulate(tree::Tree,
+                  mod::Substitution_Model,
+                  root_seq::Array{Bool, 2},
+                  site_rates::Vector{Float64})
+  seq_length = size(root_seq, 2)
+
+  # Error checking
+  if size(root_seq, 1) !== 4
+    error("Invalid root sequence format")
+  end
+  if seq_length != length(site_rates)
+    error("Dimension of root sequence must match length of site rates")
+  end
+  if sum(root_seq) > seq_length
+    error("Invalid root sequence")
+  end
+
+  # Initialize sequence array
+  seq = fill(false, (4, seq_length, length(tree.nodes)))
   visit_order = reverse(postorder(tree))
-  seq_length = size(tree.nodes[visit_order[1]].seq, 2)
-  tree.nodes[visit_order[1]].seq = rand(Multinomial(1, mod.π), seq_length)
 
+  # Set root sequence
+  seq[:,:,visit_order[1]] = root_seq
+
+  # Iterate through remaining nodes
   for i in visit_order[2:end]
-    source = tree.branches[tree.nodes[i].in_branches[1]].source
-    branch_length = tree.branches[tree.nodes[i].in_branches[1]].length
-    branch_rate = tree.branches[tree.nodes[i].in_branches[1]].rate
+    source = tree.branches[tree.nodes[i].in[1]].source
+    branch_length = tree.branches[tree.nodes[i].in[1]].length
     for j in 1:seq_length
-      site_rate = tree.site_rates[j]
-      p = P(mod, branch_length * branch_rate * site_rate)
-      tree.nodes[i].seq[:,j] = rand(Multinomial(1, (tree.nodes[source].seq[:,j]' * p)[:]))
+      site_rate = site_rates[j]
+      p = P(mod, branch_length * site_rate)
+      seq[:,j,i] = rand(Multinomial(1, (seq[:,j,source]' * p)[:]))
     end
   end
-  return tree
+  return seq
 end
 
 
-"""
-Make observations from leaves of phylogenetic tree
-"""
-function observe(tree::Tree, nodes::Vector{Int64})
-  obs = Array{Float64}[]
-  for i in nodes
-    if is_leaf(tree.nodes[i])
-      error("Node $i is not a leaf, and can not be observed")
-    end
-    push!(obs, tree.nodes[i].seq)
-  end
-  return obs
+function simulate(tree::Tree,
+                  mod::Substitution_Model,
+                  root_seq::Array{Bool, 2})
+  return simulate(tree,
+                  mod,
+                  root_seq,
+                  fill(1., size(root_seq, 2)))
 end
 
 
-observe(tree::Tree) = observe(tree, find_leaves(tree))
+function simulate(tree::Tree,
+                  mod::Substitution_Model,
+                  seq_length::Int64,
+                  site_rates::Vector{Float64})
+  return simulate(tree,
+                  mod,
+                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), seq_length)),
+                  site_rates)
+end
+
+
+function simulate(tree::Tree,
+                  mod::Substitution_Model,
+                  seq_length::Int64)
+  return simulate(tree,
+                  mod,
+                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), seq_length)))
+end

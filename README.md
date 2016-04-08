@@ -27,23 +27,22 @@ Use the PhyloTrees.jl package
 
     using PhyloTrees
 
-Create a tree with a specified sequence length
+Create a tree with a root node
 
-    tree1 = Tree(1000)
+    tree1 = Tree()
 
-Add nodes to the tree
+Add additional nodes to the tree
 
-    add_node!(tree1)
-    add_node!(tree1)
-    add_node!(tree1)
-    add_node!(tree1)
+    addnode!(tree1)
+    addnode!(tree1)
+    addnode!(tree1)
 
-Add branches to the tree, of a specified length, from a source node to a target node.
+Add branches to the tree, connecting two specific nodes, of a specified length
 
-    add_branch!(tree1, 10.0, 1, 2)
-    add_branch!(tree1, 10.0, 1, 3)
-    add_branch!(tree1, 10.0, 3, 4)
+    addbranch!(tree1, 1, 2., 10.0)
+    addbranch!(tree1, 1, 3, 5.0)
+    addbranch!(tree1, 3, 4, 20.0)
 
 Simulate sequence data for a specified phylogenetic tree, using a parametrized substitution model
 
-    simulate!(tree1, JC69([1.0e-5]))
+    seq = simulate!(tree1, JC69([1.0e-5]), 1000)

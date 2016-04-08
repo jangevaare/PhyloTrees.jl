@@ -1,23 +1,25 @@
 """
-Calculates the log likelihood of a tree with observed sequences at leaves only
+Calculates the log likelihood of a tree with sequences observed at all leaves
 """
-function loglikelihood(tree::Tree, mod::Substitution_Model)
+function loglikelihood(tree::Tree, mod::Substitution_Model, seq::Array{Bool, 3}, site_rates::Vector{Float64})
+  if length(site_rates) !== size(seq, 2)
+    error("Dimensions of sequence date and site rates do not match")
+  end
   vist_order = postorder(tree)
-  seq_length = size(tree.nodes[1].seq, 2)
-  nodes = find_nodes(tree)
+  seq_length = size(seq, 2)
+  ll_seq = fill(0. size(seq))
+  leaves = findleaves(tree)
 
-  for i in nodes
-    tree.nodes[i].seq = fill(1., (4, seq_length))
-  end
-
-  for i in visit_order[1:end-1]
-    branch = tree.branches[tree.nodes[i].in_branches[1]]
-    for j in 1:seq_length
-      site_rate = tree.site_rates[j]
-      tree.nodes[branch.source].seq[:,j] = tree.nodes[branch.source].seq[:,j] .* (tree.nodes[i].seq[:,j]' * P(mod, branch.length * branch.rate * site_rate))[:]
-    end
-
-  end
-  root = visit_order[end]
-  return sum(log(sum(tree.nodes[root].seq, 1)))
+  # TODO
+  #
+  # for i in visit_order[1:end-1]
+  #   branch = tree.branches[tree.nodes[i].in[1]]
+  #   for j in 1:seq_length
+  #     site_rate = tree.site_rates[j]
+  #     tree.nodes[branch.source].seq[:,j] = tree.nodes[branch.source].seq[:,j] .* (tree.nodes[i].seq[:,j]' * P(mod, branch.length * branch.rate * site_rate))[:]
+  #   end
+  #
+  # end
+  # root = visit_order[end]
+  # return sum(log(sum(tree.nodes[root].seq, 1)))
 end

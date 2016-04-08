@@ -49,32 +49,21 @@ f = TN93([1., 2., 3.], πf)
 
 # 1.8 UNREST
 
-
 # 2.0 Tree generation
-a = Tree(1000)
-add_node!(a)
-add_node!(a)
-add_node!(a)
-add_node!(a)
-add_branch!(a, 10.0, 1, 2)
-add_branch!(a, 10.0, 1, 3)
-add_branch!(a, 10.0, 3, 4)
+a = Tree()
+branch!(a, 1, 10.0)
+branch!(a, 1, 5.0)
+branch!(a, 2, 20.0)
 
-@test length(find_root(a)) == 1
-@test length(find_leaves(a)) - 1 == length(find_nodes(a))
+@test length(findroot(a)) == 1
+@test length(findleaves(a)) - 1 == length(findnodes(a))
 
 for i = 1:length(a.nodes)
-  @test length(a.nodes[i].out_branches) <= 2
-  @test length(a.nodes[i].in_branches) <= 1
+  @test length(a.nodes[i].out) <= 2
+  @test length(a.nodes[i].in) <= 1
 end
-
 
 # 3.0 Simulation
-simulate!(a, JC69([1.0e-5]))
-
-for i = 1:length(a.nodes)
-  @test size(a.nodes[i].seq) == (4, length(a.site_rates))
-end
-
+seq = simulate(a, JC69([1.0e-5]), 1000)
 
 # 4.0 Inference
