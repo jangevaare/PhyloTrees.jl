@@ -30,6 +30,14 @@ type Tree
 end
 
 
+import Base.show
+
+
+function show(io::IO, object::Tree)
+  println(io, "Phylogenetic tree with $(length(object.nodes)) nodes and $(length(object.branches)) branches")
+end
+
+
 """
 Add a node
 """

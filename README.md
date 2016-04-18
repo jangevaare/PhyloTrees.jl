@@ -4,7 +4,7 @@
 
 ## Introduction
 
-PhyloTrees.jl has two main objectives. The first objective is to provide a simple, fast, and flexible method of simulating genetic sequence data from a specified phylogenetic tree and substitution model. The second is to perform efficient likelihood calculations of phylogenetic trees with native [Julia language](http://julialang.org) code.
+The objective of PhyloTrees.jl is to provide a simple, fast, and flexible method of simulating genetic sequence data from a specified phylogenetic tree and substitution model with native [Julia language](http://julialang.org) code.
 
 Currently the following substitution models are supported by Phylogenetics.jl:
 * JC69
