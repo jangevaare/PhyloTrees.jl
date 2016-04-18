@@ -47,8 +47,6 @@ f = TN93([1., 2., 3.], πf)
 
 # 1.7 GTR
 
-# 1.8 UNREST
-
 # 2.0 Tree generation
 a = Tree()
 branch!(a, 1, 10.0)
@@ -65,5 +63,7 @@ end
 
 # 3.0 Simulation
 seq = simulate(a, JC69([1.0e-5]), 1000)
+@test size(seq) == (4, 1000, 4)
 
 # 4.0 Inference
+# TODO

@@ -14,7 +14,6 @@ Currently the following substitution models are supported by Phylogenetics.jl:
 * HKY85
 * TN93
 * GTR
-* UNREST
 
 These substitution models may be utilized in conjunction with rate variation amongst nucleotide sites or branches of the phylogenetic tree.
 
