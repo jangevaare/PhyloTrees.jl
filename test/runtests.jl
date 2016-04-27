@@ -78,4 +78,8 @@ seq = simulate(g, JC69([1.0e-5]), 1000)
 @test size(seq) == (4, 1000, 4)
 
 # 4.0 Inference
+# 4.1 Log likelihood between two sequences
+@test loglikelihood(seq[:, :, 1], seq[:, :, 2], 10.0, JC69([1.0e-5])) > loglikelihood(seq[:, :, 1], seq[:, :, 2], 1000.0, JC69([1.0e-5]))
+
+# 4.2 Tree log likelihood
 # TODO

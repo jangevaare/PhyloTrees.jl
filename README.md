@@ -42,6 +42,11 @@ Add branches to the tree, connecting two specific nodes, of a specified length
     addbranch!(tree1, 1, 3, 5.0)
     addbranch!(tree1, 3, 4, 20.0)
 
+Other tree manipulation functions are available including:
+* `branch!()`
+* `subtree()`
+* `addsubtree!()`
+
 Simulate sequence data for a specified phylogenetic tree, using a parametrized substitution model
 
     seq = simulate!(tree1, JC69([1.0e-5]), 1000)

@@ -38,15 +38,15 @@ module PhyloTrees
     P,
 
     # Simulation
-    simulate
+    simulate,
 
     # Inference
-    # loglikelihood
+    loglikelihood
 
   include("trees.jl")
   include("traversal.jl")
   include("utilities.jl")
   include("mutation.jl")
   include("simulation.jl")
-  # include("inference.jl")
+  include("inference.jl")
 end
