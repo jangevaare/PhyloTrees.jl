@@ -24,6 +24,11 @@ module PhyloTrees
     findroots,
     findleaves,
     findnodes,
+    nodepath,
+    branchpath,
+
+    # Distance
+    distance,
 
     # Mutation
     JC69,
@@ -46,6 +51,7 @@ module PhyloTrees
   include("trees.jl")
   include("traversal.jl")
   include("utilities.jl")
+  include("distance.jl")
   include("mutation.jl")
   include("simulation.jl")
   include("inference.jl")

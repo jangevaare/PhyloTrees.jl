@@ -83,3 +83,89 @@ function findnodes(tree::Tree)
   end
   return nodes
 end
+
+
+"""
+Node pathway through which a specified node connects to a root
+"""
+function nodepath(tree::Tree, node::Int64)
+  if !(1 <= node <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  path = [node]
+  while !isroot(tree.nodes[pathway[end]])
+    push!(path, tree.branches[tree.nodes[pathway[end]].in].source)
+  end
+  return path
+end
+
+
+"""
+Node pathway through which two specified nodes connect
+"""
+function nodepath(tree::Tree, node1::Int64, node2::Int64)
+  if !(1 <= node1 <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  if !(1 <= node2 <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  path1 = reverse(nodepath(tree, node1))
+  path2 = reverse(nodepath(tree, node2))
+  if path1[1] !== path2[1]
+    error("Nodes are not connected")
+  else
+    minlength = minimum(length(path1), length(path2))
+    mrca_index = findlast(path1[1:minlength] .== path2[1:minlength])
+    return [reverse(path1[(mrca_index+1):end]); path2[mrca_index:end]]
+  end
+end
+
+
+"""
+The root associated with a specified node
+"""
+function noderoot(tree:Tree, node::Int64)
+  return nodepath(tree, node)[end]
+end
+
+
+"""
+Branch pathway through which a specified node connects to a root
+"""
+function branchpath(tree::Tree, node::Int64)
+  if !(1 <= node <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  path = []
+  while !isroot(tree.nodes[node])
+    push!(path, tree.nodes[pathway[end]].in)
+    node = tree.branches[path[end]].in
+  end
+  return path
+end
+
+
+"""
+Branch pathway through which two specified nodes connect
+"""
+function branchpath(tree::Tree, node1::Int64, node2::Int64)
+  if !(1 <= node1 <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  if !(1 <= node2 <= length(tree.nodes))
+    error("Invalid node specified")
+  end
+  if noderoot(tree, node1) !== noderoot(tree, node2)
+    error("Nodes are not connected")
+  end
+  path1 = reverse(branchpath(tree, node1))
+  path2 = reverse(branchpath(tree, node2))
+  minlength = minimum(length(path1), length(path2))
+  if minlength == 0
+    mrcb_index = 0
+  else
+    mrcb_index = findlast(path1[1:minlength] .== path2[1:minlength])
+  end
+  return [reverse(path1[(mrcb_index+1):end]); path2[mrcb_index+1:end]]
+end
