@@ -27,6 +27,7 @@ type Tree
   branches::Vector{Branch}
 
   Tree() = new([Node()], Branch[])
+  Tree(nodes::Vector{Node}, branches::Vector{Branch}) = new(nodes, branches)
 end
 
 
@@ -123,4 +124,65 @@ function branch!(tree::Tree,
 
   # Return updated tree
   return tree
+end
+
+
+"""
+Add a subtree to a phylogenetic tree
+"""
+function addsubtree!(tree::Tree,
+                     subtree::Tree)
+  branchcount = length(tree.branches)
+  nodecount = length(tree.nodes)
+  for i in subtree.nodes
+    i.in += branchcount
+    i.out += branchcount
+  end
+  for i in subtree.branches
+    i.source += nodecount
+    i.target += nodecount
+  end
+  append!(tree.nodes, subtree.nodes)
+  append!(tree.branches, subtree.branches)
+  return tree
+end
+
+
+"""
+Extract a subtree at a particular node from a phylogenetic tree
+"""
+function subtree(tree::Tree,
+                 node::Int64)
+  if node < 1 | node > length(tree.nodes)
+    error("Invalid node selected for subtree root")
+  end
+  nodecount = 0
+  nodelist = [node]
+  branchcount = 0
+  branchlist = tree.nodes[node].out
+  while nodecount < length(nodelist)
+    nodecount = length(nodelist)
+    for i in branchlist[branchcount+1:end]
+      push!(nodelist, tree.branches[i].target)
+    end
+    branchcount = length(branchlist)
+    for i in nodelist[nodecount+1:end]
+      append!(branchlist, tree.nodes[i].out)
+    end
+  end
+  subtree = Tree(tree.nodes[nodelist], tree.branches[branchlist])
+  subtree.nodes[1].in = []
+  for i in subtree.nodes
+    for j in 1:length(i.in)
+      i.in[j] = findfirst(branchlist .== i.in[j])
+    end
+    for j in 1:length(i.out)
+      i.out[j] = findfirst(branchlist .== i.out[j])
+    end
+  end
+  for i in subtree.branches
+    i.source = findfirst(nodelist .== i.source)
+    i.target = findfirst(nodelist .== i.target)
+  end
+  return subtree
 end

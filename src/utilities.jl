@@ -37,13 +37,12 @@ end
 """
 The first encountered root of a phylogenetic tree
 """
-function findroot(tree::Tree)
+function findroots(tree::Tree)
   root = Int64[]
   for i in 1:length(tree.nodes)
     if isroot(tree.nodes[i])
       push!(root, i)
     end
-    length(root) > 0 && break
   end
   if length(root) == 0
     warn("No roots detected")

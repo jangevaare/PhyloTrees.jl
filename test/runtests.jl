@@ -47,22 +47,34 @@ f = TN93([1., 2., 3.], πf)
 
 # 1.7 GTR
 
-# 2.0 Tree generation
-a = Tree()
-branch!(a, 1, 10.0)
-branch!(a, 1, 5.0)
-branch!(a, 2, 20.0)
+# 2.0 Tree operations
+# 2.1 Tree creation
+g = Tree()
+branch!(g, 1, 10.0)
+branch!(g, 1, 5.0)
+branch!(g, 2, 20.0)
 
-@test length(findroot(a)) == 1
-@test length(findleaves(a)) - 1 == length(findnodes(a))
+@test length(findroots(g)) == 1
+@test length(findleaves(g)) - 1 == length(findnodes(g))
 
-for i = 1:length(a.nodes)
-  @test length(a.nodes[i].out) <= 2
-  @test length(a.nodes[i].in) <= 1
+for i = 1:length(g.nodes)
+  @test length(g.nodes[i].out) <= 2
+  @test length(g.nodes[i].in) <= 1
 end
 
+# 2.2 Subtrees
+@test findleaves(subtree(g, 1)) == findleaves(g)
+
+# 2.3 Combining trees
+2*length(findroots(g)) == length(findroots(addsubtree!(g, subtree(g, 1))))
+
 # 3.0 Simulation
-seq = simulate(a, JC69([1.0e-5]), 1000)
+g = Tree()
+branch!(g, 1, 10.0)
+branch!(g, 1, 5.0)
+branch!(g, 2, 20.0)
+
+seq = simulate(g, JC69([1.0e-5]), 1000)
 @test size(seq) == (4, 1000, 4)
 
 # 4.0 Inference

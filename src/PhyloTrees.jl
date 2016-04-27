@@ -11,6 +11,8 @@ module PhyloTrees
     addnode!,
     addbranch!,
     branch!,
+    addsubtree!,
+    subtree,
 
     # Traversal algorithms
     postorder,
@@ -19,7 +21,7 @@ module PhyloTrees
     isroot,
     isleaf,
     isnode,
-    findroot,
+    findroots,
     findleaves,
     findnodes,
 
