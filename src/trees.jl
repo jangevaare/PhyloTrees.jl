@@ -131,8 +131,8 @@ end
 Add a subtree to a phylogenetic tree
 """
 function addsubtree!(tree::Tree,
-                     subtree::Tree)
-  temptree = subtree(subtree, findroots(subtree)[1])
+                     newsubtree::Tree)
+  temptree = subtree(newsubtree, findroots(newsubtree)[1])
   branchcount = length(tree.branches)
   nodecount = length(tree.nodes)
   for i in temptree.nodes

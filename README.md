@@ -6,7 +6,7 @@
 
 The objective of PhyloTrees.jl is to provide a simple, fast, and flexible method of simulating genetic sequence data from a specified phylogenetic tree and substitution model with native [Julia language](http://julialang.org) code.
 
-Currently the following substitution models are supported by Phylogenetics.jl:
+Currently the following substitution models are supported by PhyloTrees.jl:
 * JC69
 * K80
 * F81

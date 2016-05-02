@@ -66,6 +66,9 @@ end
 @test nodepath(g, 1, 2) == [1, 2]
 @test branchpath(g, 1, 2) == [1]
 @test distance(g, 1, 2) == 10.0
+@test distance(g, 1, 4) == 30.0
+@test distance(g, 4, 3) == 35.0
+
 
 # 2.2 Subtrees
 @test findleaves(subtree(g, 1)) == findleaves(g)
