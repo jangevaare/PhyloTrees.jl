@@ -132,18 +132,19 @@ Add a subtree to a phylogenetic tree
 """
 function addsubtree!(tree::Tree,
                      subtree::Tree)
+  temptree = subtree(subtree, findroots(subtree)[1])
   branchcount = length(tree.branches)
   nodecount = length(tree.nodes)
-  for i in subtree.nodes
+  for i in temptree.nodes
     i.in += branchcount
     i.out += branchcount
   end
-  for i in subtree.branches
+  for i in temptree.branches
     i.source += nodecount
     i.target += nodecount
   end
-  append!(tree.nodes, subtree.nodes)
-  append!(tree.branches, subtree.branches)
+  append!(tree.nodes, temptree.nodes)
+  append!(tree.branches, temptree.branches)
   return tree
 end
 
@@ -153,36 +154,25 @@ Extract a subtree at a particular node from a phylogenetic tree
 """
 function subtree(tree::Tree,
                  node::Int64)
-  if node < 1 | node > length(tree.nodes)
-    error("Invalid node selected for subtree root")
-  end
+  validnode(tree, node)
   nodecount = 0
   nodelist = [node]
+  subtree = Tree()
   branchcount = 0
-  branchlist = tree.nodes[node].out
+  branchlist = Int64[]
+  append!(branchlist, tree.nodes[node].out)
   while nodecount < length(nodelist)
     nodecount = length(nodelist)
     for i in branchlist[branchcount+1:end]
       push!(nodelist, tree.branches[i].target)
+      new_source = findfirst(tree.branches[i].source .== nodelist)
+      new_branch_length = tree.branches[i].length
+      branch!(subtree, new_source, new_branch_length)
     end
-    branchcount = length(branchlist)
+    branchcount = length(subtree.branches)
     for i in nodelist[nodecount+1:end]
       append!(branchlist, tree.nodes[i].out)
     end
-  end
-  subtree = Tree(tree.nodes[nodelist], tree.branches[branchlist])
-  subtree.nodes[1].in = []
-  for i in subtree.nodes
-    for j in 1:length(i.in)
-      i.in[j] = findfirst(branchlist .== i.in[j])
-    end
-    for j in 1:length(i.out)
-      i.out[j] = findfirst(branchlist .== i.out[j])
-    end
-  end
-  for i in subtree.branches
-    i.source = findfirst(nodelist .== i.source)
-    i.target = findfirst(nodelist .== i.target)
   end
   return subtree
 end

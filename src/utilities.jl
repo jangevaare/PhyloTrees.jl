@@ -1,4 +1,28 @@
 """
+Check if a node index is valid
+"""
+function validnode(tree::Tree, node::Int64)
+  if 1 <= node <= length(tree.nodes)
+    return true
+  else
+    error("Invalid node specified")
+  end
+end
+
+
+"""
+Check if a node index is valid
+"""
+function validnode(tree::Tree, nodes::Vector{Int64})
+  if all(1 .<= nodes .<= length(tree.nodes))
+    return true
+  else
+    error("Invalid node specified")
+  end
+end
+
+
+"""
 Is a particular node a root?
 """
 function isroot(node::Node)
@@ -14,9 +38,7 @@ end
 Is a particular node a root?
 """
 function isroot(tree::Tree, node::Int64)
-  if !(1 <= node <= length(tree.nodes))
-    error("Invalid node specified")
-  end
+  validnode(tree, node)
   return isroot(tree.nodes[node])
 end
 
@@ -37,9 +59,7 @@ end
 Is a particular node a leaf?
 """
 function isleaf(tree::Tree, node::Int64)
-  if !(1 <= node <= length(tree.nodes))
-    error("Invalid node specified")
-  end
+  validnode(tree, node)
   return isleaf(tree.nodes[node])
 end
 
@@ -60,9 +80,7 @@ end
 Is a particular node an internal node?
 """
 function isnode(tree::Tree, node::Int64)
-  if !(1 <= node <= length(tree.nodes))
-    error("Invalid node specified")
-  end
+  validnode(tree, node)
   return isnode(tree.nodes[node])
 end
 
@@ -119,29 +137,15 @@ end
 
 
 """
-Check if a node index is valid
-"""
-function validnode(tree::Tree, node::Int64)
-  return 1 <= node <= length(tree.nodes)
-end
-
-
-"""
-Check if a node index is valid
-"""
-function validnode(tree::Tree, nodes::Vector{Int64})
-  return all(1 .<= nodes .<= length(tree.nodes))
-end
-
-
-"""
 Find the parent node of a specified node
 """
 function parentnode(tree::Tree, node::Int64)
-  if !validnode(tree, node)
-    error("Invalid node specified")
+  validnode(tree, node)
+  if length(tree.nodes[node].in) == 1
+    return tree.branches[tree.nodes[node].in[1]].source
+  else
+    error("In degree of specified node != 1")
   end
-  return tree.branches[tree.nodes[node].in].source
 end
 
 
@@ -149,12 +153,10 @@ end
 Node pathway through which a specified node connects to a root
 """
 function nodepath(tree::Tree, node::Int64)
-  if !validnode(tree, node)
-    error("Invalid node specified")
-  end
+  validnode(tree, node)
   path = [node]
-  while !isroot(tree, pathway[end])
-    push!(path, parentnode(tree, pathway[end]))
+  while isleaf(tree, path[end]) || isnode(tree, path[end])
+    push!(path, parentnode(tree, path[end]))
   end
   return path
 end
@@ -180,15 +182,13 @@ end
 Node pathway through which two specified nodes connect
 """
 function nodepath(tree::Tree, node1::Int64, node2::Int64)
-  if !validnode(tree, [node1; node2])
-    error("Invalid node specified")
-  end
+  validnode(tree, [node1; node2])
   path1 = reverse(nodepath(tree, node1))
   path2 = reverse(nodepath(tree, node2))
   if !areconnected(tree, node1, node2)
     error("Nodes are not connected")
   end
-  minlength = minimum(length(path1), length(path2))
+  minlength = minimum([length(path1), length(path2)])
   mrcnode_index = findlast(path1[1:minlength] .== path2[1:minlength])
   return [reverse(path1[(mrcnode_index+1):end]); path2[mrcnode_index:end]]
 end
@@ -199,9 +199,9 @@ Branch pathway through which a specified node connects to a root
 """
 function branchpath(tree::Tree, node::Int64)
   path = []
-  while !isroot(tree, node)
-    push!(path, tree.nodes[node].in)
-    node = tree.branches[path[end]].in
+  while isleaf(tree, node) || isnode(tree, node)
+    push!(path, tree.nodes[node].in[1])
+    node = tree.branches[path[end]].source
   end
   return path
 end
@@ -216,7 +216,7 @@ function branchpath(tree::Tree, node1::Int64, node2::Int64)
   end
   path1 = reverse(branchpath(tree, node1))
   path2 = reverse(branchpath(tree, node2))
-  minlength = minimum(length(path1), length(path2))
+  minlength = minimum([length(path1), length(path2)])
   if minlength == 0
     mrcbranch_index = 0
   else

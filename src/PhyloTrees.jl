@@ -18,12 +18,14 @@ module PhyloTrees
     postorder,
 
     # Utilities
+    validnode,
     isroot,
     isleaf,
     isnode,
     findroots,
     findleaves,
     findnodes,
+    areconnected,
     nodepath,
     branchpath,
 

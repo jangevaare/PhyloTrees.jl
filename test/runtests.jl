@@ -62,6 +62,11 @@ for i = 1:length(g.nodes)
   @test length(g.nodes[i].in) <= 1
 end
 
+@test areconnected(g, 1, 2)
+@test nodepath(g, 1, 2) == [1, 2]
+@test branchpath(g, 1, 2) == [1]
+@test distance(g, 1, 2) == 10.0
+
 # 2.2 Subtrees
 @test findleaves(subtree(g, 1)) == findleaves(g)
 
