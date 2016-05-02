@@ -86,6 +86,36 @@ end
 
 
 """
+Is a node an internal node, a root node, or a leaf
+"""
+function nodetype(node::Node)
+  if length(node.in) == 0
+    return "Root"
+  elseif length(node.in) == 1
+    if length(node.out) == 0
+      return "Leaf"
+    elseif length(node.out) > 0
+      return "Internal"
+    else
+      error("Unknown node type")
+    end
+  else
+    error("Unknown node type")
+  end
+end
+
+
+"""
+Is a node an internal node, a root node, or a leaf
+"""
+function nodetype(tree::Tree, node::Int64)
+  if validnode(tree, node)
+    return nodetype(tree.nodes[node])
+  end
+end
+
+
+"""
 The first encountered root of a phylogenetic tree
 """
 function findroots(tree::Tree)

@@ -57,4 +57,5 @@ module PhyloTrees
   include("mutation.jl")
   include("simulation.jl")
   include("inference.jl")
+  include("show.jl")
 end
