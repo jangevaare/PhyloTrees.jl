@@ -1,6 +1,8 @@
 """
 Tamura and Nei 1993 substitution model
 
+Θ = [κ1, κ2]
+or
 Θ = [α1, α2, β]
 """
 type TN93 <: Substitution_Model
@@ -8,16 +10,19 @@ type TN93 <: Substitution_Model
   π::Vector{Float64}
 
   function TN93(Θ::Vector{Float64}, π::Vector{Float64})
-    if length(Θ) !== 3
-      error("Θ must be of length 3")
+    if any(Θ .<= 0.)
+      error("All elements of Θ must be positive")
     end
-
-    if any(Θ[1:2] .<= 0.)
-      error("α must be > 0")
-    end
-
-    if Θ[3] <= 0.
-      error("β must be > 0")
+    if length(Θ) == 2
+      α1 = Θ[1]
+      α2 = Θ[2]
+      β = 1.0
+    elseif length(Θ) == 3
+      α1 = Θ[1]
+      α2 = Θ[2]
+      β = Θ[3]
+    else
+      error("Θ is not a valid length for TN93 model")
     end
 
     if length(π) !== 4
@@ -32,7 +37,7 @@ type TN93 <: Substitution_Model
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new([α1, α2, β], π)
   end
 end
 

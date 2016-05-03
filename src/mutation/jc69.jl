@@ -1,28 +1,33 @@
 """
 Jukes and Cantor 1969 substitution model
 
+Θ = []
+or
 Θ = [λ]
 """
 type JC69 <: Substitution_Model
   Θ::Vector{Float64}
   π::Vector{Float64}
   function JC69(Θ::Vector{Float64})
-    if length(Θ) !== 1
-      error("Θ must have a length of 1")
-    end
-
-    if Θ[1] <= 0.
-      error("λ must be > 0")
+    if length(Θ) == 0
+      λ = 1.0
+    elseif length(Θ) == 1
+      if any(Θ .<= 0.)
+        error("All elements of Θ must be positive")
+      end
+      λ = Θ[1]
+    else
+      error("Θ is not a valid length for JC69 model")
     end
 
     π = [0.25, 0.25, 0.25, 0.25]
-    
-    new(Θ, π)
+
+    new([λ], π)
   end
 end
 
 
-JC69() = JC69([1.])
+JC69() = JC69(Float64[])
 
 
 function Q(jc69::JC69)

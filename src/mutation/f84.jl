@@ -8,17 +8,18 @@ type F84 <: Substitution_Model
   π::Vector{Float64}
 
   function F84(Θ::Vector{Float64}, π::Vector{Float64})
-    if length(Θ) !== 2
-      error("Θ must have a length of 2")
+    if any(Θ .<= 0.)
+      error("All elements of Θ must be positive")
     end
-    if Θ[1] <= 0.
-      error("κ must be > 0")
+    if length(Θ) == 1
+      κ = Θ[1]
+      β = 1.0
+    elseif length(Θ) == 2
+      κ = Θ[1]
+      β = Θ[2]
+    else
+      error("Θ is not a valid length for TN93 model")
     end
-
-    if Θ[2] <= 0.
-      error("β must be > 0")
-    end
-
     if length(π) !== 4
       error("π must be of length 4")
     end
@@ -31,7 +32,7 @@ type F84 <: Substitution_Model
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new([κ, β], π)
   end
 end
 

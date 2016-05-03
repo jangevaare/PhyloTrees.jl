@@ -1,6 +1,7 @@
 """
 Hasegawa et al. 1984 substitution model
-
+Θ = [κ]
+or
 Θ = [α, β]
 """
 type HKY85 <: Substitution_Model
@@ -8,12 +9,17 @@ type HKY85 <: Substitution_Model
   π::Vector{Float64}
 
   function HKY85(Θ::Vector{Float64}, π::Vector{Float64})
-    if Θ[1] <= 0.
-      error("α must be > 0")
+    if any(Θ .<= 0.)
+      error("All elements of Θ must be positive")
     end
-
-    if Θ[2] <= 0.
-      error("β must be > 0")
+    if length(Θ) == 1
+      α = Θ[1]
+      β = 1.0
+    elseif length(Θ) == 2
+      α = Θ[1]
+      β = Θ[2]
+    else
+      error("Θ is not a valid length for HKY85 model")
     end
 
     if length(π) !== 4
@@ -28,7 +34,7 @@ type HKY85 <: Substitution_Model
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new([α, β], π)
   end
 end
 
@@ -82,7 +88,7 @@ function P(hky85::HKY85, t::Float64)
   π_C = hky85.π[2]
   π_A = hky85.π[3]
   π_G = hky85.π[4]
-  
+
   π_R = π_A + π_G
   π_Y = π_T + π_C
 

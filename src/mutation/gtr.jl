@@ -8,13 +8,16 @@ type GTR <: Substitution_Model
   π::Vector{Float64}
 
   function GTR(Θ::Vector{Float64}, π::Vector{Float64})
-    if length(Θ) !== 6
-      error("Θ must be of length 6")
-    end
-
-    if any(Θ .<= 0.)
-      error("a, b, c, d, e and f must all be > 0")
-    end
+  if length(Θ) == 6
+    a = Θ[1]
+    b = Θ[2]
+    c = Θ[3]
+    d = Θ[4]
+    e = Θ[5]
+    f = Θ[6]
+  else
+    error("Θ is not a valid length for GTR model")
+  end
 
     if length(π) !== 4
       error("π must be of length 4")
@@ -28,7 +31,7 @@ type GTR <: Substitution_Model
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new([a, b, c, d, e, f], π)
   end
 end
 

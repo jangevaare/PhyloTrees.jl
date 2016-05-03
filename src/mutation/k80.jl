@@ -1,6 +1,8 @@
 """
 Kimura 1980 substitution model
 
+Θ = [κ]
+or
 Θ = [α, β]
 """
 type K80 <: Substitution_Model
@@ -8,21 +10,22 @@ type K80 <: Substitution_Model
   π::Vector{Float64}
 
   function K80(Θ::Vector{Float64})
-    if length(Θ) !== 2
-      error("Θ must be of length 2")
+    if any(Θ .<= 0.)
+      error("All elements of Θ must be positive")
     end
-
-    if Θ[1] <= 0.
-      error("α must be > 0")
-    end
-
-    if Θ[2] <= 0.
-      error("β must be > 0")
+    if length(Θ) == 1
+      α = Θ[1]
+      β = 1.0
+    elseif length(Θ) == 2
+      α = Θ[1]
+      β = Θ[2]
+    else
+      error("Θ is not a valid length for K80 model")
     end
 
     π = [0.25, 0.25, 0.25, 0.25]
-    
-    new(Θ, π)
+
+    new([α, β], π)
   end
 end
 

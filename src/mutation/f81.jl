@@ -1,6 +1,8 @@
 """
 Felsenstein 1981 substitution model
 
+Θ = []
+or
 Θ = [β]
 """
 type F81 <: Substitution_Model
@@ -8,12 +10,15 @@ type F81 <: Substitution_Model
   π::Vector{Float64}
 
   function F81(Θ::Vector{Float64}, π::Vector{Float64})
-    if length(Θ) !== 1
-      error("Θ must have a length of 1")
-    end
-
-    if Θ[1] <= 0.
-      error("β must be > 0")
+    if length(Θ) == 0
+      β = 1.0
+    elseif length(Θ) == 1
+      if any(Θ .<= 0.)
+        error("All elements of Θ must be positive")
+      end
+      β = Θ[1]
+    else
+      error("Θ is not a valid length for F81 model")
     end
 
     if length(π) !== 4
@@ -28,12 +33,12 @@ type F81 <: Substitution_Model
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new([β], π)
   end
 end
 
 
-F81(π::Vector{Float64}) = F81([1.], π)
+F81(π::Vector{Float64}) = F81(Float64[], π)
 
 
 function Q(f81::F81)
