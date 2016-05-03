@@ -63,6 +63,16 @@ end
 
 function simulate(tree::Tree,
                   mod::Substitution_Model,
+                  site_rates::Vector{Float64})
+  return simulate(tree,
+                  mod,
+                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), length(site_rates))),
+                  site_rates)
+end
+
+
+function simulate(tree::Tree,
+                  mod::Substitution_Model,
                   seq_length::Int64)
   return simulate(tree,
                   mod,
