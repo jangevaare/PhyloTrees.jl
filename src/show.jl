@@ -46,36 +46,36 @@ end
 
 
 function show(io::IO, object::JC69)
-  print(io, "\r\e[0m\e[1mJ\e[0mukes and \e[1mC\e[0mantor 19\e[1m69\e[0m substitution model\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mJ\e[0mukes and \e[1mC\e[0mantor 19\e[1m69\e[0m substitution model\n\n$(Q(object))")
 end
 
 
 function show(io::IO, object::K80)
-  print(io, "\r\e[0m\e[1mK\e[0mimura 19\e[1m80\e[0m substitution model\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mK\e[0mimura 19\e[1m80\e[0m substitution model\n\n$(Q(object))")
 end
 
 
 function show(io::IO, object::F81)
-  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m81\e[0m substitution model\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m81\e[0m substitution model\n\n$(Q(object))")
 end
 
 
 function show(io::IO, object::F84)
-  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m84\e[0m substitution model\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m84\e[0m substitution model\n\n$(Q(object))")
 
 end
 
 
 function show(io::IO, object::HKY85)
-  print(io, "\r\e[0m\e[1mH\e[0masegawa \e[1mK\e[0mishino, and \e[1mY\e[0mano 19\e[1m85\e[0m substitution model \n$(Q(object))")
+  print(io, "\r\e[0m\e[1mH\e[0masegawa \e[1mK\e[0mishino, and \e[1mY\e[0mano 19\e[1m85\e[0m substitution model\n\n$(Q(object))")
 end
 
 
 function show(io::IO, object::TN93)
-  print(io, "\r\e[0m\e[1mT\e[0mamura, and \e[1mN\e[0mei 19\e[1m93\e[0m substitution model \n$(Q(object))")
+  print(io, "\r\e[0m\e[1mT\e[0mamura, and \e[1mN\e[0mei 19\e[1m93\e[0m substitution model\n\n$(Q(object))")
 end
 
 
 function show(io::IO, object::GTR)
-  print(io, "\r\e[0m\e[1mG\e[0meneralised \e[1mT\e[0mime \e[1mR\e[0meversible substitution model \n$(Q(object))")
+  print(io, "\r\e[0m\e[1mG\e[0meneralised \e[1mT\e[0mime \e[1mR\e[0meversible substitution model\n\n$(Q(object))")
 end
