@@ -3,7 +3,7 @@ Felsenstein 1984 substitution model
 
 Θ = [κ, β]
 """
-type F84 <: Substitution_Model
+type F84 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 

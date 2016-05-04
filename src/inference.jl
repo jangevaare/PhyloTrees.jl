@@ -8,7 +8,7 @@ specified substitution model
 function loglikelihood(seq1::Array{Bool, 2},
                        seq2::Array{Bool, 2},
                        distance::Float64,
-                       mod::Substitution_Model)
+                       mod::SubstitutionModel)
   if size(seq1) !== size(seq2)
     error("Sequences must be of the same length")
   end
@@ -28,7 +28,7 @@ end
 # Calculates the log likelihood of a tree with sequences observed at all leaves
 # """
 # function loglikelihood(tree::Tree,
-#                        mod::Substitution_Model,
+#                        mod::SubstitutionModel,
 #                        seq::Array{Bool, 3},
 #                        site_rates::Vector{Float64})
 #   if length(site_rates) !== size(seq, 2)

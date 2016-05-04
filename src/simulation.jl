@@ -3,7 +3,7 @@ Simulate sequences for all nodes in a phylogenetic tree following a specified
 substitution model
 """
 function simulate(tree::Tree,
-                  mod::Substitution_Model,
+                  mod::SubstitutionModel,
                   root_seq::Array{Bool, 2},
                   site_rates::Vector{Float64})
   seq_length = size(root_seq, 2)
@@ -41,7 +41,7 @@ end
 
 
 function simulate(tree::Tree,
-                  mod::Substitution_Model,
+                  mod::SubstitutionModel,
                   root_seq::Array{Bool, 2})
   return simulate(tree,
                   mod,
@@ -51,7 +51,7 @@ end
 
 
 function simulate(tree::Tree,
-                  mod::Substitution_Model,
+                  mod::SubstitutionModel,
                   seq_length::Int64,
                   site_rates::Vector{Float64})
   return simulate(tree,
@@ -62,7 +62,7 @@ end
 
 
 function simulate(tree::Tree,
-                  mod::Substitution_Model,
+                  mod::SubstitutionModel,
                   site_rates::Vector{Float64})
   return simulate(tree,
                   mod,
@@ -72,7 +72,7 @@ end
 
 
 function simulate(tree::Tree,
-                  mod::Substitution_Model,
+                  mod::SubstitutionModel,
                   seq_length::Int64)
   return simulate(tree,
                   mod,

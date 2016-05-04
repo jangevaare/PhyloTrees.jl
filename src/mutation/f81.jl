@@ -5,7 +5,7 @@ Felsenstein 1981 substitution model
 or
 Θ = [β]
 """
-type F81 <: Substitution_Model
+type F81 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 

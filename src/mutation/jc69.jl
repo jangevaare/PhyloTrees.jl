@@ -5,7 +5,7 @@ Jukes and Cantor 1969 substitution model
 or
 Θ = [λ]
 """
-type JC69 <: Substitution_Model
+type JC69 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
   function JC69(Θ::Vector{Float64})

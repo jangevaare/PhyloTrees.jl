@@ -1,4 +1,4 @@
-abstract Substitution_Model
+abstract SubstitutionModel
 
 
 include("mutation/jc69.jl")

@@ -3,7 +3,7 @@ Generalised time reversible substitution model (Tavaré 1986)
 
 Θ = [a, b, c, d, e, f]
 """
-type GTR <: Substitution_Model
+type GTR <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 

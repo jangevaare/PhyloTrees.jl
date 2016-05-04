@@ -5,7 +5,7 @@ Kimura 1980 substitution model
 or
 Θ = [α, β]
 """
-type K80 <: Substitution_Model
+type K80 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 

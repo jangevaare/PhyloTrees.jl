@@ -5,7 +5,7 @@ Tamura and Nei 1993 substitution model
 or
 Θ = [α1, α2, β]
 """
-type TN93 <: Substitution_Model
+type TN93 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 

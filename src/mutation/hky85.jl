@@ -4,7 +4,7 @@ Hasegawa et al. 1984 substitution model
 or
 Θ = [α, β]
 """
-type HKY85 <: Substitution_Model
+type HKY85 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 
