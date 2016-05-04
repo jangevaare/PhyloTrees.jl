@@ -2,6 +2,7 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
+  using DataFrames
 
   export
     # Trees
@@ -48,7 +49,12 @@ module PhyloTrees
     simulate,
 
     # Inference
-    loglikelihood
+    loglikelihood,
+
+    # Show
+
+    # Plot
+    plotdata
 
   include("trees.jl")
   include("traversal.jl")
@@ -58,4 +64,6 @@ module PhyloTrees
   include("simulation.jl")
   include("inference.jl")
   include("show.jl")
+  include("plot.jl")
+
 end
