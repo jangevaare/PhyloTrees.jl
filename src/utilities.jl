@@ -193,40 +193,37 @@ end
 
 
 """
-Find all descendent nodes of a specified node
+Find all descendant nodes of a specified node
 """
-function descendentnodes(tree::Tree, node::Int64)
+function descendantnodes(tree::Tree, node::Int64)
   validnode(tree, node)
-  nodelist = childnodes(tree, node)
-  nodecount = [length(nodelist)]
-  for i in nodelist
-    append!(nodelist, childnodes(tree, i))
-  end
+  nodecount = [0]
+  nodelist = [node]
   while nodecount[end] < length(nodelist)
     push!(nodecount, length(nodelist))
-    for i in nodelist[nodecount[end-1]:nodecount[end]]
+    for i in nodelist[(nodecount[end-1]+1):nodecount[end]]
       append!(nodelist, childnodes(tree, i))
     end
   end
-  return nodelist
+  return nodelist[2:end]
 end
 
 
 """
-Number of descendent nodes
+Number of descendant nodes
 """
-function descendents(tree::Tree, node::Int64)
-  return length(descendentnodes(tree, node))
+function descendantcount(tree::Tree, node::Int64)
+  return length(descendantnodes(tree, node))
 end
 
 
 """
-Number of descendent nodes
+Number of descendant nodes
 """
-function descendents(tree::Tree, nodes::Array{Int64})
+function descendantcount(tree::Tree, nodes::Array{Int64})
   count = fill(0, size(nodes))
   for i in eachindex(nodes)
-    count[i] += descendents(tree, nodes[i])
+    count[i] += descendantcount(tree, nodes[i])
   end
   return count
 end
@@ -248,7 +245,7 @@ end
 """
 Find all ancestral nodes of a specified node
 """
-function ancestralnodes(tree::Tree, node::Int64)
+function ancestornodes(tree::Tree, node::Int64)
   return nodepath(tree, node)[2:end]
 end
 
@@ -256,18 +253,18 @@ end
 """
 Number of ancestral nodes
 """
-function ancestors(tree::Tree, node::Int64)
-  return length(ancentralnodes(tree, node))
+function ancestorcount(tree::Tree, node::Int64)
+  return length(ancentornodes(tree, node))
 end
 
 
 """
 Number of ancestral nodes
 """
-function ancestors(tree::Tree, nodes::Array{Int64})
+function ancestorcount(tree::Tree, nodes::Array{Int64})
   count = fill(0, size(nodes))
   for i in eachindex(nodes)
-    count[i] += ancestors(tree, nodes[i])
+    count[i] += ancestorcount(tree, nodes[i])
   end
   return count
 end

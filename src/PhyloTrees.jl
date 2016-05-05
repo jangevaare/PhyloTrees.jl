@@ -3,6 +3,7 @@ module PhyloTrees
   # Dependencies
   using Distributions
   using DataFrames
+  using Gadfly
 
   export
     # Trees
@@ -29,6 +30,13 @@ module PhyloTrees
     areconnected,
     nodepath,
     branchpath,
+    parentnode,
+    childnodes,
+    descendantcount,
+    descendantnodes,
+    ancestorcount,
+    ancestornodes,
+    nodetype,
 
     # Distance
     distance,
@@ -54,7 +62,7 @@ module PhyloTrees
     # Show
 
     # Plot
-    plotdata
+    plot
 
   include("trees.jl")
   include("traversal.jl")
