@@ -180,6 +180,56 @@ end
 
 
 """
+Find the child nodes of a specified node
+"""
+function childnodes(tree::Tree, node::Int64)
+  validnode(tree, node)
+  nodes = Int64[]
+  for i in tree.nodes[node].out
+    push!(nodes, tree.branches[i].target)
+  end
+  return nodes
+end
+
+
+"""
+Find all descendant nodes of a specified node
+"""
+function descendantnodes(tree::Tree, node::Int64)
+  validnode(tree, node)
+  nodecount = [0]
+  nodelist = [node]
+  while nodecount[end] < length(nodelist)
+    push!(nodecount, length(nodelist))
+    for i in nodelist[(nodecount[end-1]+1):nodecount[end]]
+      append!(nodelist, childnodes(tree, i))
+    end
+  end
+  return nodelist[2:end]
+end
+
+
+"""
+Number of descendant nodes
+"""
+function descendantcount(tree::Tree, node::Int64)
+  return length(descendantnodes(tree, node))
+end
+
+
+"""
+Number of descendant nodes
+"""
+function descendantcount(tree::Tree, nodes::Array{Int64})
+  count = fill(0, size(nodes))
+  for i in eachindex(nodes)
+    count[i] += descendantcount(tree, nodes[i])
+  end
+  return count
+end
+
+
+"""
 Node pathway through which a specified node connects to a root
 """
 function nodepath(tree::Tree, node::Int64)
@@ -189,6 +239,34 @@ function nodepath(tree::Tree, node::Int64)
     push!(path, parentnode(tree, path[end]))
   end
   return path
+end
+
+
+"""
+Find all ancestral nodes of a specified node
+"""
+function ancestornodes(tree::Tree, node::Int64)
+  return nodepath(tree, node)[2:end]
+end
+
+
+"""
+Number of ancestral nodes
+"""
+function ancestorcount(tree::Tree, node::Int64)
+  return length(ancestornodes(tree, node))
+end
+
+
+"""
+Number of ancestral nodes
+"""
+function ancestorcount(tree::Tree, nodes::Array{Int64})
+  count = fill(0, size(nodes))
+  for i in eachindex(nodes)
+    count[i] += ancestorcount(tree, nodes[i])
+  end
+  return count
 end
 
 

@@ -2,6 +2,8 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
+  using DataFrames
+  using Gadfly
 
   export
     # Trees
@@ -28,6 +30,13 @@ module PhyloTrees
     areconnected,
     nodepath,
     branchpath,
+    parentnode,
+    childnodes,
+    descendantcount,
+    descendantnodes,
+    ancestorcount,
+    ancestornodes,
+    nodetype,
 
     # Distance
     distance,
@@ -48,7 +57,12 @@ module PhyloTrees
     simulate,
 
     # Inference
-    loglikelihood
+    loglikelihood,
+
+    # Show
+
+    # Plot
+    plot
 
   include("trees.jl")
   include("traversal.jl")
@@ -58,4 +72,6 @@ module PhyloTrees
   include("simulation.jl")
   include("inference.jl")
   include("show.jl")
+  include("plot.jl")
+
 end

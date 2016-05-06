@@ -27,7 +27,20 @@ type Tree
   branches::Vector{Branch}
 
   Tree() = new([Node()], Branch[])
+
   Tree(nodes::Vector{Node}, branches::Vector{Branch}) = new(nodes, branches)
+
+  function Tree(nodes::Int64)
+    if nodes < 0
+      error("Invalid number of nodes specified")
+    end
+    tree = new(Node[], Branch[])
+    for i = 1:nodes
+      push!(tree.nodes, Node())
+    end
+    return tree
+  end
+
 end
 
 
@@ -36,6 +49,20 @@ Add a node
 """
 function addnode!(tree::Tree)
   push!(tree.nodes, Node())
+  return tree
+end
+
+
+"""
+Add multiple nodes
+"""
+function addnodes!(tree::Tree, nodes::Int64)
+  if nodes < 0
+    error("Invalid number of nodes specified")
+  end
+  for i = 1:nodes
+    push!(tree.nodes, Node())
+  end
   return tree
 end
 
