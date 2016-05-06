@@ -254,7 +254,7 @@ end
 Number of ancestral nodes
 """
 function ancestorcount(tree::Tree, node::Int64)
-  return length(ancentornodes(tree, node))
+  return length(ancestornodes(tree, node))
 end
 
 
