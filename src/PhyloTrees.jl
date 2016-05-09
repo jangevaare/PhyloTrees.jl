@@ -2,6 +2,7 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
+  using Requires
 
   export
     # Trees
@@ -55,12 +56,9 @@ module PhyloTrees
     simulate,
 
     # Inference
-    loglikelihood,
+    loglikelihood
 
     # Show
-
-    # Plot
-    plot
 
   include("trees.jl")
   include("traversal.jl")
@@ -70,6 +68,11 @@ module PhyloTrees
   include("simulation.jl")
   include("inference.jl")
   include("show.jl")
-  include("plot.jl")
 
+  # Optional plotting abilities
+  @require PyPlot begin
+    include("plot.jl")
+    export plot
+  end
+  
 end
