@@ -3,7 +3,6 @@ module PhyloTrees
   # Dependencies
   using Distributions
   using DataFrames
-  using Gadfly
 
   export
     # Trees
