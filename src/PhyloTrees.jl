@@ -2,7 +2,6 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
-  using DataFrames
 
   export
     # Trees
