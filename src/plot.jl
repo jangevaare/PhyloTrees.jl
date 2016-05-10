@@ -1,13 +1,10 @@
-import PyPlot.plot
-import PyPlot.plt
-import PyPlot.yticks
-import PyPlot.axes
+import Plots.plot
 
 
 """
-Produce a data frame for the purposes of plotting a `Tree`
+Produce a `Tree` plot
 """
-function plot(tree::Tree, plotargs...)
+function plot(tree::Tree)
   nodequeue = findroots(tree)
   treesize = descendantcount(tree, nodequeue) + 1
   distances = distance(tree, nodequeue)
@@ -29,16 +26,15 @@ function plot(tree::Tree, plotargs...)
   for i = 1:length(nodequeue)
     processorder[nodequeue[i]] = i
   end
-  axes(frameon=false)
+  tree_x = Float64[]
+  tree_y = Float64[]
+  tree_line = Int64[]
   for i in nodequeue
     if !isroot(tree, i)
-      plot(distances[[get(processorder[i]), get(processorder[parentnode(tree, i)]), get(processorder[parentnode(tree, i)])]],
-           height[[get(processorder[i]), get(processorder[i]), get(processorder[parentnode(tree, i)])]],
-           color="black",
-           marker=".",
-           markevery=[0, 2],
-           plotargs...)
+      append!(tree_x, distances[[get(processorder[i]), get(processorder[parentnode(tree, i)]), get(processorder[parentnode(tree, i)])]])
+      append!(tree_y, height[[get(processorder[i]), get(processorder[i]), get(processorder[parentnode(tree, i)])]])
+      append!(tree_line, fill(i, 3))
     end
   end
-  yticks([])
+  return plot(tree_x, tree_y, line = (1, 1, :path), group=tree_line, color=:black, key=false, yticks=nothing, xlim = (-1., maximum(tree_x)+1))
 end

@@ -22,6 +22,3 @@ These substitution models may be utilized in conjunction with heterogeneous site
 
 ## Basic usage
 A demo of the functionality of `PhyloTrees.jl` can be found [here](https://github.com/jangevaare/PhyloTrees.jl/blob/master/PhyloTreesDemo.ipynb).
-
-## Plotting
-Plotting of phylogenetic trees requires the `PyPlot.jl` package to be loaded. An example is shown in the [demo](https://github.com/jangevaare/PhyloTrees.jl/blob/master/PhyloTreesDemo.ipynb).

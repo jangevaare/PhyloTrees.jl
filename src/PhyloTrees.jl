@@ -2,7 +2,7 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
-  using Requires
+  # using Requires
 
   export
     # Trees
@@ -52,6 +52,9 @@ module PhyloTrees
     Q,
     P,
 
+    # Plot
+    plot,
+
     # Simulation
     simulate,
 
@@ -65,14 +68,15 @@ module PhyloTrees
   include("utilities.jl")
   include("distance.jl")
   include("mutation.jl")
+  include("plot.jl")
   include("simulation.jl")
   include("inference.jl")
   include("show.jl")
 
-  # Optional plotting abilities
-  @require PyPlot begin
-    include("plot.jl")
-    export plot
-  end
-  
+  # # Optional plotting abilities
+  # @require PyPlot begin
+  #   include("plot.jl")
+  #   export plot
+  # end
+
 end
