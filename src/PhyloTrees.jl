@@ -2,7 +2,6 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
-  # using Requires
 
   export
     # Trees
@@ -72,11 +71,5 @@ module PhyloTrees
   include("simulation.jl")
   include("inference.jl")
   include("show.jl")
-
-  # # Optional plotting abilities
-  # @require PyPlot begin
-  #   include("plot.jl")
-  #   export plot
-  # end
 
 end

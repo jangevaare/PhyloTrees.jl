@@ -36,5 +36,12 @@ function plot(tree::Tree)
       append!(tree_line, fill(i, 3))
     end
   end
-  return plot(tree_x, tree_y, line = (1, 1, :path), group=tree_line, color=:black, key=false, yticks=nothing, xlim = (-1., maximum(tree_x)+1))
+  return plot(tree_x,
+              tree_y,
+              line = (1.0, 1.0, :path),
+              group = tree_line,
+              color = :black,
+              key = false,
+              yticks = nothing,
+              xlim = (-1., maximum(tree_x)+1))
 end

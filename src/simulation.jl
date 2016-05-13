@@ -29,7 +29,7 @@ function simulate(tree::Tree,
   # Iterate through remaining nodes
   for i in visit_order[2:end]
     source = tree.branches[tree.nodes[i].in[1]].source
-    branch_length = tree.branches[tree.nodes[i].in[1]].length
+    branch_length = get(tree.branches[tree.nodes[i].in[1]].length)
     for j in 1:seq_length
       site_rate = site_rates[j]
       p = P(mod, branch_length * site_rate)
@@ -47,17 +47,6 @@ function simulate(tree::Tree,
                   mod,
                   root_seq,
                   fill(1., size(root_seq, 2)))
-end
-
-
-function simulate(tree::Tree,
-                  mod::SubstitutionModel,
-                  seq_length::Int64,
-                  site_rates::Vector{Float64})
-  return simulate(tree,
-                  mod,
-                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), seq_length)),
-                  site_rates)
 end
 
 

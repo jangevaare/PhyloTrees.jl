@@ -15,7 +15,23 @@ Directed branch connecting two nodes of phylogenetic tree
 type Branch
   source::Int64
   target::Int64
-  length::Float64
+  length::Nullable{Float64}
+
+  function Branch(source::Int64, target::Int64, length::Float64)
+    if length < 0
+      error("Branch length must be positive")
+    end
+    return new(source, target, Nullable(length))
+  end
+
+  function Branch(source::Int64, target::Int64, length::Nullable{Float64})
+    return new(source, target, length)
+  end
+
+  function Branch(source::Int64, target::Int64)
+    return new(source, target, Nullable{Float64}())
+  end
+
 end
 
 
@@ -78,29 +94,77 @@ function addbranch!(tree::Tree,
   branch_count = length(tree.branches)
 
   # Error checking
-  if node_count <= 1
-    error("Tree requires at least 2 nodes to form a branch")
-  end
-  if !(1 <= source <= node_count)
-    error("Invalid source node specified")
-  end
-  if !(1 <= target <= node_count)
-    error("Invalid target node specified")
-  end
+  validnode(tree, [source; target])
   if target == source
     error("Branch must connect unique nodes")
   end
-  if branch_length <= 0.
-    error("Branch length must be positive")
-  end
-
-  # Warnings
   if length(tree.nodes[target].in) == 1
-    warn("The in degree of the target node is > 1")
+    error("The in degree of the target node is > 1")
   end
 
   # Add branch
   push!(tree.branches, Branch(source, target, branch_length))
+
+  # Update the associated source and target nodes
+  push!(tree.nodes[source].out, length(tree.branches))
+  push!(tree.nodes[target].in, length(tree.branches))
+
+  # Return updated tree
+  return tree
+end
+
+
+"""
+Add a branch
+"""
+function addbranch!(tree::Tree,
+                    source::Int64,
+                    target::Int64,
+                    branch_length::Nullable{Float64})
+  node_count = length(tree.nodes)
+  branch_count = length(tree.branches)
+
+  # Error checking
+  validnode(tree, [source; target])
+  if target == source
+    error("Branch must connect unique nodes")
+  end
+  if length(tree.nodes[target].in) == 1
+    error("The in degree of the target node is > 1")
+  end
+
+  # Add branch
+  push!(tree.branches, Branch(source, target, branch_length))
+
+  # Update the associated source and target nodes
+  push!(tree.nodes[source].out, length(tree.branches))
+  push!(tree.nodes[target].in, length(tree.branches))
+
+  # Return updated tree
+  return tree
+end
+
+
+"""
+Add a branch
+"""
+function addbranch!(tree::Tree,
+                    source::Int64,
+                    target::Int64)
+  node_count = length(tree.nodes)
+  branch_count = length(tree.branches)
+
+  # Error checking
+  validnode(tree, [source; target])
+  if target == source
+    error("Branch must connect unique nodes")
+  end
+  if length(tree.nodes[target].in) == 1
+    error("The in degree of the target node is > 1")
+  end
+
+  # Add branch
+  push!(tree.branches, Branch(source, target))
 
   # Update the associated source and target nodes
   push!(tree.nodes[source].out, length(tree.branches))
@@ -121,21 +185,66 @@ function branch!(tree::Tree,
   branch_count = length(tree.branches)
 
   # Error checking
-  if node_count == 0
-    error("Tree requires at least 2 nodes to form a branch")
-  end
-  if !(1 <= source <= node_count)
-    error("Invalid source node specified")
-  end
-  if branch_length <= 0.
-    error("Branch length must be positive")
-  end
+  validnode(tree, source)
 
   # Add node
   push!(tree.nodes, Node())
 
   # Add branch
   push!(tree.branches, Branch(source, node_count+1, branch_length))
+
+  # Update the associated source and target nodes
+  push!(tree.nodes[source].out, length(tree.branches))
+  push!(tree.nodes[node_count+1].in, length(tree.branches))
+
+  # Return updated tree
+  return tree
+end
+
+
+"""
+Add a branch and a node
+"""
+function branch!(tree::Tree,
+                 source::Int64,
+                 branch_length::Nullable{Float64})
+  node_count = length(tree.nodes)
+  branch_count = length(tree.branches)
+
+  # Error checking
+  validnode(tree, source)
+
+  # Add node
+  push!(tree.nodes, Node())
+
+  # Add branch
+  push!(tree.branches, Branch(source, node_count+1, branch_length))
+
+  # Update the associated source and target nodes
+  push!(tree.nodes[source].out, length(tree.branches))
+  push!(tree.nodes[node_count+1].in, length(tree.branches))
+
+  # Return updated tree
+  return tree
+end
+
+
+"""
+Add a branch and a node
+"""
+function branch!(tree::Tree,
+                 source::Int64)
+  node_count = length(tree.nodes)
+  branch_count = length(tree.branches)
+
+  # Error checking
+  validnode(tree, source)
+
+  # Add node
+  push!(tree.nodes, Node())
+
+  # Add branch
+  push!(tree.branches, Branch(source, node_count+1))
 
   # Update the associated source and target nodes
   push!(tree.nodes[source].out, length(tree.branches))
@@ -173,7 +282,9 @@ Extract a subtree at a particular node from a phylogenetic tree
 """
 function subtree(tree::Tree,
                  node::Int64)
+  # Error checking...
   validnode(tree, node)
+  # Initialize objects for `while` loop to build subtree
   nodecount = 0
   nodelist = [node]
   subtree = Tree()

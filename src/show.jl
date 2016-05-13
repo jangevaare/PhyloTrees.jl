@@ -41,7 +41,7 @@ end
 
 
 function show(io::IO, object::Branch)
-  print(io, "\r\e[0m[node $(object.source)]-->[\e[1m$(object.length) branch\e[0m]-->[node $(object.target)]")
+  print(io, "\r\e[0m[node $(object.source)]-->[\e[1m$(get(object.length)) branch\e[0m]-->[node $(object.target)]")
 end
 
 
