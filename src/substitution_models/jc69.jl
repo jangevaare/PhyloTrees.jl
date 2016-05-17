@@ -30,6 +30,11 @@ end
 JC69() = JC69(Float64[])
 
 
+function show(io::IO, object::JC69)
+  print(io, "\r\e[0m\e[1mJ\e[0mukes and \e[1mC\e[0mantor 19\e[1m69\e[0m substitution model\n\n$(Q(object))")
+end
+
+
 function Q(jc69::JC69)
   λ = jc69.Θ[1]
 

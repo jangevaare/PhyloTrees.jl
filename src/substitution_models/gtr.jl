@@ -36,6 +36,11 @@ type GTR <: SubstitutionModel
 end
 
 
+function show(io::IO, object::GTR)
+  print(io, "\r\e[0m\e[1mG\e[0meneralised \e[1mT\e[0mime \e[1mR\e[0meversible substitution model\n\n$(Q(object))")
+end
+
+
 function Q(gtr::GTR)
   a = gtr.Θ[1]
   b = gtr.Θ[2]

@@ -3,6 +3,11 @@ module PhyloTrees
   # Dependencies
   using Distributions
 
+  # Methods expanded
+  import Base.show
+  import StatsBase.loglikelihood
+
+  # Functions provided
   export
     # Trees
     Tree,
@@ -39,7 +44,8 @@ module PhyloTrees
     # Distance
     distance,
 
-    # Mutation
+    # Substitution Models
+    SubstitutionModel,
     JC69,
     K80,
     F81,
@@ -51,25 +57,40 @@ module PhyloTrees
     Q,
     P,
 
-    # Plot
-    plot,
-
     # Simulation
     simulate,
 
     # Inference
-    loglikelihood
+    loglikelihood,
 
-    # Show
+    # Plot
+    plot
 
-  include("trees.jl")
-  include("traversal.jl")
-  include("utilities.jl")
-  include("distance.jl")
-  include("mutation.jl")
-  include("plot.jl")
+  # Package files
+  include("structure/nodes.jl")
+  include("structure/branches.jl")
+  include("structure/trees.jl")
+
+  include("utilities/traversal.jl")
+  include("utilities/construction.jl")
+  include("utilities/topology.jl")
+  include("utilities/distance.jl")
+
+  include("substitution_models/abstract.jl")
+  include("substitution_models/jc69.jl")
+  include("substitution_models/k80.jl")
+  include("substitution_models/f81.jl")
+  include("substitution_models/f84.jl")
+  include("substitution_models/hky85.jl")
+  include("substitution_models/tn93.jl")
+  include("substitution_models/gtr.jl")
+
   include("simulation.jl")
-  include("inference.jl")
-  include("show.jl")
 
+  include("inference/priors.jl")
+  include("inference/loglikelihoods.jl")
+  include("inference/operators.jl")
+  include("inference/mcmc.jl")
+
+  include("plot.jl")
 end

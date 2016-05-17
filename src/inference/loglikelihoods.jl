@@ -1,6 +1,3 @@
-import StatsBase.loglikelihood
-
-
 """
 Log likelihood for a pair of sequences being a certain distance apart, under a
 specified substitution model

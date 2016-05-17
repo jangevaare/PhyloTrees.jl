@@ -30,6 +30,11 @@ type K80 <: SubstitutionModel
 end
 
 
+function show(io::IO, object::K80)
+  print(io, "\r\e[0m\e[1mK\e[0mimura 19\e[1m80\e[0m substitution model\n\n$(Q(object))")
+end
+
+
 function Q(k80::K80)
   α = k80.Θ[1]
   β = k80.Θ[2]

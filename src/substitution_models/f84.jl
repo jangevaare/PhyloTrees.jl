@@ -1,30 +1,25 @@
-"""
-Tamura and Nei 1993 substitution model
+""""
+Felsenstein 1984 substitution model
 
-Θ = [κ1, κ2]
-or
-Θ = [α1, α2, β]
+Θ = [κ, β]
 """
-type TN93 <: SubstitutionModel
+type F84 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
 
-  function TN93(Θ::Vector{Float64}, π::Vector{Float64})
+  function F84(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
       error("All elements of Θ must be positive")
     end
-    if length(Θ) == 2
-      α1 = Θ[1]
-      α2 = Θ[2]
+    if length(Θ) == 1
+      κ = Θ[1]
       β = 1.0
-    elseif length(Θ) == 3
-      α1 = Θ[1]
-      α2 = Θ[2]
-      β = Θ[3]
+    elseif length(Θ) == 2
+      κ = Θ[1]
+      β = Θ[2]
     else
       error("Θ is not a valid length for TN93 model")
     end
-
     if length(π) !== 4
       error("π must be of length 4")
     end
@@ -37,22 +32,29 @@ type TN93 <: SubstitutionModel
       error("Base proportions must sum to 1")
     end
 
-    new([α1, α2, β], π)
+    new([κ, β], π)
   end
 end
 
 
-function Q(tn93::TN93)
-  α_1 = tn93.Θ[1]
-  α_2 = tn93.Θ[2]
-  β = tn93.Θ[3]
-  π_T = tn93.π[1]
-  π_C = tn93.π[2]
-  π_A = tn93.π[3]
-  π_G = tn93.π[4]
+function show(io::IO, object::F84)
+  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m84\e[0m substitution model\n\n$(Q(object))")
+end
+
+
+function Q(f84::F84)
+  κ = f84.Θ[1]
+  β = f84.Θ[2]
+  π_T = f84.π[1]
+  π_C = f84.π[2]
+  π_A = f84.π[3]
+  π_G = f84.π[4]
 
   π_R = π_A + π_G
   π_Y = π_T + π_C
+
+  α_1 = (1 + κ/π_Y) * β
+  α_2 = (1 + κ/π_R) * β
 
   Q_TT = -((α_1 * π_C) + (β * π_R))
   Q_TC = α_1 * π_C
@@ -81,21 +83,23 @@ function Q(tn93::TN93)
 end
 
 
-function P(tn93::TN93, t::Float64)
+function P(f84::F84, t::Float64)
   if t < 0
     error("Time must be positive")
   end
 
-  α_1 = tn93.Θ[1]
-  α_2 = tn93.Θ[2]
-  β = tn93.Θ[3]
-  π_T = tn93.π[1]
-  π_C = tn93.π[2]
-  π_A = tn93.π[3]
-  π_G = tn93.π[4]
+  κ = f84.Θ[1]
+  β = f84.Θ[2]
+  π_T = f84.π[1]
+  π_C = f84.π[2]
+  π_A = f84.π[3]
+  π_G = f84.π[4]
 
   π_R = π_A + π_G
   π_Y = π_T + π_C
+
+  α_1 = (1 + κ/π_Y) * β
+  α_2 = (1 + κ/π_R) * β
 
   e_2 = exp(-β * t)
   e_3 = exp(-((π_R * α_2) + (π_Y * β)) * t)
