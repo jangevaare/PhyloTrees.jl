@@ -8,16 +8,16 @@ type GTR <: SubstitutionModel
   π::Vector{Float64}
 
   function GTR(Θ::Vector{Float64}, π::Vector{Float64})
-  if length(Θ) == 6
-    a = Θ[1]
-    b = Θ[2]
-    c = Θ[3]
-    d = Θ[4]
-    e = Θ[5]
-    f = Θ[6]
-  else
-    error("Θ is not a valid length for GTR model")
-  end
+    if length(Θ) == 6
+      a = Θ[1]
+      b = Θ[2]
+      c = Θ[3]
+      d = Θ[4]
+      e = Θ[5]
+      f = Θ[6]
+    else
+      error("Θ is not a valid length for GTR model")
+    end
 
     if length(π) !== 4
       error("π must be of length 4")

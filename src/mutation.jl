@@ -1,6 +1,12 @@
 abstract SubstitutionModel
 
 
+type SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Nullable{Dirichlet}
+end
+
+
 include("mutation/jc69.jl")
 include("mutation/k80.jl")
 include("mutation/f81.jl")
