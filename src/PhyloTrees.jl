@@ -61,7 +61,7 @@ module PhyloTrees
     P,
 
     # Simulation
-    simulate,
+    simulate
 
     # Inference
 
