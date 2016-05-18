@@ -1,6 +1,3 @@
-import Plots.plot
-
-
 """
 Produce a `Tree` plot
 """

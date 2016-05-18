@@ -5,7 +5,10 @@ module PhyloTrees
 
   # Methods expanded
   import Base.show
+  import Base.push!
+  import Base.append!
   import StatsBase.loglikelihood
+  import Plots.plot
 
   # Functions provided
   export
@@ -61,10 +64,8 @@ module PhyloTrees
     simulate,
 
     # Inference
-    loglikelihood,
 
     # Plot
-    plot
 
   # Package files
   include("structure/nodes.jl")
