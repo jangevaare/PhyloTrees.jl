@@ -1,11 +1,12 @@
 """
 Check if a node index is valid
 """
-function validnode(tree::Tree, node::Int64)
+function validnode(tree::Tree,
+                   node::Int64)
   if 1 <= node <= length(tree.nodes)
     return true
   else
-    error("Invalid node specified")
+    error("An invalid node has been specified")
   end
 end
 
@@ -13,12 +14,71 @@ end
 """
 Check if a node index is valid
 """
-function validnode(tree::Tree, nodes::Vector{Int64})
-  if all(1 .<= nodes .<= length(tree.nodes))
+function validnodes(tree::Tree,
+                    nodes::Array{Int64})
+  for i in nodes
+    validnode(tree, i)
+  end
+end
+
+
+"""
+Check if a branch index is valid
+"""
+function validbranch(tree::Tree,
+                     branch::Int64)
+  if 1 <= branch <= length(tree.branches)
     return true
   else
-    error("Invalid node specified")
+    error("An invalid branch has been specified")
   end
+end
+
+
+"""
+Check if a branch index is valid
+"""
+function validbranches(tree::Tree,
+                       branches::Array{Int64})
+  for i in branches
+    validbranch(tree, i)
+  end
+end
+
+
+"""
+Returns the in degree of a node
+"""
+function indegree(node::Node)
+  return length(node.in)
+end
+
+
+"""
+Returns the in degree of a node
+"""
+function indegree(tree::Tree,
+                  node::Int64)
+  validnode(tree, node)
+  return indegree(tree.nodes[node])
+end
+
+
+"""
+Returns the out degree of a node
+"""
+function outdegree(node::Node)
+  return length(node.out)
+end
+
+
+"""
+Returns the out degree of a node
+"""
+function outdegree(tree::Tree,
+                   node::Int64)
+  validnode(tree, node)
+  return outdegree(tree.nodes[node])
 end
 
 
@@ -26,7 +86,7 @@ end
 Is a particular node a root?
 """
 function isroot(node::Node)
-  if length(node.out) > 0 && length(node.in) == 0
+  if outdegree(node) > 0 && indegree(node) == 0
     return true
   else
     return false
@@ -47,7 +107,7 @@ end
 Is a particular node a leaf?
 """
 function isleaf(node::Node)
-  if length(node.out) == 0 && length(node.in) == 1
+  if outdegree(node) == 0 && indegree(node) == 1
     return true
   else
     return false
@@ -68,7 +128,7 @@ end
 Is a particular node an internal node?
 """
 function isnode(node::Node)
-  if length(node.out) > 0 && length(node.in) == 1
+  if outdegree(node) > 0 && indegree(node) == 1
     return true
   else
     return false
@@ -89,12 +149,18 @@ end
 Is a node an internal node, a root node, or a leaf
 """
 function nodetype(node::Node)
-  if length(node.in) == 0
-    return "Root"
-  elseif length(node.in) == 1
-    if length(node.out) == 0
+  ins = indegree(node)
+  outs = outdegree(node)
+  if ins == 0
+    if outs == 0
+      return "Unattached"
+    else
+      return "Root"
+    end
+  elseif ins == 1
+    if outs == 0
       return "Leaf"
-    elseif length(node.out) > 0
+    elseif outs > 0
       return "Internal"
     else
       error("Unknown node type")
@@ -116,19 +182,19 @@ end
 
 
 """
-The first encountered root of a phylogenetic tree
+Find the roots of a phylogenetic tree
 """
 function findroots(tree::Tree)
-  root = Int64[]
+  roots = Int64[]
   for i in 1:length(tree.nodes)
-    if isroot(tree.nodes[i])
-      push!(root, i)
+    if isroot(tree, i)
+      push!(roots, i)
     end
   end
-  if length(root) == 0
+  if length(roots) == 0
     warn("No roots detected")
   end
-  return root
+  return roots
 end
 
 
@@ -170,8 +236,7 @@ end
 Find the parent node of a specified node
 """
 function parentnode(tree::Tree, node::Int64)
-  validnode(tree, node)
-  if length(tree.nodes[node].in) == 1
+  if indegree(tree, node) == 1
     return tree.branches[tree.nodes[node].in[1]].source
   else
     error("In degree of specified node != 1")
@@ -290,7 +355,7 @@ end
 Node pathway through which two specified nodes connect
 """
 function nodepath(tree::Tree, node1::Int64, node2::Int64)
-  validnode(tree, [node1; node2])
+  validnodes(tree, [node1; node2])
   path1 = reverse(nodepath(tree, node1))
   path2 = reverse(nodepath(tree, node2))
   if !areconnected(tree, node1, node2)

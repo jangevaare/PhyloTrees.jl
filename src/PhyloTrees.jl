@@ -21,12 +21,19 @@ module PhyloTrees
     branch!,
     addsubtree!,
     subtree,
+    changesource!,
+    changetarget!,
 
     # Traversal algorithms
     postorder,
 
     # Utilities
     validnode,
+    validnodes,
+    validbranch,
+    validbranches,
+    indegree,
+    outdegree,
     isroot,
     isleaf,
     isnode,

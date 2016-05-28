@@ -74,7 +74,7 @@ end
 @test findleaves(subtree(g, 1)) == findleaves(g)
 
 # 2.3 Combining trees
-2*length(findroots(g)) == length(findroots(addsubtree!(g, subtree(g, 1))))
+@test 2*length(findroots(g)) == length(findroots(addsubtree!(g, subtree(g, 1))))
 
 # 3.0 Simulation
 g = Tree()
