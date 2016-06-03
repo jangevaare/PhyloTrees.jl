@@ -7,6 +7,7 @@ module PhyloTrees
   import Base.show
   import Base.push!
   import Base.append!
+  import Base.copy
   import StatsBase.loglikelihood
   import Plots.plot
 
@@ -40,6 +41,9 @@ module PhyloTrees
     findroots,
     findleaves,
     findnodes,
+    findnonroots,
+    findnonleaves,
+    findnonnodes,
     areconnected,
     nodepath,
     branchpath,
@@ -68,9 +72,10 @@ module PhyloTrees
     P,
 
     # Simulation
-    simulate
+    simulate,
 
     # Inference
+    spr
 
     # Plot
 

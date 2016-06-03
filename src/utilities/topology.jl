@@ -233,6 +233,57 @@ end
 
 
 """
+Find the nonroots of a phylogenetic tree
+"""
+function findnonroots(tree::Tree)
+  nonroots = Int64[]
+  for i in 1:length(tree.nodes)
+    if !isroot(tree, i)
+      push!(nonroots, i)
+    end
+  end
+  if length(nonroots) == 0
+    warn("No non-roots detected")
+  end
+  return nonroots
+end
+
+
+"""
+Find the non-leaves of a phylogenetic tree
+"""
+function findnonleaves(tree::Tree)
+  nonleaves = Int64[]
+  for i in 1:length(tree.nodes)
+    if !isleaf(tree.nodes[i])
+      push!(nonleaves, i)
+    end
+  end
+  if length(nonleaves) == 0
+    warn("No non-leaves detected")
+  end
+  return nonleaves
+end
+
+
+"""
+Find the non-internal nodes of a phylogenetic tree
+"""
+function findnonnodes(tree::Tree)
+  nonnodes = Int64[]
+  for i in 1:length(tree.nodes)
+    if !isnode(tree.nodes[i])
+      push!(nonnodes, i)
+    end
+  end
+  if length(nonnodes) == 0
+    warn("No non-internal nodes detected")
+  end
+  return nonnodes
+end
+
+
+"""
 Find the parent node of a specified node
 """
 function parentnode(tree::Tree, node::Int64)
