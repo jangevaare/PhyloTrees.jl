@@ -2,6 +2,7 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
+  using RecipesBase
 
   # Methods expanded
   import Base.show
@@ -9,7 +10,6 @@ module PhyloTrees
   import Base.append!
   import Base.copy
   import StatsBase.loglikelihood
-  import Plots.plot
 
   # Functions provided
   export

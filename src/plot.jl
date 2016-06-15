@@ -1,7 +1,4 @@
-"""
-Produce a `Tree` plot
-"""
-function plot(tree::Tree)
+@recipe function plot(tree::Tree; customcolor=:black, customline=(1.0, 1.0, :path))
   nodequeue = findroots(tree)
   treesize = descendantcount(tree, nodequeue) + 1
   distances = distance(tree, nodequeue)
@@ -33,12 +30,13 @@ function plot(tree::Tree)
       append!(tree_line, fill(i, 3))
     end
   end
-  return plot(tree_x,
-              tree_y,
-              line = (1.0, 1.0, :path),
-              group = tree_line,
-              color = :black,
-              key = false,
-              yticks = nothing,
-              xlim = (-1., maximum(tree_x)+1))
+
+  x --> tree_x
+  y --> tree_y
+  group --> tree_line
+  line --> customline
+  color --> customcolor
+  key --> false
+  yticks --> nothing
+  # xlim --> (-1., maximum(tree_x)+1)
 end
