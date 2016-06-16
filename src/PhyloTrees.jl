@@ -18,6 +18,7 @@ module PhyloTrees
     Node,
     Branch,
     addnode!,
+    addnodes!,
     addbranch!,
     branch!,
     addsubtree!,
