@@ -76,7 +76,8 @@ module PhyloTrees
     simulate,
 
     # Inference
-    spr
+    spr,
+    loglikelihood
 
     # Plot
 
