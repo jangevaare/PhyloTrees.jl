@@ -155,6 +155,30 @@ end
 
 
 """
+Copy a node
+"""
+function copy(node::Node)
+  return Node(copy(node.in), copy(node.out))
+end
+
+
+"""
+Copy a branch
+"""
+function copy(branch::Branch)
+  return Branch(copy(branch.target), copy(branch.source), copy(branch.length))
+end
+
+
+"""
+Copy a tree
+"""
+function copy(tree::Tree)
+  return Tree(map(copy, tree.nodes), map(copy, tree.branches))
+end
+
+
+"""
 Change the source node of a branch
 """
 function changesource!(tree::Tree,

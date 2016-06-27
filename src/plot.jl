@@ -1,7 +1,4 @@
-"""
-Produce a `Tree` plot
-"""
-function plot(tree::Tree)
+function treeplot(tree::Tree)
   nodequeue = findroots(tree)
   treesize = descendantcount(tree, nodequeue) + 1
   distances = distance(tree, nodequeue)
@@ -23,22 +20,27 @@ function plot(tree::Tree)
   for i = 1:length(nodequeue)
     processorder[nodequeue[i]] = i
   end
-  tree_x = Float64[]
-  tree_y = Float64[]
-  tree_line = Int64[]
+  tree_x = Vector{Float64}[]
+  tree_y = Vector{Float64}[]
+  xmax = Float64[]
   for i in nodequeue
     if !isroot(tree, i)
-      append!(tree_x, distances[[get(processorder[i]), get(processorder[parentnode(tree, i)]), get(processorder[parentnode(tree, i)])]])
-      append!(tree_y, height[[get(processorder[i]), get(processorder[i]), get(processorder[parentnode(tree, i)])]])
-      append!(tree_line, fill(i, 3))
+      push!(tree_x, distances[[get(processorder[i]), get(processorder[parentnode(tree, i)]), get(processorder[parentnode(tree, i)])]])
+      push!(tree_y, height[[get(processorder[i]), get(processorder[i]), get(processorder[parentnode(tree, i)])]])
+      push!(xmax, distances[get(processorder[i])])
     end
   end
-  return plot(tree_x,
-              tree_y,
-              line = (1.0, 1.0, :path),
-              group = tree_line,
-              color = :black,
-              key = false,
-              yticks = nothing,
-              xlim = (-1., maximum(tree_x)+1))
+  return tree_x, tree_y, maximum(xmax)
+end
+
+
+@recipe function plot(tree::Tree)
+  tree_x, tree_y, xmax = treeplot(tree)
+  seriestype := :path
+  linecolor := :black
+  legend := false
+  yticks := nothing
+  xlims := (-1., xmax+1.)
+  ylims := (0., 1.)
+  tree_x, tree_y
 end

@@ -2,13 +2,14 @@ module PhyloTrees
 
   # Dependencies
   using Distributions
+  using RecipesBase
 
   # Methods expanded
   import Base.show
   import Base.push!
   import Base.append!
+  import Base.copy
   import StatsBase.loglikelihood
-  import Plots.plot
 
   # Functions provided
   export
@@ -17,6 +18,7 @@ module PhyloTrees
     Node,
     Branch,
     addnode!,
+    addnodes!,
     addbranch!,
     branch!,
     addsubtree!,
@@ -40,6 +42,9 @@ module PhyloTrees
     findroots,
     findleaves,
     findnodes,
+    findnonroots,
+    findnonleaves,
+    findnonnodes,
     areconnected,
     nodepath,
     branchpath,
@@ -68,9 +73,11 @@ module PhyloTrees
     P,
 
     # Simulation
-    simulate
+    simulate,
 
     # Inference
+    spr,
+    loglikelihood
 
     # Plot
 

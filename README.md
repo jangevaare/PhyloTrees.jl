@@ -20,5 +20,7 @@ These substitution models may be utilized in conjunction with heterogeneous site
 ## Installation
     Pkg.add("PhyloTrees")
 
+To enable plotting, install [Plots.jl](https://github.com/tbreloff/Plots.jl) and one of its [supported backends](http://plots.readthedocs.io/en/latest/backends/).
+
 ## Basic usage
-A demo of the functionality of `PhyloTrees.jl` can be found [here](https://github.com/jangevaare/PhyloTrees.jl/blob/master/PhyloTreesDemo.ipynb).
+A demo of the functionality of `PhyloTrees.jl` can be found [here](PhyloTreesDemo.ipynb).
