@@ -46,27 +46,27 @@ function loglikelihood(seq::Array{Bool, 3},
     error("Dimensions of sequence data and site rates do not match")
   end
   leaves = findleaves(tree)
-  if length(leaves) !== size(seq, 1)
+  if length(leaves) !== size(seq, 3)
     error("Number of leaves and number of observed sequences do not match")
   end
   vist_order = postorder(tree)
-  ll_seq = fill(0., (length(tree.nodes), seq_length, 4))
+  ll_seq = fill(0., (4, seq_length, length(tree.nodes)))
   for i in visit_order
     if isleaf(tree.nodes[i])
       leafindex = findfirst(leaves .== i)
-      ll_seq[i, :, :] += log(seq[leafindex, :, :])
+      ll_seq[:, :, i] += log(seq[:, :, leafindex])
     else
       branches = tree.nodes[i].out
       for j in branches
         branch_length = get(tree.branches[j].length)
         child_node = tree.branches[j].target
         for k in 1:seq_length
-          ll_seq[i, k, :] += log(exp(ll_seq[child_node, k, :])' * P(mod, branch_length * site_rates[k])[:])
+          ll_seq[:, k, i] += log(exp(ll_seq[:, k, child_node])' * P(mod, branch_length * site_rates[k])[:])
         end
       end
     end
   end
-  return sum(ll_seq[visit_order[end], :, :])
+  return sum(ll_seq[:, :, visit_order[end]])
 end
 
 
