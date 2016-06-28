@@ -37,7 +37,7 @@ end
 @recipe function plot(tree::Tree)
   tree_x, tree_y, xmax = treeplot(tree)
   seriestype := :path
-  linecolor := :black
+  linecolor --> :black
   legend := false
   yticks := nothing
   xlims := (-1., xmax+1.)
