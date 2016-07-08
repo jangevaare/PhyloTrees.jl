@@ -39,8 +39,8 @@ end
   seriestype := :path
   linecolor --> :black
   legend := false
-  yticks := nothing
-  xlims := (-1., xmax+1.)
-  ylims := (0., 1.)
+  yticks --> nothing
+  xlims --> (-1., xmax+1.)
+  ylims --> (0., 1.)
   tree_x, tree_y
 end
