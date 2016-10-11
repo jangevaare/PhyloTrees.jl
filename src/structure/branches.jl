@@ -12,7 +12,7 @@ type Branch
 
   function Branch(source::Int64, target::Int64, length::Float64)
     if length < 0
-      error("Branch length must be positive")
+      throw("Branch length must be positive")
     end
     return new(source, target, Nullable(length))
   end

@@ -8,19 +8,23 @@ or
 type JC69 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  
   function JC69(Θ::Vector{Float64})
     if length(Θ) == 0
       λ = 1.0
     elseif length(Θ) == 1
       if any(Θ .<= 0.)
-        error("All elements of Θ must be positive")
+        throw("All elements of Θ must be positive")
       end
       λ = Θ[1]
     else
-      error("Θ is not a valid length for JC69 model")
+      throw("Θ is not a valid length for JC69 model")
     end
 
-    π = [0.25, 0.25, 0.25, 0.25]
+    π = [0.25
+         0.25
+         0.25
+         0.25]
 
     new([λ], π)
   end
@@ -38,16 +42,16 @@ end
 function Q(jc69::JC69)
   λ = jc69.Θ[1]
 
-  return [[-3λ λ λ λ]
-          [λ -3λ λ λ]
-          [λ λ -3λ λ]
-          [λ λ λ -3λ]]
+  return [[-3*λ λ λ λ]
+          [λ -3*λ λ λ]
+          [λ λ -3*λ λ]
+          [λ λ λ -3*λ]]
 end
 
 
 function P(jc69::JC69, t::Float64)
   if t < 0
-    error("Time must be positive")
+    throw("Time must be positive")
   end
 
   λ = jc69.Θ[1]

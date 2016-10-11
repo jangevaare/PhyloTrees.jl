@@ -5,11 +5,12 @@ module PhyloTrees
   using RecipesBase
 
   # Methods expanded
-  import Base.show
-  import Base.push!
-  import Base.append!
-  import Base.copy
-  import StatsBase.loglikelihood
+  import Base.show,
+         Base.push!,
+         Base.append!,
+         Base.copy,
+         StatsBase.loglikelihood,
+         Base.rand
 
   # Functions provided
   export
@@ -76,8 +77,12 @@ module PhyloTrees
     simulate,
 
     # Inference
+    SubstitutionModelPriors,
+    rand,
+    loglikelihood,
     spr,
-    loglikelihood
+    PhyloTrace,
+    PhyloIteration
 
     # Plot
 

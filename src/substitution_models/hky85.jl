@@ -10,7 +10,7 @@ type HKY85 <: SubstitutionModel
 
   function HKY85(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
-      error("All elements of Θ must be positive")
+      throw("All elements of Θ must be positive")
     end
     if length(Θ) == 1
       α = Θ[1]
@@ -19,19 +19,15 @@ type HKY85 <: SubstitutionModel
       α = Θ[1]
       β = Θ[2]
     else
-      error("Θ is not a valid length for HKY85 model")
+      throw("Θ is not a valid length for HKY85 model")
     end
 
     if length(π) !== 4
-      error("π must be of length 4")
-    end
-
-    if !all(0. .< π .< 1.)
-      error("All base proportions must be between 0 and 1")
-    end
-
-    if sum(π) !== 1.
-      error("Base proportions must sum to 1")
+      throw("π must be of length 4")
+    elseif !all(0. .< π .< 1.)
+      throw("All base proportions must be between 0 and 1")
+    elseif sum(π) !== 1.
+      throw("Base proportions must sum to 1")
     end
 
     new([α, β], π)
@@ -84,7 +80,7 @@ end
 
 function P(hky85::HKY85, t::Float64)
   if t < 0
-    error("Time must be positive")
+    throw("Time must be positive")
   end
 
   α = hky85.Θ[1]
