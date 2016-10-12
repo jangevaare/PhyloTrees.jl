@@ -102,3 +102,26 @@ function P(f81::F81, t::Float64)
           [P_AT P_AC P_AA P_AG]
           [P_GT P_GC P_GA P_GG]]
 end
+
+
+"""
+Generate a `SubstitutionModel` proposal using the multivariate normal
+distribution as the transition kernel, with a previous set of
+`SubstitutionModel` parameters as the mean vector and a transition kernel
+variance as the variance-covariance matrix
+"""
+function propose(currentstate::F81,
+                 transition_kernel_variance::Array{Float64, 2})
+  if length(currentstate.Θ) == 1
+    return F81(rand(MvNormal(currentstate.Θ, transition_kernel_variance)),
+               rand(Dirichlet([5
+                               5
+                               5
+                               5])))
+  else
+    return F81(rand(Dirichlet([5
+                               5
+                               5
+                               5])))
+  end
+end

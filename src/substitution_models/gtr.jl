@@ -72,6 +72,21 @@ function P(gtr::GTR, t::Float64)
   if t < 0.
     throw("Time must be positive")
   end
-
   return expm(Q(gtr)*t)
+end
+
+
+"""
+Generate a `SubstitutionModel` proposal using the multivariate normal
+distribution as the transition kernel, with a previous set of
+`SubstitutionModel` parameters as the mean vector and a transition kernel
+variance as the variance-covariance matrix
+"""
+function propose(currentstate::GTR,
+                 transition_kernel_variance::Array{Float64, 2})
+  return GTR(rand(MvNormal(currentstate.Θ, transition_kernel_variance)),
+             rand(Dirichlet([5
+                             5
+                             5
+                             5])))
 end
