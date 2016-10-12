@@ -12,20 +12,9 @@ type TN93 <: SubstitutionModel
   function TN93(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
       throw("All elements of Θ must be positive")
-    end
-    if length(Θ) == 2
-      α1 = Θ[1]
-      α2 = Θ[2]
-      β = 1.0
-    elseif length(Θ) == 3
-      α1 = Θ[1]
-      α2 = Θ[2]
-      β = Θ[3]
-    else
+    elseif !(2 <= length(Θ) <= 3)
       throw("Θ is not a valid length for TN93 model")
-    end
-
-    if length(π) !== 4
+    elseif length(π) !== 4
       throw("π must be of length 4")
     elseif !all(0. .< π .< 1.)
       throw("All base proportions must be between 0 and 1")
@@ -33,7 +22,7 @@ type TN93 <: SubstitutionModel
       throw("Base proportions must sum to 1")
     end
 
-    new([α1, α2, β], π)
+    new(Θ, π)
   end
 end
 
@@ -46,7 +35,11 @@ end
 function Q(tn93::TN93)
   α_1 = tn93.Θ[1]
   α_2 = tn93.Θ[2]
-  β = tn93.Θ[3]
+  if length(tn93.Θ) == 2
+    β = 1.0
+  else
+    β = tn93.Θ[3]
+  end
   π_T = tn93.π[1]
   π_C = tn93.π[2]
   π_A = tn93.π[3]
@@ -86,10 +79,13 @@ function P(tn93::TN93, t::Float64)
   if t < 0
     throw("Time must be positive")
   end
-
   α_1 = tn93.Θ[1]
   α_2 = tn93.Θ[2]
-  β = tn93.Θ[3]
+  if length(tn93.Θ) == 2
+    β = 1.0
+  else
+    β = tn93.Θ[3]
+  end
   π_T = tn93.π[1]
   π_C = tn93.π[2]
   π_A = tn93.π[3]

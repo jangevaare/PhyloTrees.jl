@@ -82,7 +82,9 @@ module PhyloTrees
     loglikelihood,
     spr,
     PhyloTrace,
-    PhyloIteration
+    PhyloIteration,
+    transition_kernel_variance,
+    propose
 
     # Plot
 

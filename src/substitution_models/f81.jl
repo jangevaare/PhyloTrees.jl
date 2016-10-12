@@ -10,26 +10,18 @@ type F81 <: SubstitutionModel
   π::Vector{Float64}
 
   function F81(Θ::Vector{Float64}, π::Vector{Float64})
-    if length(Θ) == 0
-      β = 1.0
-    elseif length(Θ) == 1
-      if any(Θ .<= 0.)
-        throw("All elements of Θ must be positive")
-      end
-      β = Θ[1]
-    else
+    if !(0 <= length(Θ) <= 1)
       throw("Θ is not a valid length for F81 model")
-    end
-
-    if length(π) !== 4
+    elseif any(Θ .<= 0.)
+      throw("All elements of Θ must be positive")
+    elseif length(π) !== 4
       throw("π must be of length 4")
     elseif !all(0. .< π .< 1.)
       throw("All base proportions must be between 0 and 1")
     elseif sum(π) !== 1.
       throw("Base proportions must sum to 1")
     end
-
-    new([β], π)
+    new(Θ, π)
   end
 end
 
@@ -43,7 +35,11 @@ end
 
 
 function Q(f81::F81)
-  β = f81.Θ[1]
+  if length(f81.Θ) == 1
+    β = f81.Θ[1]
+  else
+    β = 1.
+  end
   π_T = f81.π[1]
   π_C = f81.π[2]
   π_A = f81.π[3]
@@ -60,10 +56,15 @@ function P(f81::F81, t::Float64)
   if t < 0
     throw("Time must be positive")
   end
-
-  α_1 = f81.Θ[1]
-  α_2 = f81.Θ[1]
-  β = f81.Θ[1]
+  if length(f81.Θ) == 1
+    α_1 = f81.Θ[1]
+    α_2 = f81.Θ[1]
+    β = f81.Θ[1]
+  else
+    α_1 = 1.
+    α_2 = 1.
+    β = 1.
+  end
   π_T = f81.π[1]
   π_C = f81.π[2]
   π_A = f81.π[3]
