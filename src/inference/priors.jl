@@ -15,6 +15,13 @@ type SubstitutionModelPriors
     end
     return new(Θ, Nullable(π))
   end
+
+  function SubstitutionModelPriors(Θ::Vector{UnivariateDistribution}, π::Nullable{Dirichlet})
+    if !isnull(π) && length(get(π).alpha) != 4
+      throw("Invalid Dirichlet prior distribution specified")
+    end
+    return new(Θ, π)
+  end
 end
 
 
