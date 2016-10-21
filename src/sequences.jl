@@ -45,5 +45,25 @@ end
 
 
 function show(io::IO, object::Sequence)
-  print(io, "TCAG"[[findfirst(object.nucleotides[:,i]) for i=1:4]])
+  print(io, "TCAG"[[findfirst(object.nucleotides[:,i]) for i=1:object.length]])
+end
+
+
+function length(x::Sequence)
+  return x.length
+end
+
+
+function getindex(x::Sequence, i::Int64)
+  return Sequence(x.nucleotides[:,i]'')
+end
+
+
+function getindex(x::Sequence, i::UnitRange{Int64})
+  return Sequence(x.nucleotides[:,i])
+end
+
+
+function getindex(x::Sequence, i::Vector{Int64})
+  return Sequence(x.nucleotides[:,i])
 end
