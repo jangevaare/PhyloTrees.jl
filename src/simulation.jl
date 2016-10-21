@@ -4,36 +4,29 @@ substitution model
 """
 function simulate(tree::Tree,
                   mod::SubstitutionModel,
-                  root_seq::Array{Bool, 2},
+                  root_seq::Sequence,
                   site_rates::Vector{Float64})
-  seq_length = size(root_seq, 2)
-
   # Error checking
-  if size(root_seq, 1) !== 4
-    error("Invalid root sequence format")
-  end
-  if seq_length != length(site_rates)
+  if root_seq.length != length(site_rates)
     error("Dimension of root sequence must match length of site rates")
-  end
-  if sum(root_seq) > seq_length
-    error("Invalid root sequence")
   end
 
   # Initialize sequence array
-  seq = fill(false, (4, seq_length, length(tree.nodes)))
+  seq = fill(Nullable{Sequence}(), length(tree.nodes))
   visit_order = reverse(postorder(tree))
 
   # Set root sequence
-  seq[:,:,visit_order[1]] = root_seq
+  seq[visit_order[1]] = Nullable(root_seq)
 
   # Iterate through remaining nodes
   for i in visit_order[2:end]
     source = tree.branches[tree.nodes[i].in[1]].source
     branch_length = get(tree.branches[tree.nodes[i].in[1]].length)
-    for j in 1:seq_length
+    seq[i] = seq[source]
+    for j in 1:seq[i].value.length
       site_rate = site_rates[j]
       p = P(mod, branch_length * site_rate)
-      seq[:,j,i] = rand(Multinomial(1, (seq[:,j,source]' * p)[:]))
+      seq[i].value.nucleotides[:,j] = rand(Multinomial(1, (seq[source].value.nucleotides[:,j]' * p)[:]))
     end
   end
   return seq
@@ -42,11 +35,11 @@ end
 
 function simulate(tree::Tree,
                   mod::SubstitutionModel,
-                  root_seq::Array{Bool, 2})
+                  root_seq::Sequence)
   return simulate(tree,
                   mod,
                   root_seq,
-                  fill(1., size(root_seq, 2)))
+                  fill(1., root_seq.length))
 end
 
 
@@ -55,7 +48,7 @@ function simulate(tree::Tree,
                   site_rates::Vector{Float64})
   return simulate(tree,
                   mod,
-                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), length(site_rates))),
+                  Sequence(convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), length(site_rates)))),
                   site_rates)
 end
 
@@ -65,5 +58,5 @@ function simulate(tree::Tree,
                   seq_length::Int64)
   return simulate(tree,
                   mod,
-                  convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), seq_length)))
+                  Sequence(convert(Array{Bool, 2}, rand(Multinomial(1, mod.π), seq_length))))
 end

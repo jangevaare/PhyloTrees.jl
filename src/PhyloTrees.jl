@@ -10,7 +10,8 @@ module PhyloTrees
          Base.append!,
          Base.copy,
          StatsBase.loglikelihood,
-         Base.rand
+         Base.rand,
+         Base.convert
 
   # Functions provided
   export
@@ -73,6 +74,9 @@ module PhyloTrees
     Q,
     P,
 
+    # Sequences
+    Sequence,
+
     # Simulation
     simulate,
 
@@ -106,6 +110,8 @@ module PhyloTrees
   include("substitution_models/hky85.jl")
   include("substitution_models/tn93.jl")
   include("substitution_models/gtr.jl")
+
+  include("sequences.jl")
 
   include("simulation.jl")
 
