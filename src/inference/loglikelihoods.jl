@@ -2,27 +2,25 @@
 Log likelihood for a pair of sequences being a certain distance apart, under a
 specified substitution model
 """
-function loglikelihood(seq1::Array{Bool, 2},
-                       seq2::Array{Bool, 2},
+function loglikelihood(seq1::Sequence,
+                       seq2::Sequence,
                        distance::Float64,
                        mod::SubstitutionModel,
                        site_rates::Vector{Float64})
-  if size(seq1) !== size(seq2)
+  if length(seq1) !== length(seq2)
     throw("Sequences must be of the same length")
-  elseif size(seq1, 1) !== 4
-    throw("First dimension of sequence arrays must be 4")
   end
   ll = 0.
   pmat = P(mod, distance)
-  for i = 1:size(seq1, 2)
-    ll += log(pmat[seq1[:, i], seq2[:, i]][1])
+  for i = 1:length(seq1)
+    ll += log(pmat[seq1.nucleotides[:, i], seq2.nucleotides[:, i]][1])
   end
   return ll
 end
 
 
-function loglikelihood(seq1::Array{Bool, 2},
-                       seq2::Array{Bool, 2},
+function loglikelihood(seq1::Sequence,
+                       seq2::Sequence,
                        distance::Float64,
                        mod::SubstitutionModel)
   return loglikelihood(seq1,
