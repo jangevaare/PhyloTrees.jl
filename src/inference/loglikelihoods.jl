@@ -34,16 +34,13 @@ end
 """
 Calculates the log likelihood of a tree with sequences observed at all leaves
 """
-function loglikelihood(seq::Array{Bool, 3},
+function loglikelihood(seq::Vector{Sequence},
                        tree::Tree,
                        mod::SubstitutionModel,
                        site_rates::Vector{Float64})
-  seq_length = size(seq, 2)
-  if length(site_rates) !== seq_length
-    throw("Dimensions of sequence data and site rates do not match")
-  end
+  seq_length = length(site_rates)
   leaves = findleaves(tree)
-  if length(leaves) !== size(seq, 3)
+  if length(leaves) !== length(seq)
     throw("Number of leaves and number of observed sequences do not match")
   end
   visit_order = postorder(tree)
@@ -51,7 +48,7 @@ function loglikelihood(seq::Array{Bool, 3},
   for i in visit_order
     if isleaf(tree.nodes[i])
       leafindex = findfirst(leaves .== i)
-      ll_seq[:, :, i] += log(seq[:, :, leafindex] .+ 0)
+      ll_seq[:, :, i] += log(seq[leafindex][:, :] .+ 0)
     else
       branches = tree.nodes[i].out
       for j in branches
@@ -67,7 +64,7 @@ function loglikelihood(seq::Array{Bool, 3},
 end
 
 
-function loglikelihood(seq::Array{Bool, 3},
+function loglikelihood(seq::Vector{Sequence},
                        tree::Tree,
                        mod::SubstitutionModel)
   return loglikelihood(seq,
