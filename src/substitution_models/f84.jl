@@ -25,7 +25,7 @@ end
 
 
 function show(io::IO, object::F84)
-  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m84\e[0m substitution model\n\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m84\e[0m substitution model")
 end
 
 

@@ -28,7 +28,7 @@ end
 
 
 function show(io::IO, object::TN93)
-  print(io, "\r\e[0m\e[1mT\e[0mamura, and \e[1mN\e[0mei 19\e[1m93\e[0m substitution model\n\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mT\e[0mamura, and \e[1mN\e[0mei 19\e[1m93\e[0m substitution model")
 end
 
 

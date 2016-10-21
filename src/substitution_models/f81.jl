@@ -30,7 +30,7 @@ F81(π::Vector{Float64}) = F81(Float64[], π)
 
 
 function show(io::IO, object::F81)
-  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m81\e[0m substitution model\n\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mF\e[0melsenstein 19\e[1m81\e[0m substitution model")
 end
 
 

@@ -27,7 +27,7 @@ end
 
 
 function show(io::IO, object::HKY85)
-  print(io, "\r\e[0m\e[1mH\e[0masegawa \e[1mK\e[0mishino, and \e[1mY\e[0mano 19\e[1m85\e[0m substitution model\n\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mH\e[0masegawa \e[1mK\e[0mishino, and \e[1mY\e[0mano 19\e[1m85\e[0m substitution model")
 end
 
 

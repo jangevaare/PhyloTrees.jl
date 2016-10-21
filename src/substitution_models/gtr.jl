@@ -24,7 +24,7 @@ end
 
 
 function show(io::IO, object::GTR)
-  print(io, "\r\e[0m\e[1mG\e[0meneralised \e[1mT\e[0mime \e[1mR\e[0meversible substitution model\n\n$(Q(object))")
+  print(io, "\r\e[0m\e[1mG\e[0meneralised \e[1mT\e[0mime \e[1mR\e[0meversible substitution model")
 end
 
 
