@@ -11,9 +11,9 @@ type K80 <: SubstitutionModel
 
   function K80(Θ::Vector{Float64})
     if any(Θ .<= 0.)
-      throw("All elements of Θ must be positive")
+      error("All elements of Θ must be positive")
     elseif !(1 <= length(Θ) <= 2)
-      throw("Θ is not a valid length for K80 model")
+      error("Θ is not a valid length for K80 model")
     end
     π = [0.25
          0.25
@@ -45,7 +45,7 @@ end
 
 function P(k80::K80, t::Float64)
   if t < 0
-    throw("Time must be positive")
+    error("Time must be positive")
   end
   α = k80.Θ[1]
   if length(k80.Θ) == 1

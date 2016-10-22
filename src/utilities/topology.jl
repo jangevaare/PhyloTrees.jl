@@ -6,7 +6,7 @@ function validnode(tree::Tree,
   if 1 <= node <= length(tree.nodes)
     return true
   else
-    throw("An invalid node has been specified")
+    error("An invalid node has been specified")
   end
 end
 
@@ -30,7 +30,7 @@ function validbranch(tree::Tree,
   if 1 <= branch <= length(tree.branches)
     return true
   else
-    throw("An invalid branch has been specified")
+    error("An invalid branch has been specified")
   end
 end
 
@@ -163,10 +163,10 @@ function nodetype(node::Node)
     elseif outs > 0
       return "Internal"
     else
-      throw("Unknown node type")
+      error("Unknown node type")
     end
   else
-    throw("Unknown node type")
+    error("Unknown node type")
   end
 end
 
@@ -290,7 +290,7 @@ function parentnode(tree::Tree, node::Int64)
   if indegree(tree, node) == 1
     return tree.branches[tree.nodes[node].in[1]].source
   else
-    throw("In degree of specified node != 1")
+    error("In degree of specified node != 1")
   end
 end
 
@@ -410,7 +410,7 @@ function nodepath(tree::Tree, node1::Int64, node2::Int64)
   path1 = reverse(nodepath(tree, node1))
   path2 = reverse(nodepath(tree, node2))
   if !areconnected(tree, node1, node2)
-    throw("Nodes are not connected")
+    error("Nodes are not connected")
   end
   minlength = minimum([length(path1), length(path2)])
   mrcnode_index = findlast(path1[1:minlength] .== path2[1:minlength])
@@ -436,7 +436,7 @@ Branch pathway through which two specified nodes connect
 """
 function branchpath(tree::Tree, node1::Int64, node2::Int64)
   if !areconnected(tree, node1, node2)
-    throw("Nodes are not connected")
+    error("Nodes are not connected")
   end
   path1 = reverse(branchpath(tree, node1))
   path2 = reverse(branchpath(tree, node2))

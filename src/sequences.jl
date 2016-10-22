@@ -4,10 +4,10 @@ type Sequence
 
   function Sequence(nucleotides::Array{Bool, 2})
     if size(nucleotides, 1) != 4
-      throw("Invalid nucleotide array dimensions")
+      error("Invalid nucleotide array dimensions")
     end
     if sum(nucleotides) != size(nucleotides, 2)
-      throw("Invalid nucleotide array provided")
+      error("Invalid nucleotide array provided")
     end
     return new(nucleotides, size(nucleotides, 2))
   end
@@ -18,7 +18,7 @@ type Sequence
       if nucleotides[i] in [1; 2; 3; 4]
         nucleotidearray[nucleotides[i],i] = true
       else
-        throw("Invalid nucleotide in position $i")
+        error("Invalid nucleotide in position $i")
       end
     end
     return new(nucleotidearray, length(nucleotides))
@@ -36,7 +36,7 @@ type Sequence
       elseif nucleotides[i] == 'G'
         nucleotidearray[4, i] = true
       else
-        throw("Invalid nucleotide in position $i")
+        error("Invalid nucleotide in position $i")
       end
     end
     return new(nucleotidearray, length(nucleotides))

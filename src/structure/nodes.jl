@@ -36,9 +36,9 @@ function show(io::IO, object::Node)
         end
       end
     else
-      throw("Unknown node type")
+      error("Unknown node type")
     end
   else
-    throw("Unknown node type")
+    error("Unknown node type")
   end
 end

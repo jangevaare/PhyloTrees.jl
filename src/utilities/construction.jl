@@ -12,7 +12,7 @@ Add multiple nodes
 """
 function addnodes!(tree::Tree, nodes::Int64)
   if nodes < 0
-    throw("Invalid number of nodes specified")
+    error("Invalid number of nodes specified")
   end
   for i = 1:nodes
     push!(tree.nodes, Node())
@@ -31,10 +31,10 @@ function addbranch!(tree::Tree,
   # Error checking
   validnodes(tree, [source; target])
   if target == source
-    throw("Branch must connect unique nodes")
+    error("Branch must connect unique nodes")
   end
   if length(tree.nodes[target].in) == 1
-    throw("The in degree of the target node is > 1")
+    error("The in degree of the target node is > 1")
   end
 
   # Add branch
@@ -227,7 +227,7 @@ function changetarget!(tree::Tree,
   validnode(tree, newtarget)
   validbranch(tree, branch)
   if length(tree.nodes[newtarget].in) != 0
-    throw("New target node has an in degree > 1")
+    error("New target node has an in degree > 1")
   end
   oldtarget = tree.branches[branch].target
   splice!(tree.nodes[oldtarget].in, findfirst(tree.nodes[oldtarget].in .== branch))

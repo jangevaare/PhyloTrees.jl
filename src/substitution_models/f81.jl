@@ -11,15 +11,15 @@ type F81 <: SubstitutionModel
 
   function F81(Θ::Vector{Float64}, π::Vector{Float64})
     if !(0 <= length(Θ) <= 1)
-      throw("Θ is not a valid length for F81 model")
+      error("Θ is not a valid length for F81 model")
     elseif any(Θ .<= 0.)
-      throw("All elements of Θ must be positive")
+      error("All elements of Θ must be positive")
     elseif length(π) !== 4
-      throw("π must be of length 4")
+      error("π must be of length 4")
     elseif !all(0. .< π .< 1.)
-      throw("All base proportions must be between 0 and 1")
+      error("All base proportions must be between 0 and 1")
     elseif sum(π) !== 1.
-      throw("Base proportions must sum to 1")
+      error("Base proportions must sum to 1")
     end
     new(Θ, π)
   end
@@ -54,7 +54,7 @@ end
 
 function P(f81::F81, t::Float64)
   if t < 0
-    throw("Time must be positive")
+    error("Time must be positive")
   end
   if length(f81.Θ) == 1
     α_1 = f81.Θ[1]

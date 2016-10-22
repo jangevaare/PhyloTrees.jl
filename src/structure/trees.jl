@@ -11,7 +11,7 @@ type Tree
 
   function Tree(nodes::Int64)
     if nodes < 0
-      throw("Invalid number of nodes specified")
+      error("Invalid number of nodes specified")
     end
     tree = new(Node[], Branch[])
     for i = 1:nodes

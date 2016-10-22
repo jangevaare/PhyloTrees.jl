@@ -8,7 +8,7 @@ function loglikelihood(seq1::Sequence,
                        mod::SubstitutionModel,
                        site_rates::Vector{Float64})
   if length(seq1) !== length(seq2)
-    throw("Sequences must be of the same length")
+    error("Sequences must be of the same length")
   end
   ll = 0.
   pmat = P(mod, distance)
@@ -41,7 +41,7 @@ function loglikelihood(seq::Vector{Sequence},
   seq_length = length(site_rates)
   leaves = findleaves(tree)
   if length(leaves) !== length(seq)
-    throw("Number of leaves and number of observed sequences do not match")
+    error("Number of leaves and number of observed sequences do not match")
   end
   visit_order = postorder(tree)
   ll_seq = fill(0., (4, seq_length, length(tree.nodes)))
