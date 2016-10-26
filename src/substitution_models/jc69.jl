@@ -8,10 +8,11 @@ or
 type JC69 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function JC69(Θ::Vector{Float64})
     if !(0 <= length(Θ) <= 1)
-      error("Θ is not a valid length for JC69 model")
+      error("Θ is not a valid length for a JC69 model")
     elseif any(Θ .<= 0.)
       error("All elements of Θ must be positive")
     end
@@ -21,7 +22,11 @@ type JC69 <: SubstitutionModel
          0.25
          0.25]
 
-    new(Θ, π)
+    if length(Θ) == 0
+      new(Θ, π, true)
+    else
+      new(Θ, π, false)
+    end
   end
 end
 
@@ -35,10 +40,10 @@ end
 
 
 function Q(jc69::JC69)
-  if length(jc69.Θ) == 1
-    λ = jc69.Θ[1]
-  else
+  if jc69.relativerate
     λ = 1.
+  else
+    λ = jc69.Θ[1]
   end
 
   return [[-3*λ λ λ λ]
@@ -52,10 +57,10 @@ function P(jc69::JC69, t::Float64)
   if t < 0
     error("Time must be positive")
   end
-  if length(jc69.Θ) == 1
-    λ = jc69.Θ[1]
-  else
+  if jc69.relativerate
     λ = 1.
+  else
+    λ = jc69.Θ[1]
   end
 
   P_0 = 0.25 + 0.75 * exp(-t * λ * 4)
@@ -76,9 +81,34 @@ variance as the variance-covariance matrix
 """
 function propose(currentstate::JC69,
                  transition_kernel_variance::Array{Float64, 2})
-  if length(currentstate.Θ) == 1
+  if !currentstate.relativerate
     return JC69(rand(MvNormal(currentstate.Θ, transition_kernel_variance)))
   else
     return JC69()
   end
+end
+
+
+type JC69Prior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+
+
+  function JC69Prior(Θ::Vector{UnivariateDistribution})
+    if !(0 <= length(Θ) <= 1)
+      error("Θ is not a valid length for a JC69 model")
+    end
+    new(Θ)
+  end
+end
+
+
+function rand(x::JC69Prior)
+  return JC69([rand(x.Θ[i]) for i=1:length(x.Θ)])
+end
+
+
+function logprior(prior::JC69Prior, model::JC69)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  return lprior
 end

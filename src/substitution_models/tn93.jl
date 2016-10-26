@@ -8,12 +8,13 @@ or
 type TN93 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function TN93(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
       error("All elements of Θ must be positive")
     elseif !(2 <= length(Θ) <= 3)
-      error("Θ is not a valid length for TN93 model")
+      error("Θ is not a valid length for a TN93 model")
     elseif length(π) !== 4
       error("π must be of length 4")
     elseif !all(0. .< π .< 1.)
@@ -22,7 +23,11 @@ type TN93 <: SubstitutionModel
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    if length(Θ) == 2
+      new(Θ, π, true)
+    else
+      new(Θ, π, false)
+    end
   end
 end
 
@@ -35,11 +40,12 @@ end
 function Q(tn93::TN93)
   α_1 = tn93.Θ[1]
   α_2 = tn93.Θ[2]
-  if length(tn93.Θ) == 2
+  if tn93.relativerate
     β = 1.0
   else
     β = tn93.Θ[3]
   end
+
   π_T = tn93.π[1]
   π_C = tn93.π[2]
   π_A = tn93.π[3]
@@ -81,11 +87,12 @@ function P(tn93::TN93, t::Float64)
   end
   α_1 = tn93.Θ[1]
   α_2 = tn93.Θ[2]
-  if length(tn93.Θ) == 2
+  if tn93.relativerate
     β = 1.0
   else
     β = tn93.Θ[3]
   end
+
   π_T = tn93.π[1]
   π_C = tn93.π[2]
   π_A = tn93.π[3]
@@ -138,4 +145,32 @@ function propose(currentstate::TN93,
                               5
                               5
                               5])))
+end
+
+
+type TN93Prior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Dirichlet
+
+  function TN93Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+    if !(2 <= length(Θ) <= 3)
+      error("Θ is not a valid length for a TN93 model")
+    elseif length(π.alpha) !== 4
+      error("Invalid Dirichlet distribution")
+    end
+    new(Θ, π)
+  end
+end
+
+
+function rand(x::TN93Prior)
+  return TN93([rand(x.Θ[i]) for i=1:length(x.Θ)], rand(x.π))
+end
+
+
+function logprior(prior::TN93Prior, model::TN93)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  lprior += loglikelihood(prior.π, [model.π])
+  return lprior
 end

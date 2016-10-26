@@ -6,12 +6,13 @@ Felsenstein 1984 substitution model
 type F84 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function F84(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
       error("All elements of Θ must be positive")
     elseif !(1 <= length(Θ) <= 2)
-      error("Θ is not a valid length for F84 model")
+      error("Θ is not a valid length for an F84 model")
     elseif length(π) !== 4
       error("π must be of length 4")
     elseif !all(0. .< π .< 1.)
@@ -19,7 +20,11 @@ type F84 <: SubstitutionModel
     elseif sum(π) !== 1.
       error("Base proportions must sum to 1")
     end
-    new(Θ, π)
+    if length(Θ) == 1
+      new(Θ, π, true)
+    else
+      new(Θ, π, false)
+    end
   end
 end
 
@@ -31,11 +36,12 @@ end
 
 function Q(f84::F84)
   κ = f84.Θ[1]
-  if length(f84.Θ) == 1
+  if f84.relativerate
     β = 1.
   else
     β = f84.Θ[2]
   end
+
   π_T = f84.π[1]
   π_C = f84.π[2]
   π_A = f84.π[3]
@@ -79,11 +85,12 @@ function P(f84::F84, t::Float64)
     error("Time must be positive")
   end
   κ = f84.Θ[1]
-  if length(f84.Θ) == 1
+  if f84.relativerate
     β = 1.
   else
     β = f84.Θ[2]
   end
+
   π_T = f84.π[1]
   π_C = f84.π[2]
   π_A = f84.π[3]
@@ -139,4 +146,32 @@ function propose(currentstate::F84,
                              5
                              5
                              5])))
+end
+
+
+type F84Prior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Dirichlet
+
+  function F84Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+    if !(1 <= length(Θ) <= 2)
+      error("Θ is not a valid length for an F84 model")
+    elseif length(π.alpha) !== 4
+      error("Invalid Dirichlet distribution")
+    end
+    new(Θ, π)
+  end
+end
+
+
+function rand(x::F84Prior)
+  return F84([rand(x.Θ[i]) for i=1:length(x.Θ)], rand(x.π))
+end
+
+
+function logprior(prior::F84Prior, model::F84)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  lprior += loglikelihood(prior.π, [model.π])
+  return lprior
 end

@@ -6,6 +6,7 @@ Generalised time reversible substitution model (Tavaré 1986)
 type GTR <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function GTR(Θ::Vector{Float64}, π::Vector{Float64})
     if length(Θ) != 6
@@ -18,7 +19,7 @@ type GTR <: SubstitutionModel
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    new(Θ, π, false)
   end
 end
 
@@ -89,4 +90,32 @@ function propose(currentstate::GTR,
                              5
                              5
                              5])))
+end
+
+
+type GTRPrior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Dirichlet
+
+  function GTRPrior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+    if length(Θ) != 6
+      error("Θ is not a valid length for a GTR model")
+    elseif length(π.alpha) !== 4
+      error("Invalid Dirichlet distribution")
+    end
+    new(Θ, π)
+  end
+end
+
+
+function rand(x::GTRPrior)
+  return GTR([rand(x.Θ[i]) for i=1:length(x.Θ)], rand(x.π))
+end
+
+
+function logprior(prior::GTRPrior, model::GTR)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  lprior += loglikelihood(prior.π, [model.π])
+  return lprior
 end

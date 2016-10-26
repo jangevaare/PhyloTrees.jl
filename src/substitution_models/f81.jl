@@ -8,10 +8,11 @@ or
 type F81 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function F81(Θ::Vector{Float64}, π::Vector{Float64})
     if !(0 <= length(Θ) <= 1)
-      error("Θ is not a valid length for F81 model")
+      error("Θ is not a valid length for an F81 model")
     elseif any(Θ .<= 0.)
       error("All elements of Θ must be positive")
     elseif length(π) !== 4
@@ -21,7 +22,11 @@ type F81 <: SubstitutionModel
     elseif sum(π) !== 1.
       error("Base proportions must sum to 1")
     end
-    new(Θ, π)
+    if length(Θ) == 0
+      new(Θ, π, true)
+    else
+      new(Θ, π, false)
+    end
   end
 end
 
@@ -35,10 +40,10 @@ end
 
 
 function Q(f81::F81)
-  if length(f81.Θ) == 1
-    β = f81.Θ[1]
-  else
+  if f81.relativerate
     β = 1.
+  else
+    β = f81.Θ[1]
   end
   π_T = f81.π[1]
   π_C = f81.π[2]
@@ -56,14 +61,14 @@ function P(f81::F81, t::Float64)
   if t < 0
     error("Time must be positive")
   end
-  if length(f81.Θ) == 1
+  if f81.relativerate
+    α_1 = f81.Θ[1]
+    α_2 = f81.Θ[1]
+    β = 1.
+  else
     α_1 = f81.Θ[1]
     α_2 = f81.Θ[1]
     β = f81.Θ[1]
-  else
-    α_1 = 1.
-    α_2 = 1.
-    β = 1.
   end
   π_T = f81.π[1]
   π_C = f81.π[2]
@@ -112,16 +117,44 @@ variance as the variance-covariance matrix
 """
 function propose(currentstate::F81,
                  transition_kernel_variance::Array{Float64, 2})
-  if length(currentstate.Θ) == 1
+  if currentstate.relativerate
+    return F81(rand(Dirichlet([5
+                               5
+                               5
+                               5])))
+  else
     return F81(rand(MvNormal(currentstate.Θ, transition_kernel_variance)),
                rand(Dirichlet([5
                                5
                                5
                                5])))
-  else
-    return F81(rand(Dirichlet([5
-                               5
-                               5
-                               5])))
   end
+end
+
+
+type F81Prior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Dirichlet
+
+  function F81Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+    if !(0 <= length(Θ) <= 1)
+      error("Θ is not a valid length for an F81 model")
+    elseif length(π.alpha) !== 4
+      error("Invalid Dirichlet distribution")
+    end
+    new(Θ, π)
+  end
+end
+
+
+function rand(x::F81Prior)
+  return F81([rand(x.Θ[i]) for i=1:length(x.Θ)], rand(x.π))
+end
+
+
+function logprior(prior::F81Prior, model::F81)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  lprior += loglikelihood(prior.π, [model.π])
+  return lprior
 end

@@ -11,7 +11,6 @@ module PhyloTrees
          Base.copy,
          StatsBase.loglikelihood,
          Base.rand,
-         Base.convert,
          Base.length,
          Base.getindex
 
@@ -65,6 +64,7 @@ module PhyloTrees
 
     # Substitution Models
     SubstitutionModel,
+    SubstitutionModelPrior,
     JC69,
     K80,
     F81,
@@ -72,9 +72,18 @@ module PhyloTrees
     HKY85,
     TN93,
     GTR,
-    UNREST,
+    JC69Prior,
+    K80Prior,
+    F81Prior,
+    F84Prior,
+    HKY85Prior,
+    TN93Prior,
+    GTRPrior,
     Q,
     P,
+    logprior,
+    propose,
+    rand,
 
     # Sequences
     Sequence,
@@ -83,14 +92,11 @@ module PhyloTrees
     simulate,
 
     # Inference
-    SubstitutionModelPriors,
-    rand,
     loglikelihood,
     spr,
     PhyloTrace,
     PhyloIteration,
-    transition_kernel_variance,
-    propose
+    transition_kernel_variance
 
     # Plot
 
@@ -117,7 +123,6 @@ module PhyloTrees
 
   include("simulation.jl")
 
-  include("inference/priors.jl")
   include("inference/loglikelihoods.jl")
   include("inference/operators.jl")
   include("inference/mcmc.jl")

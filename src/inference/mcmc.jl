@@ -33,7 +33,7 @@ end
 Generate the variance-covariance matrix for a MvNormal transition kernel based
 upon prior distributions
 """
-function transition_kernel_variance(x::SubstitutionModelPriors)
+function transition_kernel_variance(x::SubstitutionModelPrior)
   diagonal = Float64[]
   for i in x.Θ
     push!(diagonal, var(i)*2.38^2)

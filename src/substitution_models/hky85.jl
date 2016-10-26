@@ -7,6 +7,7 @@ or
 type HKY85 <: SubstitutionModel
   Θ::Vector{Float64}
   π::Vector{Float64}
+  relativerate::Bool
 
   function HKY85(Θ::Vector{Float64}, π::Vector{Float64})
     if any(Θ .<= 0.)
@@ -21,7 +22,11 @@ type HKY85 <: SubstitutionModel
       error("Base proportions must sum to 1")
     end
 
-    new(Θ, π)
+    if length(Θ) == 1
+      new(Θ, π, true)
+    else
+      new(Θ, π, false)
+    end
   end
 end
 
@@ -33,11 +38,12 @@ end
 
 function Q(hky85::HKY85)
   α = hky85.Θ[1]
-  if length(hky85.Θ) == 1
+  if hky85.relativerate
     β = 1.0
   else
     β = hky85.Θ[2]
   end
+
   π_T = hky85.π[1]
   π_C = hky85.π[2]
   π_A = hky85.π[3]
@@ -78,11 +84,12 @@ function P(hky85::HKY85, t::Float64)
     error("Time must be positive")
   end
   α = hky85.Θ[1]
-  if length(hky85.Θ) == 1
+  if hky85.relativerate
     β = 1.0
   else
     β = hky85.Θ[2]
   end
+
   π_T = hky85.π[1]
   π_C = hky85.π[2]
   π_A = hky85.π[3]
@@ -135,4 +142,32 @@ function propose(currentstate::HKY85,
                                5
                                5
                                5])))
+end
+
+
+type HKY85Prior <: SubstitutionModelPrior
+  Θ::Vector{UnivariateDistribution}
+  π::Dirichlet
+
+  function HKY85Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+    if !(1 <= length(Θ) <= 2)
+      error("Θ is not a valid length for an HKY85 model")
+    elseif length(π.alpha) !== 4
+      error("Invalid Dirichlet distribution")
+    end
+    new(Θ, π)
+  end
+end
+
+
+function rand(x::HKY85Prior)
+  return HKY85([rand(x.Θ[i]) for i=1:length(x.Θ)], rand(x.π))
+end
+
+
+function logprior(prior::HKY85Prior, model::HKY85)
+  lprior = 0.
+  lprior += sum([loglikelihood(prior.Θ[i], [model.Θ[i]]) for i=1:length(model.Θ)])
+  lprior += loglikelihood(prior.π, [model.π])
+  return lprior
 end
