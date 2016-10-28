@@ -86,7 +86,7 @@ type K80Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
 
 
-  function K80Prior(Θ::Vector{UnivariateDistribution})
+  function K80Prior(Θ)
     if !(1 <= length(Θ) <= 2)
       error("Θ is not a valid length for a K80 model")
     end

@@ -136,7 +136,7 @@ type F81Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet
 
-  function F81Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+  function F81Prior(Θ, π)
     if !(0 <= length(Θ) <= 1)
       error("Θ is not a valid length for an F81 model")
     elseif length(π.alpha) !== 4
@@ -145,6 +145,12 @@ type F81Prior <: SubstitutionModelPrior
     new(Θ, π)
   end
 end
+
+
+F81Prior(π::Dirichlet) = F81Prior(UnivariateDistribution[], π)
+
+
+F81Prior(Θ::UnivariateDistribution, π) = F81Prior([Θ], π)
 
 
 function rand(x::F81Prior)

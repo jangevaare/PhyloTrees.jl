@@ -152,7 +152,7 @@ type TN93Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet
 
-  function TN93Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+  function TN93Prior(Θ, π)
     if !(2 <= length(Θ) <= 3)
       error("Θ is not a valid length for a TN93 model")
     elseif length(π.alpha) !== 4

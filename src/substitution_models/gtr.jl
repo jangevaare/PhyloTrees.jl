@@ -97,7 +97,7 @@ type GTRPrior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet
 
-  function GTRPrior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+  function GTRPrior(Θ, π)
     if length(Θ) != 6
       error("Θ is not a valid length for a GTR model")
     elseif length(π.alpha) !== 4

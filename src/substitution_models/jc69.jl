@@ -92,14 +92,19 @@ end
 type JC69Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
 
-
-  function JC69Prior(Θ::Vector{UnivariateDistribution})
+  function JC69Prior(Θ)
     if !(0 <= length(Θ) <= 1)
       error("Θ is not a valid length for a JC69 model")
     end
     new(Θ)
   end
 end
+
+
+JC69Prior() = JC69Prior(UnivariateDistribution[])
+
+
+JC69Prior(Θ::UnivariateDistribution) = JC69Prior([Θ])
 
 
 function rand(x::JC69Prior)

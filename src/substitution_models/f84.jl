@@ -153,7 +153,7 @@ type F84Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet
 
-  function F84Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+  function F84Prior(Θ, π)
     if !(1 <= length(Θ) <= 2)
       error("Θ is not a valid length for an F84 model")
     elseif length(π.alpha) !== 4

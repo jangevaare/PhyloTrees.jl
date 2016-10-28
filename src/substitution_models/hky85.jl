@@ -149,7 +149,7 @@ type HKY85Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet
 
-  function HKY85Prior(Θ::Vector{UnivariateDistribution}, π::Dirichlet)
+  function HKY85Prior(Θ, π)
     if !(1 <= length(Θ) <= 2)
       error("Θ is not a valid length for an HKY85 model")
     elseif length(π.alpha) !== 4

@@ -12,7 +12,8 @@ module PhyloTrees
          StatsBase.loglikelihood,
          Base.rand,
          Base.length,
-         Base.getindex
+         Base.getindex,
+         Base.convert
 
   # Functions provided
   export
