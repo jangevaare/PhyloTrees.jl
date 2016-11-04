@@ -123,7 +123,11 @@ function propose(currentstate::F81,
                                5
                                5])))
   else
-    return F81(rand(MvNormal(currentstate.Θ, transition_kernel_variance)),
+    proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+    while any(proposal .<= 0)
+      proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+    end
+    return F81(proposal,
                rand(Dirichlet([5
                                5
                                5

@@ -82,7 +82,11 @@ variance as the variance-covariance matrix
 function propose(currentstate::JC69,
                  transition_kernel_variance::Array{Float64, 2})
   if !currentstate.relativerate
-    return JC69(rand(MvNormal(currentstate.Θ, transition_kernel_variance)))
+    proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+    while any(proposal .<= 0)
+      proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+    end
+    return JC69(proposal)
   else
     return JC69()
   end

@@ -78,7 +78,11 @@ variance as the variance-covariance matrix
 """
 function propose(currentstate::K80,
                  transition_kernel_variance::Array{Float64, 2})
-  return K80(rand(MvNormal(currentstate.Θ, transition_kernel_variance)))
+  proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+  while any(proposal .<= 0)
+   proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
+  end
+  return K80(proposal)
 end
 
 

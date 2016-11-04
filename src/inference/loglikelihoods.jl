@@ -45,10 +45,11 @@ function loglikelihood(seq::Vector{Sequence},
   end
   visit_order = postorder(tree)
   ll_seq = fill(0., (4, seq_length, length(tree.nodes)))
+  leafindex = 0
   for i in visit_order
     if isleaf(tree.nodes[i])
-      leafindex = findfirst(leaves .== i)
-      ll_seq[:, :, i] += log(seq[leafindex][:, :] .+ 0)
+      leafindex += 1
+      ll_seq[:, :, i] = log(seq[leafindex].nucleotides)
     else
       branches = tree.nodes[i].out
       for j in branches
@@ -70,5 +71,5 @@ function loglikelihood(seq::Vector{Sequence},
   return loglikelihood(seq,
                        tree,
                        mod,
-                       fill(1., size(seq, 2)))
+                       fill(1., size(seq[1].nucleotides, 2)))
 end
