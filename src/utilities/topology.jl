@@ -16,9 +16,16 @@ Check if a node index is valid
 """
 function validnodes(tree::Tree,
                     nodes::Array{Int64})
-  for i in nodes
-    validnode(tree, i)
-  end
+  [validnode(tree, i) for i in nodes]
+end
+
+
+"""
+Check if a node index is valid
+"""
+function validnodes(tree::Tree,
+                    nodes::UnitRange{Int64})
+  [validnode(tree, i) for i in nodes]
 end
 
 
@@ -40,9 +47,16 @@ Check if a branch index is valid
 """
 function validbranches(tree::Tree,
                        branches::Array{Int64})
-  for i in branches
-    validbranch(tree, i)
-  end
+  [validbranch(tree, i) for i in branches]
+end
+
+
+"""
+Check if a branch index is valid
+"""
+function validbranches(tree::Tree,
+                       branches::UnitRange{Int64})
+  [validbranch(tree, i) for i in branches]
 end
 
 
@@ -422,7 +436,7 @@ end
 Branch pathway through which a specified node connects to a root
 """
 function branchpath(tree::Tree, node::Int64)
-  path = []
+  path = Int64[]
   while isleaf(tree, node) || isnode(tree, node)
     push!(path, tree.nodes[node].in[1])
     node = tree.branches[path[end]].source
