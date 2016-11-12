@@ -55,7 +55,7 @@ function loglikelihood(seq::Vector{Sequence},
       for j in branches
         branch_length = get(tree.branches[j].length)
         child_node = tree.branches[j].target
-        for k in 1:seq_length
+        @simd for k in 1:seq_length
           ll_seq[:, k, i] += log(exp(ll_seq[:, k, child_node])' * P(mod, branch_length * site_rates[k]))[:]
         end
       end

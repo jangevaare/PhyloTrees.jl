@@ -49,5 +49,10 @@ Adapt the variance-covariance matrix for a MvNormal transition kernel for
 """
 function transition_kernel_variance(x::Vector{SubstitutionModel})
   covariance_matrix = cov([x[i].Θ for i = 1:length(x)])
-  return covariance_matrix * (2.38^2) / size(covariance_matrix, 1)
+  kernel_var = covariance_matrix * (2.38^2) / size(covariance_matrix, 1)
+  if ndims(kernel_var) == 1
+    return diagm(kernel_var)
+  else
+    return kernel_var
+  end
 end
