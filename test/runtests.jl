@@ -89,8 +89,20 @@ for i = 1:length(seq)
 end
 
 # 4.0 Inference
-# 4.1 Log likelihood between two sequences
-@test loglikelihood(seq[1], seq[2], 10.0, JC69([1.0e-5])) > loglikelihood(seq[1], seq[2], 1000.0, JC69([1.0e-5]))
+# 4.1 Tree log likelihood
 
-# 4.2 Tree log likelihood
-# TODO
+# Test from Section 4.2 of
+# Molecular Evolution: A Statistical Approach, Ziheng Yang
+
+tree = Tree(9)
+addbranch!(tree, 9, 6, 0.1)
+addbranch!(tree, 9, 8, 0.1)
+addbranch!(tree, 6, 7, 0.1)
+addbranch!(tree, 6, 3, 0.2)
+addbranch!(tree, 7, 1, 0.2)
+addbranch!(tree, 7, 2, 0.2)
+addbranch!(tree, 8, 4, 0.2)
+addbranch!(tree, 8, 5, 0.2)
+seqs = [Sequence("T"); Sequence("C"); Sequence("A"); Sequence("C"); Sequence("C")]
+model = K80([2.])
+@test loglikelihood(seqs, tree, model) == -7.5814075725577
