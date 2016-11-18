@@ -73,26 +73,6 @@ function P(jc69::JC69, t::Float64)
 end
 
 
-"""
-Generate a `SubstitutionModel` proposal using the multivariate normal
-distribution as the transition kernel, with a previous set of
-`SubstitutionModel` parameters as the mean vector and a transition kernel
-variance as the variance-covariance matrix
-"""
-function propose(currentstate::JC69,
-                 transition_kernel_variance::Array{Float64, 2})
-  if !currentstate.relativerate
-    proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-    while any(proposal .<= 0)
-      proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-    end
-    return JC69(proposal)
-  else
-    return JC69()
-  end
-end
-
-
 type JC69Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
 

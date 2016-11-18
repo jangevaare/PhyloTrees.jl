@@ -77,26 +77,6 @@ function P(gtr::GTR, t::Float64)
 end
 
 
-"""
-Generate a `SubstitutionModel` proposal using the multivariate normal
-distribution as the transition kernel, with a previous set of
-`SubstitutionModel` parameters as the mean vector and a transition kernel
-variance as the variance-covariance matrix
-"""
-function propose(currentstate::GTR,
-                 transition_kernel_variance::Array{Float64, 2})
-  proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-  while any(proposal .<= 0)
-    proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-  end
-  return GTR(proposal,
-             rand(Dirichlet([5
-                             5
-                             5
-                             5])))
-end
-
-
 type GTRPrior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
   π::Dirichlet

@@ -76,22 +76,6 @@ function P(k80::K80, t::Float64)
 end
 
 
-"""
-Generate a `SubstitutionModel` proposal using the multivariate normal
-distribution as the transition kernel, with a previous set of
-`SubstitutionModel` parameters as the mean vector and a transition kernel
-variance as the variance-covariance matrix
-"""
-function propose(currentstate::K80,
-                 transition_kernel_variance::Array{Float64, 2})
-  proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-  while any(proposal .<= 0)
-   proposal = rand(MvNormal(currentstate.Θ, transition_kernel_variance))
-  end
-  return K80(proposal)
-end
-
-
 type K80Prior <: SubstitutionModelPrior
   Θ::Vector{UnivariateDistribution}
 
