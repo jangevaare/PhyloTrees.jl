@@ -2,6 +2,7 @@ type PhyloTrace
   substitutionmodel::Vector{SubstitutionModel}
   tree::Vector{Tree}
   logposterior::Vector{Float64}
+  acceptance::Vector{Bool}
 end
 
 
@@ -9,6 +10,7 @@ type PhyloIteration
   substitutionmodel::SubstitutionModel
   tree::Tree
   logposterior::Float64
+  acceptance::Bool
 end
 
 
@@ -19,6 +21,7 @@ function push!(trace::PhyloTrace, iteration::PhyloIteration)
   push!(trace.substitutionmodel, iteration.substitutionmodel)
   push!(trace.tree, iteration.tree)
   push!(trace.logposterior, iteration.logposterior)
+  push!(trace.acceptance, iteration.acceptance)
 end
 
 
@@ -26,6 +29,22 @@ function append!(trace1::PhyloTrace, trace2::PhyloTrace)
   append!(trace1.substitutionmodel, trace2.substitutionmodel)
   append!(trace1.tree, trace2.tree)
   append!(trace1.logposterior, trace2.logposterior)
+  append!(trace1.acceptance, trace2.acceptance)
+end
+
+
+function length(x::PhyloTrace)
+  return length(x.substitutionmodel)
+end
+
+
+function show(io::IO, object::PhyloTrace)
+  print(io, "PhyloTrace object (MCMC iterations: $(length(object)), acceptance rate: $(trunc(sum(object.acceptance)*100/length(object), 4))%)")
+end
+
+
+function show(io::IO, object::PhyloIteration)
+  print(io, "MCMC iteration object")
 end
 
 
