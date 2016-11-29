@@ -28,6 +28,9 @@ module PhyloTrees
     subtree,
     changesource!,
     changetarget!,
+    labelnode!,
+    label,
+    haslabel,
 
     # Traversal algorithms
     postorder,

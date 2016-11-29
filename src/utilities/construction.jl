@@ -8,6 +8,15 @@ end
 
 
 """
+Add a node
+"""
+function addnode!(tree::Tree, label::String)
+  push!(tree.nodes, Node(label))
+  return tree
+end
+
+
+"""
 Add multiple nodes
 """
 function addnodes!(tree::Tree, nodes::Int64)
@@ -256,4 +265,56 @@ function changetarget!(tree::Tree,
                        branch::Int64,
                        newtarget::Int64)
   return changetarget!(tree, branch, newtarget, Nullable{Float64}())
+end
+
+
+"""
+Label a node
+"""
+function labelnode!(node::Node,
+                label::String)
+  node.label = Nullable(label)
+  return node
+end
+
+
+"""
+Label a node
+"""
+function labelnode!(tree::Tree,
+                node::Int64,
+                label::String)
+  return labelnode!(tree.nodes[node], label)
+end
+
+
+"""
+Label of a node
+"""
+function label(node::Node)
+  return get(node.label, "")
+end
+
+
+"""
+Label of a node
+"""
+function label(tree::Tree, node::Int64)
+  return label(tree.nodes[node])
+end
+
+
+"""
+Does a node have a label?
+"""
+function haslabel(node::Node)
+  return !isnull(node.label)
+end
+
+
+"""
+Does a node have a label?
+"""
+function haslabel(tree::Tree, node::Int64)
+  return haslabel(tree.nodes[node])
 end
