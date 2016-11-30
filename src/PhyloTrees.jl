@@ -10,7 +10,8 @@ module PhyloTrees
     Base.push!,
     Base.append!,
     Base.length,
-    Base.getindex
+    Base.getindex,
+    Base.get
 
   # Functions provided
   export
@@ -26,9 +27,6 @@ module PhyloTrees
     subtree,
     changesource!,
     changetarget!,
-    labelnode!,
-    label,
-    haslabel,
     validnode,
     validnodes,
     validbranch,
@@ -54,6 +52,9 @@ module PhyloTrees
     ancestorcount,
     ancestornodes,
     nodetype,
+    setlabel!,
+    haslabel,
+    getlabel,
 
     # Distance
     distance,

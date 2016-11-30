@@ -669,8 +669,8 @@ end
 """
 Label a node
 """
-function labelnode!(node::Node,
-                label::String)
+function setlabel!(node::Node,
+                   label::String)
   node.label = Nullable(label)
   return node
 end
@@ -679,26 +679,11 @@ end
 """
 Label a node
 """
-function labelnode!(tree::Tree,
-                node::Int64,
-                label::String)
-  return labelnode!(tree.nodes[node], label)
-end
-
-
-"""
-Label of a node
-"""
-function label(node::Node)
-  return get(node.label, "")
-end
-
-
-"""
-Label of a node
-"""
-function label(tree::Tree, node::Int64)
-  return label(tree.nodes[node])
+function setlabel!(tree::Tree,
+                   node::Int64,
+                   label::String)
+  validnode(tree, node)
+  return setlabel!(tree.nodes[node], label)
 end
 
 
@@ -714,5 +699,37 @@ end
 Does a node have a label?
 """
 function haslabel(tree::Tree, node::Int64)
+  validnode(tree, node)
   return haslabel(tree.nodes[node])
+end
+
+
+"""
+Label of a node
+"""
+function getlabel(node::Node)
+  if haslabel(node)
+    return get(node.label)
+  else
+    error("Node does not have label")
+  end
+end
+
+
+"""
+Label of a node
+"""
+function getlabel(tree::Tree, node::Int64)
+  validnode(tree, node)
+  return getlabel(tree.nodes[node])
+end
+
+
+function get(node::Node)
+  return get(node.data)
+end
+
+
+function get(branch::Branch)
+  return get(branch.data)
 end
