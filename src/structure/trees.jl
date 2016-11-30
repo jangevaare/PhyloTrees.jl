@@ -6,8 +6,6 @@ type Tree{N, B}
   branches::Vector{Branch{B}}
 
   Tree() = new(Node{N}[], Branch{B}[])
-
-  Tree(nodes::Vector{Node}, branches::Vector{Branch}) = new(nodes, branches)
 end
 
 

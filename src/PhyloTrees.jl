@@ -8,7 +8,6 @@ module PhyloTrees
   import Base.show,
          Base.push!,
          Base.append!,
-         Base.copy,
          StatsBase.loglikelihood,
          Base.rand,
          Base.length,
@@ -18,6 +17,11 @@ module PhyloTrees
   export
     # Trees
     Tree,
+
+    # Traversal algorithms
+    postorder,
+
+    # Tree construction and utilities
     addnode!,
     addnodes!,
     addbranch!,
@@ -29,11 +33,6 @@ module PhyloTrees
     labelnode!,
     label,
     haslabel,
-
-    # Traversal algorithms
-    postorder,
-
-    # Utilities
     validnode,
     validnodes,
     validbranch,
