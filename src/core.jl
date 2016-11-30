@@ -26,13 +26,6 @@ type Branch{B}
   length::Nullable{Float64}
   data::Nullable{B}
 
-  function Branch(source::Int64, target::Int64, length::Nullable{Float64})
-    if get(length, 0.) < 0
-      error("Branch length must be positive")
-    end
-    new(source, target, length, Nullable())
-  end
-
   function Branch(source::Int64, target::Int64, length::Float64)
     if length < 0.
       error("Branch length must be positive")
