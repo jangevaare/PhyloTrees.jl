@@ -49,7 +49,8 @@ f = TN93([1., 2., 3.], πf)
 
 # 2.0 Tree operations
 # 2.1 Tree creation
-g = Tree()
+g = Tree{Void, Void}()
+addnode!(g)
 branch!(g, 1, 10.0)
 branch!(g, 1, 5.0)
 branch!(g, 2, 20.0)
@@ -77,7 +78,8 @@ end
 @test 2*length(findroots(g)) == length(findroots(addsubtree!(g, subtree(g, 1))))
 
 # 3.0 Simulation
-g = Tree()
+g = Tree{Void, Void}()
+addnode!(g)
 branch!(g, 1, 10.0)
 branch!(g, 1, 5.0)
 branch!(g, 2, 20.0)
@@ -94,7 +96,8 @@ end
 # Test from Section 4.2 of
 # Molecular Evolution: A Statistical Approach, Ziheng Yang
 
-tree = Tree(9)
+tree = Tree{Sequence, Void}()
+addnodes!(tree, 9)
 addbranch!(tree, 9, 6, 0.1)
 addbranch!(tree, 9, 8, 0.1)
 addbranch!(tree, 6, 7, 0.1)

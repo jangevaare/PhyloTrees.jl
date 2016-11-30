@@ -1,4 +1,4 @@
-type Sequence
+immutable Sequence
   nucleotides::Array{Bool, 2}
   length::Int64
 

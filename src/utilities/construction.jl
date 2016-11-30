@@ -2,7 +2,7 @@
 Add a node
 """
 function addnode!(tree::Tree)
-  push!(tree.nodes, Node())
+  push!(tree.nodes, Node{typeof(tree).parameters[1]}())
   return tree
 end
 
@@ -11,7 +11,7 @@ end
 Add a node
 """
 function addnode!(tree::Tree, label::String)
-  push!(tree.nodes, Node(label))
+  push!(tree.nodes, Node{typeof(tree).parameters[1]}(label))
   return tree
 end
 
@@ -24,7 +24,7 @@ function addnodes!(tree::Tree, nodes::Int64)
     error("Invalid number of nodes specified")
   end
   for i = 1:nodes
-    push!(tree.nodes, Node())
+    addnode!(tree)
   end
   return tree
 end
@@ -47,7 +47,7 @@ function addbranch!(tree::Tree,
   end
 
   # Add branch
-  push!(tree.branches, Branch(source, target, branch_length))
+  push!(tree.branches, Branch{typeof(tree).parameters[2]}(source, target, branch_length))
 
   # Update the associated source and target nodes
   push!(tree.nodes[source].out, length(tree.branches))
@@ -142,7 +142,8 @@ function subtree(tree::Tree,
   # Initialize objects for `while` loop to build subtree
   nodecount = 0
   nodelist = [node]
-  subtree = Tree()
+  subtree = Tree{typeof(tree).parameters[1], typeof(tree).parameters[2]}()
+  addnode!(subtree)
   branchcount = 0
   branchlist = Int64[]
   append!(branchlist, tree.nodes[node].out)

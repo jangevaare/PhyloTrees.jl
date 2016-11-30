@@ -18,8 +18,6 @@ module PhyloTrees
   export
     # Trees
     Tree,
-    Node,
-    Branch,
     addnode!,
     addnodes!,
     addbranch!,

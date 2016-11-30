@@ -1,17 +1,18 @@
 """
 Node of phylogenetic tree
 """
-type Node
+type Node{N}
   label::Nullable{String}
   in::Vector{Int64}
   out::Vector{Int64}
+  data::Nullable{N}
 
   function Node()
-    new(Nullable{String}(), Int64[], Int64[])
+    new(Nullable{String}(), Int64[], Int64[], Nullable())
   end
-  
+
   function Node(label::String)
-    new(Nullable(label), Int64[], Int64[])
+    new(Nullable(label), Int64[], Int64[], Nullable())
   end
 end
 

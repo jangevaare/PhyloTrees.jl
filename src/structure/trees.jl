@@ -1,25 +1,13 @@
 """
 Phylogenetic tree object
 """
-type Tree
-  nodes::Vector{Node}
-  branches::Vector{Branch}
+type Tree{N, B}
+  nodes::Vector{Node{N}}
+  branches::Vector{Branch{B}}
 
-  Tree() = new([Node()], Branch[])
+  Tree() = new(Node{N}[], Branch{B}[])
 
   Tree(nodes::Vector{Node}, branches::Vector{Branch}) = new(nodes, branches)
-
-  function Tree(nodes::Int64)
-    if nodes < 0
-      error("Invalid number of nodes specified")
-    end
-    tree = new(Node[], Branch[])
-    for i = 1:nodes
-      push!(tree.nodes, Node())
-    end
-    return tree
-  end
-
 end
 
 
