@@ -1,3 +1,0 @@
-abstract SubstitutionModel
-
-abstract SubstitutionModelPrior
