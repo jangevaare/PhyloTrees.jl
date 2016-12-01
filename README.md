@@ -28,7 +28,7 @@ To initialize a `Tree`, you must declare the data type of each `Node` and `Branc
     Phylogenetic tree with 0 nodes and 0 branches
 
 ### The basics
-There are several ways to add nodes and branches to our tree, see below for examples
+There are several ways to add nodes and branches to our `Tree`, see below for examples
 
     > # Add a node to the tree
     > addnode!(exampletree)
@@ -52,13 +52,13 @@ There are several ways to add nodes and branches to our tree, see below for exam
 
 ### Nodes
 
-We can quickly look at the nodes present in our tree:
+We can quickly look at the nodes present in our `Tree`:
+
     > exampletree.nodes
     4-element Array{PhyloTrees.Node{Float64},1}:
     [root node]-->[branch 1]                                                               
     [branch 1]-->[internal node]-->[branch 2]
     [branch 2]-->[leaf node]                                                                    
-
 We can label nodes:
 
     > # Set a label for node 1
@@ -77,14 +77,14 @@ We can label nodes:
     > addnode!(exampletree, "Another test label")
     Phylogenetic tree with 5 nodes and 2 branches
 
-Node data is contained in a Nullable{N} field named data:
+Node data is contained in a `Nullable{N}` field named `data`:
 
     > node 1
     > exampletree.nodes[1].data
     Nullable{Float64}()
 
     > Get the data in node 1
-    get(exampletree.nodes[1])
+    > get(exampletree.nodes[1])
     ERROR: NullException()     
 
 ### Branches
@@ -99,17 +99,19 @@ Branches optionally have lengths. Branch lengths are `Nullable{Float64}` objects
     > get(exampletree.branches[3].length)
     10.0
 
-Branches are not labelled, but they do have a Nullable{B} field named data:
+Branches are not labelled, but they do have a `Nullable{B}` field named `data`:
 
     > Get the data in branch 1
-    get(exampletree.branches[1])
+    > get(exampletree.branches[1])
     ERROR: NullException()
 
 ### Other capabilities
 
 Distance between nodes can be calculated using the `distance` function. A node visit ordering for postorder traversal of a tree can be found with `postorder`.
 
-There are many other functions available that are helpful when dealing with trees:
+Trees can be plotted using `plot`.
+
+There are many other functions available that are helpful when dealing with trees including:
 `addsubtree!`,
 `subtree`,
 `changesource!`,
