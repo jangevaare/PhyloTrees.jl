@@ -616,11 +616,7 @@ function subtree(tree::Tree,
     for i in branchlist[branchcount+1:end]
       push!(nodelist, tree.branches[i].target)
       new_source = findfirst(tree.branches[i].source .== nodelist)
-      if isnull(tree.branches[i].length)
-        branch!(subtree, new_source)
-      else
-        branch!(subtree, new_source, get(tree.branches[i].length))
-      end
+      branch!(subtree, new_source, tree.branches[i].length)
     end
     branchcount = length(subtree.branches)
     for i in nodelist[nodecount+1:end]
@@ -667,28 +663,20 @@ end
 
 
 """
-Label a node
+setlabel!(node::Node, label::String)
+
+Set the label of a node
 """
-function setlabel!(node::Node,
-                   label::String)
+function setlabel!(node::Node, label::String)
   node.label = Nullable(label)
   return node
 end
 
 
 """
-Label a node
-"""
-function setlabel!(tree::Tree,
-                   node::Int64,
-                   label::String)
-  validnode(tree, node)
-  return setlabel!(tree.nodes[node], label)
-end
+haslabel(node::Node)
 
-
-"""
-Does a node have a label?
+Determine if a node has a label
 """
 function haslabel(node::Node)
   return !isnull(node.label)
@@ -696,16 +684,9 @@ end
 
 
 """
-Does a node have a label?
-"""
-function haslabel(tree::Tree, node::Int64)
-  validnode(tree, node)
-  return haslabel(tree.nodes[node])
-end
+getlabel(node::Node)
 
-
-"""
-Label of a node
+Get the label of a node
 """
 function getlabel(node::Node)
   if haslabel(node)
@@ -717,19 +698,35 @@ end
 
 
 """
-Label of a node
+setdata!(x::TreeComponent, data)
+
+Set data of a `Node` or `Branch`
 """
-function getlabel(tree::Tree, node::Int64)
-  validnode(tree, node)
-  return getlabel(tree.nodes[node])
+function setdata!(x::TreeComponent, data)
+  x.data = Nullable(data)
+  return x
 end
 
 
-function get(node::Node)
-  return get(node.data)
+"""
+hasdata(x::TreeComponent)
+
+Determine if a `Node` or `Branch` has data
+"""
+function hasdata(x::TreeComponent)
+  return !isnull(x.data)
 end
 
 
-function get(branch::Branch)
-  return get(branch.data)
+"""
+getdata(x::TreeComponent)
+
+Get data of a `Node` or `Branch`
+"""
+function getdata(x::TreeComponent)
+  if hasdata(x)
+    return get(x.data)
+  else
+    error("Component does not have data")
+  end
 end

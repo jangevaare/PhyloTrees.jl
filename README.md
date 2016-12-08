@@ -84,25 +84,25 @@ Node data is contained in a `Nullable{N}` field named `data`:
     Nullable{Float64}()
 
     > Get the data in node 1
-    > get(exampletree.nodes[1])
+    > getdata(exampletree.nodes[1])
     ERROR: NullException()     
 
 ### Branches
 
-Branches optionally have lengths. Branch lengths are `Nullable{Float64}` objects
+Branches have `Float64` lengths
 
     > # Add a branch of length 10.0 from node 2 to 4
     > addbranch!(exampletree, 2, 4, 10.0)
     Phylogenetic tree with 5 nodes and 3 branches
 
     > Retrieve the length of branch 3
-    > get(exampletree.branches[3].length)
+    > exampletree.branches[3].length
     10.0
 
 Branches are not labelled, but they do have a `Nullable{B}` field named `data`:
 
     > Get the data in branch 1
-    > get(exampletree.branches[1])
+    > getdata(exampletree.branches[1])
     ERROR: NullException()
 
 ### Other capabilities
@@ -140,4 +140,10 @@ There are many other functions available that are helpful when dealing with tree
 `descendantnodes`,
 `ancestorcount`,
 `ancestornodes`, and
-`nodetype`.
+`nodetype`,
+`haslabel`,
+`setlabel!`,
+`getlabel`,
+`hasdata`,
+`setdata!`,
+`getdata`

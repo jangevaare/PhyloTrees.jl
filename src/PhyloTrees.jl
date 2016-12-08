@@ -55,6 +55,9 @@ module PhyloTrees
     setlabel!,
     haslabel,
     getlabel,
+    setdata!,
+    hasdata,
+    getdata,
 
     # Distance
     distance,
