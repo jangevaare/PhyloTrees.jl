@@ -1,5 +1,7 @@
 """
-Check if a node index is valid
+validnodes(tree::Tree, node:Int64)
+
+Determine if node index is valid
 """
 function validnode(tree::Tree,
                    node::Int64)
@@ -12,7 +14,9 @@ end
 
 
 """
-Check if a node index is valid
+validnodes(tree::Tree, nodes::Array{Int64})
+
+Determine if node indices are valid
 """
 function validnodes(tree::Tree,
                     nodes::Array{Int64})
@@ -21,7 +25,9 @@ end
 
 
 """
-Check if a node index is valid
+validnodes(tree::Tree, nodes::UnitRange{Int64})
+
+Determine if node indices are valid
 """
 function validnodes(tree::Tree,
                     nodes::UnitRange{Int64})
@@ -30,7 +36,9 @@ end
 
 
 """
-Check if a branch index is valid
+validbranch(tree::Tree, branch::Int64)
+
+Determine if a branch index is valid
 """
 function validbranch(tree::Tree,
                      branch::Int64)
@@ -43,7 +51,9 @@ end
 
 
 """
-Check if a branch index is valid
+validbranches(tree::Tree, branches::Array{Int64})
+
+Determine if branch indices are valid
 """
 function validbranches(tree::Tree,
                        branches::Array{Int64})
@@ -52,7 +62,9 @@ end
 
 
 """
-Check if a branch index is valid
+validbranches(tree::Tree, branches::UnitRange{Int64})
+
+Determine if branch indices are valid
 """
 function validbranches(tree::Tree,
                        branches::UnitRange{Int64})
@@ -61,7 +73,9 @@ end
 
 
 """
-Returns the in degree of a node
+indegree(node::Node)
+
+Determine the in degree of a node
 """
 function indegree(node::Node)
   return length(node.in)
@@ -69,7 +83,9 @@ end
 
 
 """
-Returns the in degree of a node
+indegree(tree::Tree, node::Int64)
+
+Determine the in degree of a node
 """
 function indegree(tree::Tree,
                   node::Int64)
@@ -79,7 +95,9 @@ end
 
 
 """
-Returns the out degree of a node
+outdegree(node::Node)
+
+Determine the out degree of a node
 """
 function outdegree(node::Node)
   return length(node.out)
@@ -87,7 +105,9 @@ end
 
 
 """
-Returns the out degree of a node
+outdegree(tree::Tree, node::Int64)
+
+Determine the out degree of a node
 """
 function outdegree(tree::Tree,
                    node::Int64)
@@ -97,7 +117,9 @@ end
 
 
 """
-Is a particular node a root?
+isroot(node::Node)
+
+Determine if a node is a root node
 """
 function isroot(node::Node)
   if outdegree(node) > 0 && indegree(node) == 0
@@ -109,16 +131,21 @@ end
 
 
 """
-Is a particular node a root?
+isroot(tree::Tree, node::Int64)
+
+Determine if a node is a root node
 """
-function isroot(tree::Tree, node::Int64)
+function isroot(tree::Tree,
+                node::Int64)
   validnode(tree, node)
   return isroot(tree.nodes[node])
 end
 
 
 """
-Is a particular node a leaf?
+isleaf(node::Node)
+
+Determine if a node is a leaf node
 """
 function isleaf(node::Node)
   if outdegree(node) == 0 && indegree(node) == 1
@@ -130,16 +157,21 @@ end
 
 
 """
-Is a particular node a leaf?
+isleaf(tree::Tree, node::Int64)
+
+Determine if a node is a leaf node
 """
-function isleaf(tree::Tree, node::Int64)
+function isleaf(tree::Tree,
+                node::Int64)
   validnode(tree, node)
   return isleaf(tree.nodes[node])
 end
 
 
 """
-Is a particular node an internal node?
+isnode(node::Node)
+
+Determine if a node is an internal node
 """
 function isnode(node::Node)
   if outdegree(node) > 0 && indegree(node) == 1
@@ -151,16 +183,21 @@ end
 
 
 """
-Is a particular node an internal node?
+isnode(tree::Tree, node::Int64)
+
+Determine if a node is an internal node
 """
-function isnode(tree::Tree, node::Int64)
+function isnode(tree::Tree,
+                node::Int64)
   validnode(tree, node)
   return isnode(tree.nodes[node])
 end
 
 
 """
-Is a node an internal node, a root node, or a leaf
+nodetype(node::Node)
+
+Determine if a node is an internal node, root node or leaf node
 """
 function nodetype(node::Node)
   ins = indegree(node)
@@ -186,9 +223,12 @@ end
 
 
 """
-Is a node an internal node, a root node, or a leaf
+nodetype(tree::Tree, node::Int64)
+
+Determine if a node is an internal node, root node or leaf node
 """
-function nodetype(tree::Tree, node::Int64)
+function nodetype(tree::Tree,
+                  node::Int64)
   if validnode(tree, node)
     return nodetype(tree.nodes[node])
   end
@@ -196,7 +236,9 @@ end
 
 
 """
-Find the roots of a phylogenetic tree
+findroots(tree::Tree)
+
+Find the roots of a `Tree`
 """
 function findroots(tree::Tree)
   roots = Int64[]
@@ -209,6 +251,21 @@ function findroots(tree::Tree)
     warn("No roots detected")
   end
   return roots
+end
+
+
+"""
+findroot(tree::Tree)
+
+Find the root of a `Tree`
+"""
+function findroot(tree::Tree)
+  roots = findroots(tree)
+  if length(roots) != 1
+    error("More than 1 root detected")
+  else
+    return roots[1]
+  end
 end
 
 
