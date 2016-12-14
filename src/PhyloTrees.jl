@@ -1,3 +1,5 @@
+__precompile__()
+
 module PhyloTrees
 
   # Dependencies
@@ -9,9 +11,7 @@ module PhyloTrees
     Base.show,
     Base.push!,
     Base.append!,
-    Base.length,
-    Base.getindex,
-    Base.get
+    Base.getindex
 
   # Functions provided
   export
