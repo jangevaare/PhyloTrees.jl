@@ -23,14 +23,10 @@ module PhyloTrees
     addnodes!,
     addbranch!,
     branch!,
-    addsubtree!,
-    subtree,
     changesource!,
     changetarget!,
-    validnode,
-    validnodes,
-    validbranch,
-    validbranches,
+    deletenode!,
+    deletebranch!,
     indegree,
     outdegree,
     isroot,
@@ -53,12 +49,6 @@ module PhyloTrees
     ancestorcount,
     ancestornodes,
     nodetype,
-    setlabel!,
-    haslabel,
-    getlabel,
-    setdata!,
-    hasdata,
-    getdata,
 
     # Distance
     distance,
@@ -67,8 +57,9 @@ module PhyloTrees
     postorder
 
   # Package files
-  include("core.jl")
+  include("structure.jl")
   include("show.jl")
+  include("construction.jl")
   include("utilities.jl")
   include("distance.jl")
   include("traversal.jl")
