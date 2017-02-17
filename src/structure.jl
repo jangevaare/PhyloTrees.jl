@@ -1,20 +1,12 @@
-abstract TreeComponent
-
 """
 A parametric node of phylogenetic tree
 """
-type Node{N} <: TreeComponent
-  label::Nullable{String}
+type Node
   in::Vector{Int64}
   out::Vector{Int64}
-  data::Nullable{N}
 
   function Node()
-    new(Nullable{String}(), Int64[], Int64[], Nullable())
-  end
-
-  function Node(label::String)
-    new(Nullable(label), Int64[], Int64[], Nullable())
+    new(Int64[], Int64[])
   end
 end
 
@@ -22,21 +14,20 @@ end
 """
 A directed parametric branch connecting two nodes of phylogenetic tree
 """
-type Branch{B} <: TreeComponent
+type Branch
   source::Int64
   target::Int64
   length::Float64
-  data::Nullable{B}
 
   function Branch(source::Int64, target::Int64, length::Float64)
     if length < 0.
       error("Branch length must be positive")
     end
-    new(source, target, length, Nullable())
+    new(source, target, length)
   end
 
   function Branch(source::Int64, target::Int64)
-    new(source, target, NaN, Nullable())
+    new(source, target, NaN)
   end
 end
 
@@ -44,9 +35,9 @@ end
 """
 Parametric phylogenetic tree object
 """
-type Tree{N, B}
-  nodes::Vector{Node{N}}
-  branches::Vector{Branch{B}}
+type Tree
+  nodes::Dict{Int64, Node}
+  branches::Dict{Int64, Branch}
 
-  Tree() = new(Node{N}[], Branch{B}[])
+  Tree() = new(Dict{Int64, Node}(), Dict{Int64, Branch}())
 end

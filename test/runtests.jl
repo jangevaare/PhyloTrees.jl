@@ -1,9 +1,7 @@
 using PhyloTrees
 using Base.Test
 
-# 1.0 Tree operations
-# 1.1 Tree creation
-g = Tree{Void, Void}()
+g = Tree()
 addnode!(g)
 branch!(g, 1, 10.0)
 branch!(g, 1, 5.0)
@@ -23,9 +21,3 @@ end
 @test distance(g, 1, 2) == 10.0
 @test distance(g, 1, 4) == 30.0
 @test distance(g, 4, 3) == 35.0
-
-# 1.2 Subtrees
-@test findleaves(subtree(g, 1)) == findleaves(g)
-
-# 1.3 Combining trees
-@test 2*length(findroots(g)) == length(findroots(addsubtree!(g, subtree(g, 1))))

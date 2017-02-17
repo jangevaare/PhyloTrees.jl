@@ -1,11 +1,14 @@
 """
-Function to visit the nodes of a phylogenetic tree with postorder traversal
+postorder(tree::Tree)
+
+`Node` postorder traversal order
 """
 function postorder(tree::Tree)
-  visited = fill(false, length(tree.nodes))
+  nodes = collect(keys(tree.nodes))
+  visited = Dict{Int64, Bool}(i => false for i in nodes)
   visit_order = Int64[]
-  next = findfirst(!visited)
-  while !all(visited)
+  next = nodes[findfirst(!collect(values(visited)))]
+  while !all(collect(values(visited)))
     sub_visited = Bool[]
     for i in tree.nodes[next].out
       push!(sub_visited, visited[tree.branches[i].target])
@@ -13,11 +16,11 @@ function postorder(tree::Tree)
     if all(sub_visited) || length(sub_visited) == 0
       push!(visit_order, next)
       visited[next] = true
-      if !all(visited)
-        if length(tree.branches[tree.nodes[next].in]) > 0
+      if !all(collect(values(visited)))
+        if length(tree.nodes[next].in) == 1
           next = tree.branches[tree.nodes[next].in[1]].source
         else
-          next = findfirst(!visited)
+          next = nodes[findfirst(!collect(values(visited)))]
         end
       end
     else
