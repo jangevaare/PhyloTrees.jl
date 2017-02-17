@@ -13,16 +13,12 @@ To enable plotting, install [Plots.jl](https://github.com/tbreloff/Plots.jl) and
 
 ## Usage
 
-### Tree initialization
-To initialize a `Tree`, you must declare the data type of each `Node` and `Branch`:
+There are several ways to add nodes and branches to our `Tree`, see below for examples
 
     > # Initialize the tree
     > exampletree = Tree()
 
     Phylogenetic tree with 0 nodes and 0 branches
-
-### The basics
-There are several ways to add nodes and branches to our `Tree`, see below for examples
 
     > # Add a node to the tree
     > addnode!(exampletree)
@@ -64,10 +60,6 @@ Trees can be plotted using `plot`.
 There are many other functions available that are helpful when dealing with trees including:
 `changesource!`,
 `changetarget!`,
-`validnode`,
-`validnodes`,
-`validbranch`,
-`validbranches`,
 `indegree`,
 `outdegree`,
 `isroot`,
