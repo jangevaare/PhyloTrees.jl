@@ -35,8 +35,7 @@ distance(tree::Tree,
 Distance between a `Node` and it's associated root
 """
 function distance(tree::Tree,
-                  node1::Int64,
-                  node2::Int64)
+                  node::Int64)
   path = branchpath(tree, node)
   dist = 0.
   for i in path
