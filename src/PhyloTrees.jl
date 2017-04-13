@@ -2,22 +2,27 @@ __precompile__()
 
 module PhyloTrees
 
-  # Dependencies
-  using
-    RecipesBase
+# Dependencies
+using RecipesBase
 
-  # Methods expanded
-  import
-    Base.show,
-    Base.push!,
-    Base.append!,
-    Base.getindex
+# Methods expanded
+import Base.show, Base.push!, Base.append!, Base.getindex
 
-  # Functions provided
-  export
+# Functions provided
+export
     # Trees
+    AbstractTree,
     Tree,
+    ParameterisedTree,
 
+    # Nodes
+    AbstractNode,
+    Node,
+    BinaryNode,
+    
+    # Branches
+    Branch,
+    
     # Utilities
     addnode!,
     addnodes!,
@@ -56,12 +61,14 @@ module PhyloTrees
     # Traversal
     postorder
 
-  # Package files
-  include("structure.jl")
-  include("show.jl")
-  include("construction.jl")
-  include("utilities.jl")
-  include("distance.jl")
-  include("traversal.jl")
-  include("plot.jl")
+# Package files
+
+include("interface.jl")
+include("structure.jl")
+include("show.jl")
+include("construction.jl")
+include("utilities.jl")
+include("distance.jl")
+include("traversal.jl")
+include("plot.jl")
 end
