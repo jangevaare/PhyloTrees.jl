@@ -59,13 +59,13 @@ A node of strict binary phylogenetic tree
 """
 type BinaryNode <: AbstractNode
     inbound::Int
-    outbound::Vector{Int}
+    outbound::Tuple{Int, Int}
 
-    function BinaryNode(inbound::Int, outbound::Vector{Int})
+    function BinaryNode(inbound::Int, outbound::Tuple{Int, Int})
         inbound >= 0 ||
             error("Inbound BinaryNode branch must be non-negative")
-        all(outbound .> 0) ||
-            error("BinaryNode must have positive outbound branches")
+        all(outbound .>= 0) ||
+            error("BinaryNode must have non-negative outbound branches")
         new(inbound, outbound)
     end
 end
@@ -73,7 +73,6 @@ end
 function BinaryNode()
     return BinaryNode(0, Int[])
 end
-
 
 function getinbounds(node::BinaryNode)
     return node.inbound == 0 ? Int[] : [node.in]
@@ -84,7 +83,8 @@ function getinbound(node::BinaryNode)
 end
 
 function setinbound(node::BinaryNode, inbound::Int)
-    node.inbound = inbound
+    node.inbound == 0 ? node.inbound = inbound :
+        error("BinaryNode already has an inbound connection")
 end
 
 function hasinbound(node::BinaryNode)
@@ -92,11 +92,15 @@ function hasinbound(node::BinaryNode)
 end
 
 function getoutbounds(node::BinaryNode)
-    return node.outbound
+    return node.outbound[1] == 0 ?
+        (node.outbound[2] == 0 ? Int[] : [node.outbound[2]]) :
+        node.outbound[2] == 0 ? [node.outbound[1]] : [node.outbound[1], node.outbound[2]]
 end
 
 function setoutbound(node::BinaryNode, outbound::Int)
-    push!(node.outbound, outbound)
+    node.outbound[1] == 0 ? node.outbound[1] = outbound :
+        node.outbound[2] == 0 ? node.outbound[2] = outbound :
+        error("BinaryNode already has two outbound connections")
 end
 
 function countoutbounds(node::BinaryNode)
