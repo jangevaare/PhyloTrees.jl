@@ -23,33 +23,36 @@ There are several ways to add nodes and branches to our `Tree`, see below for ex
     > # Add a node to the tree
     > addnode!(exampletree)
 
-    Phylogenetic tree with 1 nodes and 0 branches
+    1
 
-Branches have `Float64` lengths
+Creating new nodes and branches alter the input tree, and return the
+created node or branch id. Branches have `Float64` lengths:
 
     > # Add a node, connect it to node 1 with a branch 5.0 units in length
     > branch!(exampletree, 1, 5.0)
 
-    Phylogenetic tree with 2 nodes and 1 branches
+    2
 
     > # Add 2 nodes
     > addnodes!(exampletree, 2)
 
-    Phylogenetic tree with 4 nodes and 1 branches
+    2-element Array{Int64,1}:
+     3
+     4
 
     > # Add a branch from node 2 to node 3 10.0 units in length
     > addbranch!(exampletree, 2, 3, 10.0)
 
-    Phylogenetic tree with 4 nodes and 2 branches
+    2
 
 We can quickly look at the nodes present in our `Tree`:
 
-    > collect(exampletree.nodes)
-    
-    [unattached node]
-    [branch 1]-->[internal node]-->[branch 2]
-    [branch 2]-->[leaf node]                 
-    [root node]-->[branch 1]
+    > collect(getnodes(exampletree))
+    4-element Array{Pair{Int64,PhyloTrees.Node},1}:
+     [unattached node 4]
+     [branch 1]-->[internal node 2]-->[branch 2]
+     [branch 2]-->[leaf node 3]
+     [root node 1]-->[branch 1]
 
 ### Other capabilities
 
