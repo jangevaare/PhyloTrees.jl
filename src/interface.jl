@@ -127,7 +127,7 @@ function countoutbounds(tree::AbstractTree, node::Int)
     countoutbounds(getnodes(tree)[node])
 end
 function getsource(tree::AbstractTree, branch::Int)
-    gettarget(getbranches(tree)[branch])
+    getsource(getbranches(tree)[branch])
 end
 function gettarget(tree::AbstractTree, branch::Int)
     gettarget(getbranches(tree)[branch])
