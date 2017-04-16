@@ -110,3 +110,25 @@ function checkbranchinfo(::Int, ::Void)
 end
 
 function checkbranch end
+
+function hasinbound(tree::AbstractTree, node::Int)
+    hasinbound(getnodes(tree)[node])
+end
+function getinbound(tree::AbstractTree, node::Int)
+    getinbound(getnodes(tree)[node])
+end
+function getinbounds(tree::AbstractTree, node::Int)
+    getinbounds(getnodes(tree)[node])
+end
+function getoutbounds(tree::AbstractTree, node::Int)
+    getoutbounds(getnodes(tree)[node])
+end
+function countoutbounds(tree::AbstractTree, node::Int)
+    countoutbounds(getnodes(tree)[node])
+end
+function getsource(tree::AbstractTree, branch::Int)
+    gettarget(getbranches(tree)[branch])
+end
+function gettarget(tree::AbstractTree, branch::Int)
+    gettarget(getbranches(tree)[branch])
+end
