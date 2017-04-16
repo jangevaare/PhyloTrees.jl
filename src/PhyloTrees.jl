@@ -24,9 +24,13 @@ export
     BinaryNode,
     countoutbounds,
     getoutbounds,
+    addoutbound!,
+    deleteoutbound!,
     hasinbound,
     getinbound,
     getinbounds,
+    setinbound!,
+    deleteoutbound!,
     
     # Branches
     Branch,

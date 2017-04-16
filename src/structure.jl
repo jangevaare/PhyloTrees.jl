@@ -28,8 +28,13 @@ function getinbound(node::Node)
     return hasinbound(node) ? node.inbound[1] : 0
 end
 
-function setinbound(node::Node, inbound::Int)
+function setinbound!(node::Node, inbound::Int)
     push!(node.inbound, inbound)
+end
+
+function deleteinbound!(node::Node, inbound::Int)
+    inbound ∈ node.inbound ? filter!(i -> i != inbound, node.inbound) :
+        error("Node does not have inbound connection from branch $inbound")
 end
 
 function hasinbound(node::Node)
@@ -40,8 +45,13 @@ function getoutbounds(node::Node)
     return node.outbound
 end
 
-function setoutbound(node::Node, outbound::Int)
+function addoutbound!(node::Node, outbound::Int)
     push!(node.outbound, outbound)
+end
+
+function deleteoutbound!(node::Node, outbound::Int)
+    outbound ∈ node.outbound ? filter!(i -> i != outbound, node.outbound) :
+        error("Node does not have outbound connection from branch $outbound")
 end
 
 function countoutbounds(node::Node)
@@ -82,9 +92,14 @@ function getinbound(node::BinaryNode)
     return node.inbound
 end
 
-function setinbound(node::BinaryNode, inbound::Int)
+function setinbound!(node::BinaryNode, inbound::Int)
     node.inbound == 0 ? node.inbound = inbound :
         error("BinaryNode already has an inbound connection")
+end
+
+function deleteinbound!(node::BinaryNode, inbound::Int)
+    node.inbound == inbound ? node.inbound = 0 :
+        error("BinaryNode does not have inbound connection from branch $inbound")
 end
 
 function hasinbound(node::BinaryNode)
@@ -97,10 +112,16 @@ function getoutbounds(node::BinaryNode)
         node.outbound[2] == 0 ? [node.outbound[1]] : [node.outbound[1], node.outbound[2]]
 end
 
-function setoutbound(node::BinaryNode, outbound::Int)
+function addoutbound!(node::BinaryNode, outbound::Int)
     node.outbound[1] == 0 ? node.outbound[1] = outbound :
         node.outbound[2] == 0 ? node.outbound[2] = outbound :
         error("BinaryNode already has two outbound connections")
+end
+
+function deleteoutbound!(node::BinaryNode, outbound::Int)
+    node.outbound[1] == outbound ? node.outbound[1] = 0 :
+        node.outbound[2] == outbound ? node.outbound[2] = 0 :
+        error("BinaryNode does not have outbound connection to branch $outbound")
 end
 
 function countoutbounds(node::BinaryNode)

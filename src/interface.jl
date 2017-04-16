@@ -6,25 +6,25 @@ function getinbounds end
 
 function getinbound end
 
-function setinbound end
+function setinbound! end
+
+function deleteinbound! end
 
 function hasinbound end
 
-isroot(node::AbstractNode) = !hasinbound(node)
+isroot(node::AbstractNode) = !hasinbound(node) && countoutbounds(node) > 0
 
 function getoutbounds end
 
-function setoutbound end
+function addoutbound! end
+
+function deleteoutbound! end
 
 function countoutbounds end
 
-isleaf(node::AbstractNode) = countoutbounds(node) == 0
+isleaf(node::AbstractNode) = countoutbounds(node) == 0 && hasinbound(node)
 
 function outboundspace end
-
-@compat abstract type AbstractNode end
-
-function getinbounds end
 
 @compat abstract type AbstractInfo{Label} end
 
@@ -132,3 +132,12 @@ end
 function gettarget(tree::AbstractTree, branch::Int)
     gettarget(getbranches(tree)[branch])
 end
+
+function addnode! end
+function addnodes! end
+function deletenode! end
+function branch! end
+function addbranch! end
+function deletebranch! end
+function changesource! end
+function changetarget! end

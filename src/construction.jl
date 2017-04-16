@@ -1,223 +1,262 @@
 """
-addnode!(tree::Tree)
+    addnode!(tree::Tree)
 
 Adds a single `Node` to a `Tree`
 """
-function addnode!(tree::Tree)
-  # Find highest node index
-  if length(tree.nodes) == 0
-    max_node = 0
-  else
-    max_node = maximum(keys(tree.nodes))
-  end
-  # Add the new node
-  tree.nodes[max_node+1] = Node()
-  # Return the updated tree
-  return tree
+function addnode!{N <: AbstractNode}(tree::Tree{N}; id::Int = 0)
+    node = N()
+    if (id > 0)
+        checknode(id, node, tree) ||
+            error("Can't create known node $id")
+    else
+        # Find highest node index
+        if isempty(getnodes(tree))
+            max_node = 0
+        else
+            max_node = maximum(keys(getnodes(tree)))
+        end
+        
+        # Add the new node
+        id = max_node + 1
+        checknode(id, node, tree) ||
+            error("Can't create new node $id")
+    end
+    getnodes(tree)[id] = node
+    # Return the updated tree
+    return id
 end
 
+function addnode!{N <: AbstractNode,
+                  NI <: AbstractNodeInfo,
+                  BI <: AbstractBranchInfo}(tree::ParameterisedTree{N, NI, BI};
+                                            id::Int = 0)
+    node = N()
+    if (id > 0)
+        checknode(id, node, tree) ||
+            error("Can't create known node $id")
+    else
+        # Find highest node index
+        if isempty(getnodes(tree))
+            max_node = 0
+        else
+            max_node = maximum(keys(getnodes(tree)))
+        end
+        
+        # Add the new node
+        id = max_node + 1
+        checknode(id, node, tree) ||
+            error("Can't create new node $id")
+    end
+    getnodes(tree)[id] = node
+    if !checknodeinfo(id, getnodeinfo(tree))
+        getnodeinfo(tree)[id] = NI()
+    end
+    # Return the updated tree
+    return id
+end
+
+function addnode!{N <: AbstractNode,
+                  NI <: AbstractNodeInfo,
+                  BI <: AbstractBranchInfo}(tree::ParameterisedTree{N, NI, BI}, label)
+    if !haslabel(getnodeinfo(tree), label)
+        error("Label $label is not found in $NI Dict")
+    end
+    return addnode!(tree, id = getid(getnodeinfo(tree), label))
+end
 
 """
-addnodes!(tree::Tree,
-          nodes::Int64)
+    addnodes!(tree::Tree,
+              nodes::Int)
 
 Adds multiple `Node`s to a `Tree`
 """
-function addnodes!(tree::Tree,
-                   nodes::Int64)
-  # Find highest node index
-  if length(tree.nodes) == 0
-    max_node = 0
-  else
-    max_node = maximum(keys(tree.nodes))
-  end
-  # Add the new nodes
-  for i = 1:nodes
-    tree.nodes[max_node+i] = Node()
-  end
-  # Return the updated tree
-  return tree
+function addnodes!(tree::AbstractTree,
+                   nodes::Int)
+    return map(_ -> addnode!(tree), 1:nodes)
 end
 
 
 """
-deletenode!(tree::Tree,
-            nodes::Int64)
+    deletenode!(tree::Tree,
+                nodes::Int)
 
 Deletes a specified `Node` from a `Tree`
 """
-function deletenode!(tree::Tree,
-                     node::Int64)
-  # Check if node exists
-  if !haskey(tree.nodes, node)
-    error("Node does not exist")
-  # Check if any branches are connected to node
-  elseif length(tree.nodes[node].in) > 0 || length(tree.nodes[node].out) > 0
-    error("There are currently branches connected to this node")
-  end
-  # Remove node itself
-  delete!(tree.nodes, node)
-  return tree
+function deletenode!(tree::AbstractTree,
+                     node::Int)
+    # Check if node exists
+    if !haskey(getnodes(tree), node)
+        error("Node does not exist")
+        # Check if any branches are connected to node
+    elseif hasinbound(tree, node) || countoutbounds(tree, node) > 0
+        error("There are currently branches connected to this node")
+    end
+    # Remove node itself
+    delete!(getnodes(tree), node)
+    return tree
 end
 
 
 """
-addbranch!(tree::Tree,
-           source::Int64,
-           target::Int64,
-           branch_length::Float64)
+    addbranch!(tree::Tree,
+               source::Int,
+               target::Int,
+               branch_length::Float64; id::Int = 0)
 
 Adds a `Branch` of specified length to a `Tree`
 """
-function addbranch!(tree::Tree,
-                    source::Int64,
-                    target::Int64,
-                    branch_length::Float64)
-  # Error checking
-  if target == source
-    error("Branch must connect unique nodes")
-  elseif !haskey(tree.nodes, source)
-    error("Source node does not exist")
-  elseif !haskey(tree.nodes, target)
-    error("Target node does not exist")
-  elseif length(tree.nodes[target].in) == 1
-    error("The in degree of the target node is > 1")
-  end
-  # Find highest branch index
-  if length(tree.branches) == 0
-    max_branch = 0
-  else
-    max_branch = maximum(keys(tree.branches))
-  end
-  # Add the new branch
-  tree.branches[max_branch+1] = Branch(source, target, branch_length)
-  # Update the associated source and target nodes
-  push!(tree.nodes[source].out, max_branch+1)
-  push!(tree.nodes[target].in, max_branch+1)
-  # Return updated tree
-  return tree
+function addbranch!(tree::AbstractTree,
+                    source::Int,
+                    target::Int,
+                    branch_length::Float64; id::Int = 0)
+    
+    branch = Branch(source, target, branch_length)
+    if (id > 0)
+        checkbranch(id, branch, tree) ||
+            error("Can't create known branch $id")
+    else
+        # Find highest branch index
+        if isempty(getbranches(tree))
+            max_branch = 0
+        else
+            max_branch = maximum(keys(getbranches(tree)))
+        end
+        
+        # Add the new branch
+        id = max_branch + 1
+        checkbranch(id, branch, tree) ||
+            error("Can't create new branch $id")
+    end
+    
+    # Add the new branch
+    getbranches(tree)[id] = branch
+    
+    # Update the associated source and target nodes
+    setoutbound(getnodes(tree)[source], id)
+    setinbound(getnodes(tree)[target], id)
+    
+    # Return updated tree
+    return id
 end
 
+function addbranch!{N <: AbstractNode,
+                    NI <: AbstractNodeInfo,
+                    BI <: AbstractBranchInfo}(tree::ParameterisedTree{N, NI, BI},
+                                              source::Int,
+                                              target::Int,
+                                              branch_length::Float64,
+                                              label)
+    
+    if !haslabel(getbranchinfo(tree), label)
+        error("Label $label is not found in $BI Dict")
+    end
+    
+    return addbranch!(tree, source, target, id = getid(getbranchinfo(tree), label))
+end
 
 """
-branch!(tree::Tree,
-        source::Int64,
-        branch_length::Float64)
+    branch!(tree::Tree,
+            source::Int,
+            branch_length::Float64)
 
 Adds a `Branch` of a specified length, and a `Node` to a `Tree`
 """
-function branch!(tree::Tree,
-                 source::Int64,
+function branch!(tree::AbstractTree,
+                 source::Int,
                  branch_length::Float64)
-  # Error checking
-  if !haskey(tree.nodes, source)
-    error("Source node does not exist")
-  end
-  # Find highest node index
-  if length(tree.nodes) == 0
-    max_node = 0
-  else
-    max_node = maximum(keys(tree.nodes))
-  end
-  # Add the new node
-  tree.nodes[max_node+1] = Node()
-  # Find highest branch index
-  if length(tree.branches) == 0
-    max_branch = 0
-  else
-    max_branch = maximum(keys(tree.branches))
-  end  # Add the new branch
-  tree.branches[max_branch+1] = Branch(source, max_node+1, branch_length)
-  # Update the associated source and target nodes
-  push!(tree.nodes[source].out, max_branch+1)
-  push!(tree.nodes[max_node+1].in, max_branch+1)
-  # Return updated tree
-  return tree
+    target = addnode!(tree)
+    try
+        addbranch!(tree, source, target, branch_length)
+    catch
+        warn("Could not create new branch, deleting child node")
+        deletenode!(tree, target)
+    end
+    return target
 end
 
 
 """
-changesource!(tree::Tree,
-              branch::Int64,
-              new_source::Int64)
+    changesource!(tree::Tree,
+                  branch::Int,
+                  new_source::Int)
 
 Change the source `Node` of a `Branch`
 """
 function changesource!(tree::Tree,
-                       branch::Int64,
-                       new_source::Int64)
-  # Error checking
-  if !haskey(tree.branches, branch)
-    error("Branch does not exist")
-  elseif !haskey(tree.nodes, newsource)
-    error("New source node does not exist")
-  elseif new_source == tree.branches[branch].target
-    error("Branch must connect unique nodes")
-  end
-  # Identify old source node
-  old_source = tree.branches[branch].source
-  # Remove branch reference from old source node
-  splice!(tree.nodes[old_source].out, findfirst(tree.nodes[old_source].out .== branch))
-  # Update new source node with branch reference
-  push!(tree.nodes[newsource].out, branch)
-  # Update branch with new source node reference
-  tree.branches[branch].source = new_source
-  # Return updated tree
-  return tree
+                       branch::Int,
+                       new_source::Int)
+    # Error checking
+    if !haskey(getbranches(tree), branch)
+        error("Branch does not exist")
+    elseif !haskey(getnodes(tree), newsource)
+        error("New source node does not exist")
+    elseif new_source == gettarget(tree, branch)
+        error("Branch must connect unique nodes")
+    end
+    # Identify old source node
+    old_source = getsource(tree, branch)
+    # Remove branch reference from old source node
+    deleteoutbound!(getnodes(tree)[old_source], branch)
+    # Update new source node with branch reference
+    setoutbound!(getnodes(tree, new_source), branch)
+    # Update branch with new source node reference
+    setsource!(getbranches(tree, branch), new_source)
+    # Return updated tree
+    return tree
 end
 
 
 """
-changetarget!(tree::Tree,
-              branch::Int64,
-              new_target::Int64)
+    changetarget!(tree::Tree,
+                  branch::Int,
+                  new_target::Int)
 
 Change the source `Node` of a `Branch`
 """
 function changetarget!(tree::Tree,
-                       branch::Int64,
-                       new_target::Int64)
-  if !haskey(tree.branches, branch)
-    error("Branch does not exist")
-  elseif !haskey(tree.nodes, new_target)
-    error("New target node does not exist")
-  elseif length(tree.nodes[new_target].in) != 0
-    error("New target node has an in degree > 1")
-  end
-  # Identify old target node
-  old_target = tree.branches[branch].target
-  # Remove branch reference from old target node
-  splice!(tree.nodes[old_target].in, findfirst(tree.nodes[old_target].in .== branch))
-  # Add branch reference to new target node
-  push!(tree.nodes[new_target].in, branch)
-  # Update branch with new target node reference
-  tree.branches[branch].target = new_target
-  # Return updated tree
-  return tree
+                       branch::Int,
+                       new_target::Int)
+    if !haskey(tree.branches, branch)
+        error("Branch does not exist")
+    elseif !haskey(tree.nodes, new_target)
+        error("New target node does not exist")
+    elseif length(tree.nodes[new_target].in) != 0
+        error("New target node has an in degree > 1")
+    end
+    # Identify old target node
+    old_target = gettarget(tree, branch)
+    # Remove branch reference from old target node
+    deleteinbound!(getnodes(tree)[old_target], branch)
+    # Add branch reference to new target node
+    setinbound!(getnodes(tree, new_target), branch)
+    # Update branch with new target node reference
+    settarget!(getbranches(tree, branch), new_target)
+    # Return updated tree
+    return tree
 end
 
 
 """
-deletebranch!(tree::Tree,
-              branch::Int64)
+    deletebranch!(tree::Tree,
+                  branch::Int)
 
-Delete a `Branch` from a `Tree`
-"""
+    Delete a `Branch` from a `Tree`
+    """
 function deletebranch!(tree::Tree,
-                       branch::Int64)
-  if !haskey(tree.branches, branch)
-    error("Branch does not exist")
-  end
-  # Identify old source node
-  old_source = tree.branches[branch].source
-  # Identify old target node
-  old_target = tree.branches[branch].target
-  # Remove branch reference from its source node
-  splice!(tree.nodes[old_source].out, findfirst(tree.nodes[old_source].out .== branch))
-  # Remove branch reference from its target node
-  splice!(tree.nodes[old_target].in, findfirst(tree.nodes[old_target].in .== branch))
-  # Remove branch itself
-  delete!(tree.branches, branch)
-  # Return the updated tree
-  return tree
+                       branch::Int)
+    if !haskey(tree.branches, branch)
+        error("Branch does not exist")
+    end
+    # Identify old source node
+    old_source = getsource(tree, branch)
+    # Identify old target node
+    old_target = gettarget(tree, branch)
+    # Remove branch reference from its source node
+    deleteoutbound!(getnodes(tree)[old_source], branch)
+    # Remove branch reference from its target node
+    deleteinbound!(getnodes(tree)[old_target], branch)
+    # Remove branch itself
+    delete!(getbranches(tree), branch)
+    # Return the updated tree
+    return tree
 end
