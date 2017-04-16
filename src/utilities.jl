@@ -216,7 +216,7 @@ Find parent `Node`
 """
 function parentnode(tree::AbstractTree,
                     node::Int)
-    if indegree(tree, node) == 1
+    if hasinbound(tree, node)
         return getsource(tree, getinbound(tree, node))
     else
         error("In degree of specified node != 1")
@@ -299,11 +299,7 @@ end
 """
 function nodepath(tree::AbstractTree,
                   node::Int)
-    path = [node]
-    while isleaf(tree, path[end]) || isnode(tree, path[end])
-        push!(path, parentnode(tree, path[end]))
-    end
-    return path
+    return append!([node], ancestornodes(tree, node))
 end
 
 
@@ -315,7 +311,13 @@ Find ancestral `Node`s
 """
 function ancestornodes(tree::AbstractTree,
                        node::Int)
-    return nodepath(tree, node)[2:end]
+    ancestors = Int[]
+    current = node
+    while (hasinbound(tree, current))
+        current = parentnode(tree, current)
+        push!(ancestors, current)
+    end
+    return ancestors
 end
 
 
@@ -337,12 +339,8 @@ end
 
 Number of ancestral `Node`s
 """
-function ancestorcount(tree::AbstractTree, nodes::Array{Int})
-    count = fill(0, size(nodes))
-    for i in eachindex(nodes)
-        count[i] += ancestorcount(tree, nodes[i])
-    end
-    return count
+function ancestorcount(tree::AbstractTree, nodes::AbstractArray{Int})
+    return map(node -> ancestorcount(tree, node), nodes)
 end
 
 
@@ -354,7 +352,7 @@ The root associated with a specified `Node`
 """
 function noderoot(tree::AbstractTree,
                   node::Int)
-    return nodepath(tree, node)[end]
+    return last(nodepath(tree, node))
 end
 
 
@@ -402,7 +400,7 @@ Branch pathway through which a specified node connects to a root
 function branchpath(tree::AbstractTree,
                     node::Int)
     path = Int[]
-    while isleaf(tree, node) || isnode(tree, node)
+    while hasinbound(tree, node)
         push!(path, getinbound(tree, node))
         node = getsource(tree, path[end])
     end
