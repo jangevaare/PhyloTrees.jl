@@ -24,7 +24,7 @@ function outdegree(tree::AbstractTree,
     if !haskey(getnodes(tree), node)
         error("Node does not exist")
     end
-    return countoutbounds(tree, node)
+    return countoutbounds(getnodes(tree)[node])
 end
 
 
@@ -217,7 +217,7 @@ Find parent `Node`
 function parentnode(tree::AbstractTree,
                     node::Int)
     if indegree(tree, node) == 1
-        return getsource(getbranches(tree, getinbound(tree, node)))
+        return getsource(tree, getinbound(tree, node))
     else
         error("In degree of specified node != 1")
     end
@@ -236,8 +236,8 @@ function childnodes(tree::AbstractTree,
         error("Node does not exist")
     end
     nodes = Int[]
-    for i in getoutbounds(getnodes(tree, node))
-        push!(nodes, gettarget(getbranches(tree, i)))
+    for b in getoutbounds(tree, node)
+        push!(nodes, gettarget(tree, b))
     end
     return nodes
 end
@@ -403,8 +403,8 @@ function branchpath(tree::AbstractTree,
                     node::Int)
     path = Int[]
     while isleaf(tree, node) || isnode(tree, node)
-        push!(path, getinbound(getnodes(tree)[node]))
-        node = getbranches(tree, path[end]).source
+        push!(path, getinbound(tree, node))
+        node = getsource(tree, path[end])
     end
     return path
 end
