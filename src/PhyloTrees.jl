@@ -15,6 +15,8 @@ export
     Tree,
     SimpleTree,
     ParameterisedTree,
+    getnodes,
+    getbranches,
 
     # Nodes
     AbstractNode,
