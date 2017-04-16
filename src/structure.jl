@@ -166,15 +166,16 @@ function checkbranch(id::Int, branch::Branch, tree::AbstractTree)
 end
 
 """
-    Tree{<: AbstractNode, <: Branch} <: AbstractTree
+    SimpleTree{<: AbstractNode, <: Branch} <: AbstractTree
 
 Phylogenetic tree object
 """
-type Tree{N <: AbstractNode} <: AbstractTree
+type SimpleTree{N <: AbstractNode} <: AbstractTree
     nodes::Dict{Int, N}
     branches::Dict{Int, Branch}
     
-    function Tree{N}(nodes::Dict{Int, N}, branches::Dict{Int})
+    function (::Type{SimpleTree{N}}){N <: AbstractNode}(nodes::Dict{Int, N},
+                                                        branches::Dict{Int})
         if !isempty(nodes) || !isempty(branches)
             # We need to validate the connections
             Set(mapreduce(node -> hasinbound(node) ? getinbound(node) : 0,
@@ -191,26 +192,26 @@ type Tree{N <: AbstractNode} <: AbstractTree
             mapreduce(getoutbounds, append!, nodes) ⊆ Set(keys(branches)) ||
                 error("$B targets must be $N IDs")
         end
-        return new(nodes, branches)
+        return new{N}(nodes, branches)
     end
 end
 
-const SimpleTree = Tree{Node}
-SimpleTree() = SimpleTree(Dict{Int, Node}(), Dict{Int, Branch}())
+const Tree = SimpleTree{Node}
+Tree() = Tree(Dict{Int, Node}(), Dict{Int, Branch}())
 
-const BinaryTree = Tree{BinaryNode}
+const BinaryTree = SimpleTree{BinaryNode}
 BinaryTree() = BinaryTree(Dict{Int, BinaryNode}(), Dict{Int, Branch}())
 
-function getnodes(tree::Tree)
+function getnodes(tree::SimpleTree)
     return tree.nodes
 end
-function getbranches(tree::Tree)
+function getbranches(tree::SimpleTree)
     return tree.branches
 end
-function getnodeinfo(::Tree)
+function getnodeinfo(::SimpleTree)
     return nothing
 end
-function getbranchinfo(::Tree)
+function getbranchinfo(::SimpleTree)
     return nothing
 end
 
@@ -221,13 +222,17 @@ end
 Parametric phylogenetic tree object
 """
 type ParameterisedTree{N  <: AbstractNode,
-                       NI <: AbstractNodeInfo, BI <: AbstractBranchInfo} <: AbstractTree
+                       NI <: AbstractNodeInfo,
+                       BI <: AbstractBranchInfo} <: AbstractTree
     nodes::Dict{Int, N}
     branches::Dict{Int, Branch}
     nodeinfo::Dict{Int, NI}
     branchinfo::Dict{Int, BI}
     
-    function ParameterisedTree{N, NI, BI}(nodes::Dict{Int, N},
+    function
+        (::Type{ParameterisedTree{N, NI, BI}}){N <: AbstractNode,
+                                               NI <: AbstractNodeInfo,
+                                               BI <: AbstractBranchInfo}(nodes::Dict{Int, N},
                                           branches::Dict{Int, Branch},
                                           nodeinfo::Dict{Int, NI},
                                           branchinfo::Dict{Int, BI})
@@ -253,7 +258,7 @@ type ParameterisedTree{N  <: AbstractNode,
             mapreduce(getoutbounds, append!, nodes) ⊆ Set(keys(branches)) ||
                 error("Branch targets must be $N IDs")
         end
-        return new(nodes, branches, nodeinfo, branchinfo)
+        return new{N, NI, BI}(nodes, branches, nodeinfo, branchinfo)
     end
 end
 

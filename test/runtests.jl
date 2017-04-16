@@ -3,7 +3,7 @@ module TestPhylo
 using PhyloTrees
 using Base.Test
 
-g = SimpleTree()
+g = Tree()
 n = addnode!(g)
 n2 = branch!(g, n, 10.0)
 n3 = branch!(g, n, 5.0)

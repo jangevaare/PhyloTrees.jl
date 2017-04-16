@@ -12,8 +12,8 @@ import Base.show, Base.push!, Base.append!, Base.getindex
 export
     # Trees
     AbstractTree,
-    Tree,
     SimpleTree,
+    Tree, BinaryTree,
     ParameterisedTree,
     getnodes,
     getbranches,

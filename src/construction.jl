@@ -3,7 +3,7 @@
 
 Adds a single `Node` to a `Tree`
 """
-function addnode!{N <: AbstractNode}(tree::Tree{N}; id::Int = 0)
+function addnode!{N <: AbstractNode}(tree::SimpleTree{N}; id::Int = 0)
     node = N()
     if (id > 0)
         checknode(id, node, tree) ||
@@ -65,7 +65,7 @@ function addnode!{N <: AbstractNode,
 end
 
 """
-    addnodes!(tree::Tree,
+    addnodes!(tree::AbstractTree,
               nodes::Int)
 
 Adds multiple `Node`s to a `Tree`
@@ -77,7 +77,7 @@ end
 
 
 """
-    deletenode!(tree::Tree,
+    deletenode!(tree::AbstractTree,
                 nodes::Int)
 
 Deletes a specified `Node` from a `Tree`
@@ -98,14 +98,14 @@ end
 
 
 """
-    addbranch!(tree::Tree,
+    addbranch!(tree::AbstractTree,
                source::Int,
                target::Int,
                branch_length::Float64; id::Int = 0)
 
 Adds a `Branch` of specified length to a `Tree`
 """
-function addbranch!(tree::AbstractTree,
+function addbranch!(tree::SimpleTree,
                     source::Int,
                     target::Int,
                     branch_length::Float64; id::Int = 0)
@@ -132,8 +132,8 @@ function addbranch!(tree::AbstractTree,
     getbranches(tree)[id] = branch
     
     # Update the associated source and target nodes
-    setoutbound(getnodes(tree)[source], id)
-    setinbound(getnodes(tree)[target], id)
+    addoutbound!(getnodes(tree)[source], id)
+    setinbound!(getnodes(tree)[target], id)
     
     # Return updated tree
     return id
@@ -155,7 +155,7 @@ function addbranch!{N <: AbstractNode,
 end
 
 """
-    branch!(tree::Tree,
+    branch!(tree::AbstractTree,
             source::Int,
             branch_length::Float64)
 
@@ -168,21 +168,20 @@ function branch!(tree::AbstractTree,
     try
         addbranch!(tree, source, target, branch_length)
     catch
-        warn("Could not create new branch, deleting child node")
         deletenode!(tree, target)
+        rethrow()
     end
     return target
 end
 
-
 """
-    changesource!(tree::Tree,
+    changesource!(tree::AbstractTree,
                   branch::Int,
                   new_source::Int)
 
 Change the source `Node` of a `Branch`
 """
-function changesource!(tree::Tree,
+function changesource!(tree::AbstractTree,
                        branch::Int,
                        new_source::Int)
     # Error checking
@@ -205,22 +204,21 @@ function changesource!(tree::Tree,
     return tree
 end
 
-
 """
-    changetarget!(tree::Tree,
+    changetarget!(tree::AbstractTree,
                   branch::Int,
                   new_target::Int)
 
 Change the source `Node` of a `Branch`
 """
-function changetarget!(tree::Tree,
+function changetarget!(tree::AbstractTree,
                        branch::Int,
                        new_target::Int)
-    if !haskey(tree.branches, branch)
+    if !haskey(getbranches(tree), branch)
         error("Branch does not exist")
-    elseif !haskey(tree.nodes, new_target)
+    elseif !haskey(getnodes(tree), new_target)
         error("New target node does not exist")
-    elseif length(tree.nodes[new_target].in) != 0
+    elseif hasinbound(tree, new_target)
         error("New target node has an in degree > 1")
     end
     # Identify old target node
@@ -235,14 +233,13 @@ function changetarget!(tree::Tree,
     return tree
 end
 
-
 """
-    deletebranch!(tree::Tree,
+    deletebranch!(tree::AbstractTree,
                   branch::Int)
 
     Delete a `Branch` from a `Tree`
     """
-function deletebranch!(tree::Tree,
+function deletebranch!(tree::AbstractTree,
                        branch::Int)
     if !haskey(tree.branches, branch)
         error("Branch does not exist")
