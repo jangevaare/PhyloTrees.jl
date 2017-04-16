@@ -53,7 +53,6 @@ export
     isleaf,
     isnode,
     findroots,
-    findroot,
     findleaves,
     findnodes,
     findnonroots,
