@@ -33,9 +33,14 @@ created node or branch id. Branches have `Float64` lengths:
 
     2
 
+Basic summary info on the tree can be seen at any time:
+
+    > exampletree
+    Phylogenetic tree with 2 nodes and 1 branches
+    
     > # Add 2 nodes
     > addnodes!(exampletree, 2)
-
+    
     2-element Array{Int64,1}:
      3
      4
