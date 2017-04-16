@@ -13,15 +13,24 @@ export
     # Trees
     AbstractTree,
     Tree,
+    SimpleTree,
     ParameterisedTree,
 
     # Nodes
     AbstractNode,
     Node,
     BinaryNode,
+    countoutbounds,
+    getoutbounds,
+    hasinbound,
+    getinbound,
+    getinbounds,
     
     # Branches
     Branch,
+    getsource,
+    gettarget,
+    getlength,
     
     # Utilities
     addnode!,
