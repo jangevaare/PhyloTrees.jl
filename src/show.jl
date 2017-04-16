@@ -55,5 +55,5 @@ function show(io::IO, p::Pair{Int, Branch})
 end
 
 function show(io::IO, object::AbstractTree)
-    print(io, "\e[0mPhylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches\n")
+    print(io, "\e[0mPhylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches")
 end
