@@ -3,10 +3,10 @@
 
     `Node` postorder traversal order
     """
-function postorder(tree::AbstractTree)
-    nodes = collect(keys(getnodes(tree)))
-    visited = Dict{Int64, Bool}(i => false for i in nodes)
-    visit_order = Int64[]
+function postorder{NL, TL}(tree::AbstractTree{NL, TL})
+    nodes = keys(getnodes(tree))
+    visited = Dict{NL, Bool}(i => false for i in nodes)
+    visit_order = NL[]
     next = nodes[findfirst(!collect(values(visited)))]
     while !all(collect(values(visited)))
         sub_visited = Bool[]

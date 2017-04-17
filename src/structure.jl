@@ -1,135 +1,150 @@
+using PhyloTrees.Interface
+
 """
     Node(Vector{Int}, Vector{Int}) <: AbstractNode
 
 A node of phylogenetic tree
 """
 type Node <: AbstractNode
-    inbound::Vector{Int}
-    outbound::Vector{Int}
+    inbound::Int
+    outbounds::Vector{Int}
 
-    function Node(inbound::Vector{Int}, outbound::Vector{Int})
-        all(inbound .> 0) && length(inbound) <= 1 ||
-            error("Node must have at most one positive inbound branch number")
-        all(outbound .> 0) ||
+    function Node(inbound::Int, outbounds::Vector{Int})
+        inbound >= 0 ||
+            error("Node must have positive inbound branch number")
+        all(outbounds .> 0) ||
             error("Node must have positive outbound branch numbers")
-        new(inbound, outbound)
+        new(inbound, outbounds)
     end
 end
 
 function Node()
-    return Node(Int[], Int[])
+    return Node(0, Int[])
 end
 
-function getinbounds(node::Node)
-    return node.inbound
-end
-
-function getinbound(node::Node)
-    return hasinbound(node) ? node.inbound[1] : 0
-end
-
-function setinbound!(node::Node, inbound::Int)
-    push!(node.inbound, inbound)
-end
-
-function deleteinbound!(node::Node, inbound::Int)
-    inbound ∈ node.inbound ? filter!(i -> i != inbound, node.inbound) :
-        error("Node does not have inbound connection from branch $inbound")
-end
-
-function hasinbound(node::Node)
-    return length(node.inbound) == 1
-end
-
-function getoutbounds(node::Node)
-    return node.outbound
-end
-
-function addoutbound!(node::Node, outbound::Int)
-    push!(node.outbound, outbound)
-end
-
-function deleteoutbound!(node::Node, outbound::Int)
-    outbound ∈ node.outbound ? filter!(i -> i != outbound, node.outbound) :
-        error("Node does not have outbound connection from branch $outbound")
-end
-
-function countoutbounds(node::Node)
-    return length(node.outbound)
-end
-
-function outboundspace(::Node)
-    return true
-end
-
-"""
-    BinaryNode(Int, Vector{Int}) <: AbstractNode
-
-A node of strict binary phylogenetic tree
-"""
-type BinaryNode <: AbstractNode
-    inbound::Int
-    outbound::Tuple{Int, Int}
-
-    function BinaryNode(inbound::Int, outbound::Tuple{Int, Int})
-        inbound >= 0 ||
-            error("Inbound BinaryNode branch must be non-negative")
-        all(outbound .>= 0) ||
-            error("BinaryNode must have non-negative outbound branches")
-        new(inbound, outbound)
-    end
-end
-
-function BinaryNode()
-    return BinaryNode(0, Int[])
-end
-
-function getinbounds(node::BinaryNode)
-    return node.inbound == 0 ? Int[] : [node.in]
-end
-
-function getinbound(node::BinaryNode)
-    return node.inbound
-end
-
-function setinbound!(node::BinaryNode, inbound::Int)
-    node.inbound == 0 ? node.inbound = inbound :
-        error("BinaryNode already has an inbound connection")
-end
-
-function deleteinbound!(node::BinaryNode, inbound::Int)
-    node.inbound == inbound ? node.inbound = 0 :
-        error("BinaryNode does not have inbound connection from branch $inbound")
-end
-
-function hasinbound(node::BinaryNode)
+function _hasinbound(node::Node)
     return node.inbound != 0
 end
 
-function getoutbounds(node::BinaryNode)
-    return node.outbound[1] == 0 ?
-        (node.outbound[2] == 0 ? Int[] : [node.outbound[2]]) :
-        node.outbound[2] == 0 ? [node.outbound[1]] : [node.outbound[1], node.outbound[2]]
+function _outdegree(node::Node)
+    return length(node.outbounds)
 end
 
-function addoutbound!(node::BinaryNode, outbound::Int)
-    node.outbound[1] == 0 ? node.outbound[1] = outbound :
-        node.outbound[2] == 0 ? node.outbound[2] = outbound :
-        error("BinaryNode already has two outbound connections")
+function _hasoutboundspace(::Node)
+    return true
 end
 
-function deleteoutbound!(node::BinaryNode, outbound::Int)
-    node.outbound[1] == outbound ? node.outbound[1] = 0 :
-        node.outbound[2] == outbound ? node.outbound[2] = 0 :
-        error("BinaryNode does not have outbound connection to branch $outbound")
+function _getinbound(node::Node)
+    _hasinbound(node) || error("Node has no inbound connection")
+    return node.inbound
 end
 
-function countoutbounds(node::BinaryNode)
-    return length(node.outbound)
+function _setinbound!(node::Node, inbound::Int)
+    !_hasinbound(node) || error("Node already has an inbound connection")
+    node.inbound = inbound
 end
 
-function outboundspace(node::BinaryNode)
-    return length(node.outbound) < 2
+function _deleteinbound!(node::Node, inbound::Int)
+    node.inbound == inbound ||
+        error("Node does not have inbound connection from branch $inbound")
+    node.inbound = inbound
+end
+
+function _getoutbounds(node::Node)
+    return node.outbounds
+end
+
+function _addoutbound!(node::Node, outbound::Int)
+    outbound ∉ node.outbounds ||
+        error("Node already has outbound connection to $outbound")
+    _hasoutboundspace(node) ||
+        error("Node cannot have any more outbound connections")
+    push!(node.outbounds, outbound)
+end
+
+function _deleteoutbound!(node::Node, outbound::Int)
+    outbound ∈ node.outbounds ? filter!(i -> i != outbound, node.outbound) :
+        error("Node does not have outbound connection from branch $outbound")
+end
+
+"""
+    BinaryNode{T}(AbstractVector{T}, AbstractVector{T}) <: AbstractNode
+
+A node of strict binary phylogenetic tree
+"""
+type BinaryNode{T} <: AbstractNode
+    inbound::Nullable{T}
+    outbounds::Tuple{Nullable{T}, Nullable{T}}
+
+    function (::Type{BinaryNode{T}}){T}(inbound::AbstractVector{T} = T[],
+                                        outbounds::AbstractVector{T} = T[])
+        length(inbound) <= 1 ||
+            error("At most one inbound connection to BinaryNode")
+        n_in = length(inbound) == 0 ? Nullable{T}() :
+            Nullable(inbound[1])
+        length(outbounds) <= 2 ||
+            error("At most two outbound connections from BinaryNode")
+        n_out = length(outbounds) == 0 ? (Nullable{T}(), Nullable{T}()) :
+            (length(outbounds) == 1 ? (Nullable(outbounds[1]), Nullable{T}()) :
+             (Nullable(outbounds[1]), Nullable(outbounds[2])))
+        new{T}(n_in, n_out)
+    end
+end
+
+function _hasinbound(node::BinaryNode)
+    return !isnull(node.inbound)
+end
+
+function _outdegree(node::BinaryNode)
+    return (isnull(node.outbounds[1]) ? 0 : 1) +
+        (isnull(node.outbounds[2]) ? 0 : 1)
+end
+
+function _hasoutboundspace(node::BinaryNode)
+    return _outdegree(node) < 2
+end
+
+function _getinbound(node::BinaryNode)
+    _hasinbound(node) ||
+        error("Node has no inbound connection")
+    return get(node.inbound)
+end
+
+function _setinbound!{T}(node::BinaryNode{T}, inbound::T)
+    !_hasinbound(node) ||
+        error("BinaryNode already has an inbound connection")
+    node.inbound = inbound
+end
+
+function _deleteinbound!{T}(node::BinaryNode{T}, inbound::T)
+    _hasinbound(node) ||
+        error("Node has no inbound connection")
+    get(node.inbound) != inbound ||
+        error("BinaryNode has no inbound connection from branch $inbound")
+    node.inbound = Nullable{T}()
+end
+
+function _getoutbounds{T}(node::BinaryNode{T})
+    return isnull(node.outbounds[1]) ?
+        (isnull(node.outbounds[2]) ? T[] : [get(node.outbounds[2])]) :
+        (isnull(node.outbounds[2]) ? [get(node.outbounds[1])] :
+         [get(node.outbounds[1]), get(node.outbounds[2])])
+end
+
+function _addoutbound!{T}(node::BinaryNode{T}, outbound::T)
+    isnull(node.outbounds[1]) ?
+        node.outbounds = (Nullable(outbound), node.outbounds[2]) :
+        (isnull(node.outbounds[2]) ?
+         node.outbounds = (node.outbounds[1], Nullable(outbound)) :
+         error("BinaryNode already has two outbound connections"))
+end
+
+function _deleteoutbound!{T}(node::BinaryNode{T}, outbound::T)
+    node.outbounds[1] == outbound ?
+        node.outbounds = (node.outbounds[2], Nullable{T}()) :
+        (node.outbounds[2] == outbound ?
+         node.outbounds = (node.outbounds[1], Nullable{T}()) :
+         error("BinaryNode does not have outbound connection to branch $outbound"))
 end
 
 """
@@ -137,23 +152,28 @@ end
 
     A directed branch connecting two AbstractNodes of phylogenetic tree
 """
-type Branch
-    source::Int
-    target::Int
+type Branch{T}
+    source::T
+    target::T
     length::Float64
 
-    function Branch(source::Int, target::Int, length::Float64)
+    function (::Type{Branch{T}}){T}(source::T, target::T, length::Float64)
         length >= 0.0 || isnan(length) ||
             error("Branch length must be positive or NaN (no recorded length)")
-        source > 0 || target > 0 ||
-            error("Source and target must be legal Node numbers")
-        new(source, target, length)
+        new{T}(source, target, length)
     end
 end
 
-getsource(branch::Branch) = branch.source
-gettarget(branch::Branch) = branch.target
-getlength(branch::Branch) = branch.length
+Branch{T}(source::T, target::T, length::Float64) =
+    Branch{T}(source, target, length)
+
+const SimpleBranch = Branch{Int}
+
+_getsource(branch::Branch) = branch.source
+_gettarget(branch::Branch) = branch.target
+_setsource!{T}(branch::Branch{T}, source::T) = branch.source = source
+_settarget!{T}(branch::Branch{T}, target::T) = branch.target = target
+_getlength(branch::Branch) = branch.length
 
 function checkbranch(id::Int, branch::Branch, tree::AbstractTree)
     return id > 0 &&
@@ -170,160 +190,87 @@ end
 
 Phylogenetic tree object
 """
-type SimpleTree{N <: AbstractNode} <: AbstractTree
+type SimpleTree{N <: AbstractNode} <: AbstractTree{Int, Int}
     nodes::Dict{Int, N}
-    branches::Dict{Int, Branch}
-    
-    function (::Type{SimpleTree{N}}){N <: AbstractNode}(nodes::Dict{Int, N},
-                                                        branches::Dict{Int})
-        if !isempty(nodes) || !isempty(branches)
-            # We need to validate the connections
-            Set(mapreduce(node -> hasinbound(node) ? getinbound(node) : 0,
-                          (vec, next) -> next == 0 ? vec : push!(vec, next),
-                          Int[], nodes)) == Set(keys(branches)) ||
-                              error("$N inbound branches must exactly match Branch IDs")
-            
-            Set(mapreduce(getoutbounds, append!, nodes)) == Set(keys(branches)) ||
-                error("$N outbound branches must exactly match Branch IDs")
-            
-            mapreduce(getsource, append!, branches) ⊆ Set(keys(branches)) ||
-                error("$B sources must be $N IDs")
-            
-            mapreduce(getoutbounds, append!, nodes) ⊆ Set(keys(branches)) ||
-                error("$B targets must be $N IDs")
-        end
-        return new{N}(nodes, branches)
-    end
+    branches::Dict{Int, SimpleBranch}
 end
+
+# SimpleTree{N}() = SimpleTree{N}(Dict{Int, N}(), Dict{Int, SimpleBranch}())
 
 const Tree = SimpleTree{Node}
-Tree() = Tree(Dict{Int, Node}(), Dict{Int, Branch}())
+Tree() = Tree(Dict{Int, Node}(), Dict{Int, SimpleBranch}())
 
-const BinaryTree = SimpleTree{BinaryNode}
-BinaryTree() = BinaryTree(Dict{Int, BinaryNode}(), Dict{Int, Branch}())
+const BinaryTree = SimpleTree{BinaryNode{Int}}
+BinaryTree() = BinaryTree(Dict{Int, BinaryNode{Int}}(),
+                          Dict{Int, SimpleBranch}())
 
-function getnodes(tree::SimpleTree)
+function _getnodes(tree::SimpleTree)
     return tree.nodes
 end
-function getbranches(tree::SimpleTree)
+
+function _getbranches(tree::SimpleTree)
     return tree.branches
 end
-function getnodeinfo(::SimpleTree)
-    return nothing
-end
-function getbranchinfo(::SimpleTree)
-    return nothing
+
+function _addnode!{N}(tree::SimpleTree{N}, label)
+    setnode!(tree, label, N())
+    return label
 end
 
 """
-    ParameterisedTree{<: AbstractNode,
-                      <: AbstractNodeInfo, <: AbstractBranchInfo} <: AbstractTree
+    LeafTree
 
-Parametric phylogenetic tree object
+Binary phylogenetic tree object with known leaves
 """
-type ParameterisedTree{N  <: AbstractNode,
-                       NI <: AbstractNodeInfo,
-                       BI <: AbstractBranchInfo} <: AbstractTree
-    nodes::Dict{Int, N}
-    branches::Dict{Int, Branch}
-    nodeinfo::Dict{Int, NI}
-    branchinfo::Dict{Int, BI}
-    
-    function
-        (::Type{ParameterisedTree{N, NI, BI}}){N <: AbstractNode,
-                                               NI <: AbstractNodeInfo,
-                                               BI <: AbstractBranchInfo}(nodes::Dict{Int, N},
-                                          branches::Dict{Int, Branch},
-                                          nodeinfo::Dict{Int, NI},
-                                          branchinfo::Dict{Int, BI})
-        if !isempty(nodes) || !isempty(branches)
-            # Otherwise we need to validate the connections
-            Set(keys(nodeinfo)) ⊆ Set(keys(nodes)) ||
-                error("$NI Dict keys must be in $N Dict keys")
+type LeafTree <: AbstractTree{String, Int}
+    nodes::Dict{String, BinaryNode{Int}}
+    branches::Dict{Int, Branch{String}}
+    leafrecord::Dict{String, TypedInfo{String}}
+end
 
-            Set(keys(branchinfo)) ⊆ Set(keys(branches)) ||
-                error("$BI Dict keys must be in Branch Dict keys")
-            
-            Set(mapreduce(node -> hasinbound(node) ? getinbound(node) : 0,
-                          (vec, next) -> next == 0 ? vec : push!(vec, next),
-                          Int[], nodes)) == Set(keys(branches)) ||
-                              error("$N inbound branches must exactly match Branch IDs")
-            
-            Set(mapreduce(getoutbounds, append!, nodes)) == Set(keys(branches)) ||
-                error("$N outbound branches must exactly match Branch IDs")
-            
-            mapreduce(getsource, append!, branches) ⊆ Set(keys(branches)) ||
-                error("Branch sources must be $N IDs")
-            
-            mapreduce(getoutbounds, append!, nodes) ⊆ Set(keys(branches)) ||
-                error("Branch targets must be $N IDs")
-        end
-        return new{N, NI, BI}(nodes, branches, nodeinfo, branchinfo)
+function LeafTree(lt::LeafTree; deep=true, empty=true)
+    verify(lt) || error("Tree to copy is not valid")
+    leafrecord = deep ? deepcopy(getleafrecord(lt)) : getleafrecord(lt)
+    nodes = getnodes(lt)
+    if empty
+        nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), keys(leafrecord)))
+    elseif deep
+        nodes = deepcopy(nodes)
     end
+    return LeafTree(nodes,
+                    empty ? Dict{Int, Branch{String}}() :
+                    (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
+                    leafrecord)
 end
 
-nodetype(pt::ParameterisedTree) = valtype(pt.nodes)
-nodeinfotype(pt::ParameterisedTree) = valtype(pt.nodeinfo)
-branchinfotype(pt::ParameterisedTree) = valtype(pt.branchinfo)
-
-function ParameterisedTree{N <: AbstractNode,
-                           BI <: AbstractBranchInfo}(nodes::Dict{Int, N},
-                                                     branches::Dict{Int, Branch},
-                                                     branchinfo::Dict{Int, BI})
-    return ParameterisedTree{N, VoidNodeInfo, BI}(nodes,
-                                                  branches,
-                                                  map((k, v) -> (k, VoidNodeInfo()),
-                                                      nodes),
-                                                  branchinfo)
-end
-    
-function ParameterisedTree{N <: AbstractNode,
-                           NI <: AbstractNodeInfo}(nodes::Dict{Int, N},
-                                                   branches::Dict{Int, Branch},
-                                                   nodeinfo::Dict{Int, NI})
-    return ParameterisedTree{N, NI, VoidBranchInfo}(nodes,
-                                                    branches,
-                                                    nodeinfo,
-                                                    map((k, v) -> (k, VoidBranchInfo()),
-                                                        branches))
+function LeafTree(leaves::AbstractVector{String})
+    leafrecord = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
+    nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
+    return LeafTree(nodes, Dict{Int, Branch{String}}(), leafrecord)
 end
 
-function ParameterisedTree{BI <: AbstractBranchInfo}(branchinfo::Dict{Int, BI})
-    return ParameterisedTree{BinaryNode,
-                             VoidNodeInfo, BI}(Dict{Int, BinaryNode}(),
-                                               Dict{Int, Branch}(),
-                                               Dict{Int, VoidNodeInfo}(),
-                                               branchinfo)
-end
-    
-function ParameterisedTree{NI <: AbstractNodeInfo}(nodeinfo::Dict{Int, NI})
-    return ParameterisedTree{BinaryNode, NI,
-                             VoidBranchInfo}(Dict{Int, BinaryNode}(),
-                                             Dict{Int, Branch}(),
-                                             nodeinfo,
-                                             Dict{Int, VoidBranchInfo}())
-end
-
-function ParameterisedTree(pt::ParameterisedTree; deep=true, empty=true)
-    return ParameterisedTree{nodetype(pt),
-                             nodeinfotype(pt),
-                             branchinfotype(pt)}(empty ? Dict{Int, nodetype(pt)}() :
-                                                 deep ? deepcopy(pt.nodes) : pt.nodes,
-                                                 empty ? Dict{Int, Branch}() :
-                                                 deep ? deepcopy(pt.branches) : pt.branches,
-                                                 deep ? deepcopy(pt.nodeinfo) : pt.nodeinfo,
-                                                 deep ? deepcopy(pt.branchinfo) : pt.branchinfo)
-end
-
-function getnodes(pt::ParameterisedTree)
+function _getnodes(pt::LeafTree)
     return pt.nodes
 end
-function getbranches(pt::ParameterisedTree)
+
+function _getbranches(pt::LeafTree)
     return pt.branches
 end
-function getnodeinfo(pt::ParameterisedTree)
-    return pt.nodeinfo
+
+function _getleafrecord(pt::LeafTree)
+    return pt.leafrecord
 end
-function getbranchinfo(pt::ParameterisedTree)
-    return pt.branchinfo
+
+function _addnode!(tree::LeafTree, label)
+    setnode!(tree, label, BinaryNode{Int}())
+    return label
+end
+
+function _verify(tree::LeafTree)
+    if Set(findleaves(tree) ∪ findunattacheds(tree)) !=
+        Set(keys(_getleafrecord(tree)))
+        warn("Leaf records do not match actual leaves of tree")
+        return false
+    end 
+    return true
 end

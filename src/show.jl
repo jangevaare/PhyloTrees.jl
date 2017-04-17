@@ -1,17 +1,17 @@
-function show(io::IO, object::AbstractNode, n::Nullable{Int} = Nullable{Int}())
+function show(io::IO, object::AbstractNode, n::String = "")
     node = "node"
-    if !isnull(n)
-        node *= " $(get(n))"
+    if !isempty(n)
+        node *= " $n"
     end
-    if !hasinbound(object)
-        if countoutbounds(object) > 0
-            blank = repeat(" ", length("[root $node]") + (isnull(n) ? 0 : 1))
-            for (i, b) in zip(1:countoutbounds(object), getoutbounds(object))
-                if countoutbounds(object) == 1
+    if !_hasinbound(object)
+        if _outdegree(object) > 0
+            blank = repeat(" ", length("[root $node]") + (isempty(n) ? 0 : 1))
+            for (i, b) in zip(1:_outdegree(object), _getoutbounds(object))
+                if _outdegree(object) == 1
                     print(io, "\e[0m[\e[1mroot $node\e[0m]-->[branch $b]")
                 elseif i == 1
                     print(io, "\e[0m[\e[1mroot $node\e[0m]-->[branch $b]\n")
-                elseif i < countoutbounds(object)
+                elseif i < _outdegree(object)
                     print(io, "\e[0m$blank-->[branch $b]\n")
                 else
                     print(io, "\e[0m$blank-->[branch $b]")
@@ -21,18 +21,18 @@ function show(io::IO, object::AbstractNode, n::Nullable{Int} = Nullable{Int}())
             print(io, "\e[0m[\e[1munattached $node\e[0m]")
         end
     else
-        if countoutbounds(object) == 0
-            print(io, "\e[0m[branch $(getinbound(object))]-->[\e[1mleaf $node\e[0m]")
-        elseif hasinbound(object)
+        if _outdegree(object) == 0
+            print(io, "\e[0m[branch $(_getinbound(object))]-->[\e[1mleaf $node\e[0m]")
+        elseif _hasinbound(object)
             blank = repeat(" ",
-                           length("[branch $(getinbound(object))]-->[internal $node]") +
-                           (isnull(n) ? 0 : 1))
-            for (i, b) in zip(1:countoutbounds(object), getoutbounds(object))
-                if countoutbounds(object) == 1
-                    print(io, "\e[0m[branch $(getinbound(object))]-->[\e[1minternal $node\e[0m]-->[branch $b]")
+                           length("[branch $(_getinbound(object))]-->[internal $node]") +
+                           (isempty(n) ? 0 : 1))
+            for (i, b) in zip(1:_outdegree(object), _getoutbounds(object))
+                if outdegree(object) == 1
+                    print(io, "\e[0m[branch $(_getinbound(object))]-->[\e[1minternal $node\e[0m]-->[branch $b]")
                 elseif i == 1
-                    print(io, "\e[0m[branch $(getinbound(object))]-->[\e[1minternal $node\e[0m]-->[branch $b]\n")
-                elseif i < countoutbounds(object)
+                    print(io, "\e[0m[branch $(_getinbound(object))]-->[\e[1minternal $node\e[0m]-->[branch $b]\n")
+                elseif i < outdegree(object)
                     print(io, "\e[0m$blank-->[branch $b]\n")
                 else
                     print(io, "\e[0m$blank-->[branch $b]")
@@ -42,16 +42,16 @@ function show(io::IO, object::AbstractNode, n::Nullable{Int} = Nullable{Int}())
     end
 end
 
-function show{N <: AbstractNode}(io::IO, p::Pair{Int, N})
-    show(io, p[2], Nullable(p[1]))
+function show{N <: AbstractNode, NT}(io::IO, p::Pair{NT, N})
+    show(io, p[2], "$(p[1])")
 end
 
 function show(io::IO, object::Branch)
-    print(io, "\e[0m[node $(getsource(object))]-->[\e[1m$(getlength(object)) length branch\e[0m]-->[node $(gettarget(object))]")
+    print(io, "\e[0m[node $(_getsource(object))]-->[\e[1m$(_getlength(object)) length branch\e[0m]-->[node $(_gettarget(object))]")
 end
 
-function show(io::IO, p::Pair{Int, Branch})
-    print(io, "\e[0m[node $(getsource(p[2]))]-->[\e[1m$(getlength(p[2])) length branch $(p[1])\e[0m]-->[node $(gettarget(p[2]))]")
+function show{NT, BT}(io::IO, p::Pair{BT, Branch{NT}})
+    print(io, "\e[0m[node $(_getsource(p[2]))]-->[\e[1m$(_getlength(p[2])) length branch $(p[1])\e[0m]-->[node $(_gettarget(p[2]))]")
 end
 
 function show(io::IO, object::AbstractTree)

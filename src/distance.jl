@@ -11,7 +11,7 @@ function distance(tree::AbstractTree,
     path = branchpath(tree, node1, node2)
     dist = 0.0
     for b in path
-        dist += getlength(getbranches(tree)[b])
+        dist += _getlength(getbranch(tree, b))
     end
     return dist
 end
@@ -39,7 +39,7 @@ function distance(tree::AbstractTree,
     path = branchpath(tree, node)
     dist = 0.0
     for b in path
-        dist += getlength(getbranches(tree)[b])
+        dist += _getlength(getbranch(tree, b))
     end
     return dist
 end

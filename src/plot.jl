@@ -1,4 +1,4 @@
-function treeplot(tree::AbstractTree)
+function treeplot{NL, BL}(tree::AbstractTree{NL, BL})
     nodequeue = findroots(tree)
     treesize = descendantcount(tree, nodequeue) + 1
     distances = distance(tree, nodequeue)
@@ -16,7 +16,7 @@ function treeplot(tree::AbstractTree)
         end
         queueposition += 1
     end
-    processorder = fill(Nullable{Int64}(), length(getnodes(tree)))
+    processorder = fill(Nullable{NL}(), length(getnodes(tree)))
     for i = 1:length(nodequeue)
         processorder[nodequeue[i]] = i
     end
@@ -25,8 +25,12 @@ function treeplot(tree::AbstractTree)
     xmax = Float64[]
     for i in nodequeue
         if !isroot(tree, i)
-            push!(tree_x, distances[[get(processorder[i]), get(processorder[parentnode(tree, i)]), get(processorder[parentnode(tree, i)])]])
-            push!(tree_y, height[[get(processorder[i]), get(processorder[i]), get(processorder[parentnode(tree, i)])]])
+            push!(tree_x, distances[[get(processorder[i]),
+                                     get(processorder[parentnode(tree, i)]),
+                                     get(processorder[parentnode(tree, i)])]])
+            push!(tree_y, height[[get(processorder[i]),
+                                  get(processorder[i]),
+                                  get(processorder[parentnode(tree, i)])]])
             push!(xmax, distances[get(processorder[i])])
         end
     end

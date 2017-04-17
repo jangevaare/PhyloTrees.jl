@@ -14,9 +14,9 @@ n5 = branch!(g, n2, 3.5)
 @test length(findleaves(g)) == 3
 @test length(findnodes(g)) == 1
 
-for i = 1:length(g.nodes)
-    @test countoutbounds(g, i) <= 2
-    @test length(getinbounds(g, i)) <= 1
+for i in 1:length(g.nodes)
+    @test outdegree(g, i) <= 2
+    @test indegree(g, i) <= 1
 end
 
 @test nodepath(g, n, n2) == [1, 2]
