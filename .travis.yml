@@ -10,11 +10,6 @@ julia:
 notifications:
   email: false
 
-matrix:
-  allow_failures:
-    - julia: nightly
-  fast_finish: true
-
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("PhyloTrees", coverage=true)'
