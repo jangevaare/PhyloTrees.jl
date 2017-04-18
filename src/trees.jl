@@ -40,12 +40,12 @@ type NodeTree{NodeData} <: AbstractTree{String, Int}
     noderecords::Dict{String, NodeData}
 end
 
-function NodeTree(lt::NodeTree; deep=true, empty=true)
+function NodeTree{ND}(lt::NodeTree{ND}; deep=true, empty=true)
     verify(lt) || error("Tree to copy is not valid")
     leafrecords = deep ? deepcopy(getleafrecords(lt)) : getleafrecords(lt)
     if empty
         nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), keys(leafrecords)))
-        noderecords = Dict(map(leaf -> leaf => NodeData(), keys(leafrecords)))
+        noderecords = Dict(map(leaf -> leaf => ND(), keys(leafrecords)))
     elseif deep
         nodes = deepcopy(nodes)
         noderecords = deepcopy(getnoderecords(lt))
@@ -53,10 +53,10 @@ function NodeTree(lt::NodeTree; deep=true, empty=true)
         nodes = getnodes(lt)
         noderecords = getnoderecords(lt)
     end
-    return NodeTree(nodes,
-                    empty ? Dict{Int, Branch{String}}() :
-                    (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
-                    leafrecords, noderecords)
+    return NodeTree{ND}(nodes,
+                        empty ? Dict{Int, Branch{String}}() :
+                        (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
+                        leafrecords, noderecords)
 end
 
 function NodeTree{NodeData}(leaves::AbstractVector{String}, ::Type{NodeData})
