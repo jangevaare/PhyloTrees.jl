@@ -92,10 +92,25 @@ function _getnoderecords(nt::NodeTree)
     return nt.noderecords
 end
 
-function _addnode!(tree::NodeTree, label)
+function _addnode!{NR}(tree::NodeTree{NR}, label)
     setnode!(tree, label, BinaryNode{Int}())
+    setnoderecord!(tree, label, NR())
     return label
 end
+
+function _deletenode!(tree::NodeTree, label)
+    node = getnode(tree, label)
+    if _hasinbound(node)
+        deletebranch!(tree, _getinbound(node))
+    end
+    for b in _getoutbounds(node)
+        deletebranch!(tree, n)
+    end
+    delete!(_getnodes(tree), label)
+    delete!(_getnoderecords(tree), label)    
+    return label
+end
+
 
 function _verify(tree::NodeTree)
     if Set(findleaves(tree) ∪ findunattacheds(tree)) !=
@@ -104,7 +119,7 @@ function _verify(tree::NodeTree)
         return false
     end
     if Set(keys(_getnoderecords(tree))) !=
-        Set(keys(_getleafrecords(tree)))
+        Set(keys(_getnodes(tree)))
         warn("Leaf records do not match node records of tree")
         return false
     end
