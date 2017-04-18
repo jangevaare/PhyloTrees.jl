@@ -6,7 +6,7 @@ module PhyloTrees
 using RecipesBase
 
 # Methods expanded
-import Base.show, Base.push!, Base.append!, Base.getindex
+import Base.show, Base.showall, Base.push!, Base.append!, Base.getindex
 
 # Functions provided
 export
