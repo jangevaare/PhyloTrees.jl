@@ -246,6 +246,12 @@ function NamedTree(leaves::AbstractVector{String})
     nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
     return NamedTree(nodes, Dict{Int, Branch{String}}(), leafrecords)
 end
+
+function NamedTree(numleaves::Int)
+    leaves = map(num -> "Leaf $num", 1:numleaves)
+    leafrecords = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
+    nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
+    return NamedTree(nodes, Dict{Int, Branch{String}}(), leafrecords)
 end
 
 function _getnodes(pt::NamedTree)
