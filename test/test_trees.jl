@@ -57,6 +57,7 @@ end
     nt = NodeTree(["Dog", "Cat", "Human"], Vector{Float64})
     @test verify(nt)
     n = addnode!(nt)
+    @test Set(getleafnames(nt)) == Set(["Dog", "Cat", "Human"])
     addbranch!(nt, n, "Dog")
     addbranch!(nt, n, "Cat")
     @test_throws ErrorException addbranch!(nt, n, "Human", 2.0)
@@ -71,6 +72,7 @@ end
     @test length(getnoderecord(nt, "Cat")) == 0
     nt2 = NodeTree(nt)
     @test length(getnoderecord(nt2, "Dog")) == 0
- end
+    @test Set(getleafnames(nt2)) == Set(["Dog", "Cat", "Human"])
+end
 
 end

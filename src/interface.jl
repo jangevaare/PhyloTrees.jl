@@ -75,6 +75,11 @@ function _getleafrecords(tree::AbstractTree)
     return Dict(map(leaf -> leaf=>nothing,
                     findleaves(tree) ∪ findunattacheds(tree)))
 end
+#  - _getleafnames()
+function _getleafnames(tree::AbstractTree)
+    return keys(Dict(map(leaf -> leaf=>nothing,
+                         findleaves(tree) ∪ findunattacheds(tree))))
+end
 #  - _getleafrecord()
 function _getleafrecord(tree::AbstractTree, label)
     return _getleafrecords(tree)[label]
@@ -196,6 +201,15 @@ retrieve the Dict containing the branches of the tree.
 """
 function getbranches(tree::AbstractTree)
     return _getbranches(tree)
+end
+
+"""
+    getleafnames(::AbstractTree)
+
+retrieve the leaf names from the tree.
+"""
+function getleafnames(tree::AbstractTree)
+    return collect(_getleafnames(tree))
 end
 
 """

@@ -84,6 +84,10 @@ function _getbranches(nt::NodeTree)
     return nt.branches
 end
 
+function _getleafnames(nt::NodeTree)
+    return keys(nt.leafrecords)
+end
+
 function _getleafrecords(nt::NodeTree)
     return nt.leafrecords
 end
