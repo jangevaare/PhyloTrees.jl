@@ -4,7 +4,7 @@
     `Node` postorder traversal order
     """
 function postorder{NL, TL}(tree::AbstractTree{NL, TL})
-    nodes = keys(getnodes(tree))
+    nodes = collect(keys(getnodes(tree)))
     visited = Dict{NL, Bool}(i => false for i in nodes)
     visit_order = NL[]
     next = nodes[findfirst(!collect(values(visited)))]
