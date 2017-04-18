@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/jangevaare/PhyloTrees.jl.svg?branch=master)](https://travis-ci.org/jangevaare/PhyloTrees.jl)
 [![][travis-img]][travis-url]
-[![][coveralls-img]][coveralls-url]
 [![][codecov-img]][codecov-url]
 
 ## Introduction
@@ -144,9 +143,6 @@ with trees including:
 
 [travis-img]: https://travis-ci.org/boydorr/PhyloTrees.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/boydorr/PhyloTrees.jl?branch=master
-
-[coveralls-img]: https://img.shields.io/coveralls/boydorr/PhyloTrees.jl.svg
-[coveralls-url]: https://coveralls.io/r/boydorr/PhyloTrees.jl?branch=master
 
 [codecov-img]: https://codecov.io/gh/boydorr/PhyloTrees.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/boydorr/PhyloTrees.jl

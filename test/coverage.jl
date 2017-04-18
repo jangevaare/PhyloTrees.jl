@@ -7,6 +7,5 @@ using Coverage
 
 cd(joinpath(dirname(@__FILE__), "..")) do
     processed = process_folder()
-    Coveralls.submit(processed)
     Codecov.submit(processed)
 end
