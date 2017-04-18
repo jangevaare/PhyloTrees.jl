@@ -1,3 +1,5 @@
+using Compat
+
 """
     Node(Vector{Int}, Vector{Int}) <: AbstractNode
 
@@ -61,7 +63,7 @@ function _addoutbound!(node::Node, outbound::Int)
 end
 
 function _deleteoutbound!(node::Node, outbound::Int)
-    outbound ∈ node.outbounds ? filter!(i -> i != outbound, node.outbound) :
+    outbound ∈ node.outbounds ? Compat.Iterators.filter!(i -> i != outbound, node.outbound) :
         error("Node does not have outbound connection from branch $outbound")
 end
 

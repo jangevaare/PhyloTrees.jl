@@ -108,7 +108,7 @@ function _newnodelabel{NL <: Integer, BL}(tree::AbstractTree{NL, BL})
 end
 function _newnodelabel{BL}(tree::AbstractTree{String, BL})
     nodes = getnodes(tree)
-    names = filter(n -> length(n) > 5 && n[1:5]=="Node ", keys(nodes))
+    names = Compat.Iterators.filter(n -> length(n) > 5 && n[1:5]=="Node ", keys(nodes))
     start = 1
     name = "Node $start"
     while (name ∈ names)
@@ -124,7 +124,7 @@ function _newbranchlabel{NL, BL <: Integer}(tree::AbstractTree{NL, BL})
 end
 function _newbranchlabel{NL}(tree::AbstractTree{NL, String})
     branches = getbranches(tree)
-    names = filter(n -> length(n) > 5 && n[1:5]=="Branch ", keys(branches))
+    names = Compat.Iterators.filter(n -> length(n) > 5 && n[1:5]=="Branch ", keys(branches))
     start = 1
     name = "Branch $start"
     while (name ∉ names)
@@ -263,7 +263,7 @@ function verify{NL, BL}(tree::AbstractTree{NL, BL})
     if !isempty(nodes) || !isempty(branches)
         # We need to validate the connections
         if Set(mapreduce(_getinbound, push!, BL[],
-                         filter(_hasinbound, values(nodes)))) !=
+                         Compat.Iterators.filter(_hasinbound, values(nodes)))) !=
                              Set(keys(branches))
             warn("Inbound branches must exactly match Branch labels")
             return false
