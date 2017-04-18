@@ -85,10 +85,10 @@ function _newnodelabel{NL <: Integer, BL}(tree::AbstractTree{NL, BL})
 end
 function _newnodelabel{BL}(tree::AbstractTree{String, BL})
     nodes = getnodes(tree)
-    names = filter(n -> length(n) > 5 && n[1:5]=="Node ", keys(nodes))
+    names = Iterators.filter(n -> length(n) > 5 && n[1:5]=="Node ", keys(nodes))
     start = 1
     name = "Node $start"
-    while (name ∉ names)
+    while (name ∈ names)
         start += 1
         name = "Node $start"
     end
