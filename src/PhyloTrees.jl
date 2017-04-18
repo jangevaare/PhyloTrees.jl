@@ -124,6 +124,7 @@ export
 # Package files
 include("interface.jl")
 include("structure.jl")
+include("trees.jl")
 include("show.jl")
 include("construction.jl")
 include("utilities.jl")
