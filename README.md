@@ -65,27 +65,74 @@ Distance between nodes can be calculated using the `distance` function. A node v
 
 Trees can be plotted using `plot`.
 
-There are many other functions available that are helpful when dealing with trees including:
-`changesource!`,
-`changetarget!`,
-`indegree`,
-`outdegree`,
-`isroot`,
-`isleaf`,
-`isnode`,
-`findroots`,
-`findleaves`,
-`findnodes`,
-`findnonroots`,
-`findnonleaves`,
-`findnonnodes`,
-`areconnected`,
-`nodepath`,
-`branchpath`,
-`parentnode`,
-`childnodes`,
-`descendantcount`,
-`descendantnodes`,
-`ancestorcount`,
-`ancestornodes`, and
-`nodetype`
+There are many other functions available that are helpful when dealing
+with trees including:
+    For trees:
+    getnodes(),
+    getbranches(),
+    verify(),
+    getnode(),
+    getbranch(),
+    addnode!(),
+    addnodes!(),
+    addbranch!(),
+    branch!(),
+    changesource!(),
+    changetarget!(),
+    deletenode!(),
+    deletebranch!(),
+    findroots(),
+    findleaves(),
+    findnodes(),
+    findnonroots(),
+    findnonleaves(),
+    findnonnodes(),
+    areconnected(),
+    nodepath(),
+    branchpath(),
+    parentnode(),
+    childnodes(),
+    descendantcount(),
+    descendantnodes(),
+    ancestorcount(), and
+    ancestornodes()
+
+    For nodes:
+    indegree(),
+    getinbound(),
+    setinbound!(),
+    deleteinbound!(),
+    hasinbound(),
+    outdegree(),
+    hasoutboundspace(),
+    getoutbounds(),
+    addoutbound!(),
+    deleteoutbound!(),
+    isroot(),
+    isleaf(),
+    isinternal(),
+    isnode(), and
+    isunattached()
+    
+    For branches:
+    getsource(),
+    gettarget(),
+    getlength(),
+    changesource!(), and
+    changetarget!()
+    
+    To measure leaf distances:
+    distance()
+
+    A traversal order:
+    postorder()
+
+    For NodeTree{NodeData}:
+    getnoderecords(), 
+    getnoderecord(), 
+    setnoderecord!(), 
+
+    And also for NamedTree:
+    getleafrecords(), 
+    getleafrecord(), and 
+    setleafrecord!()

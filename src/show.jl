@@ -63,3 +63,9 @@ function show(io::IO, object::NamedTree)
     print(io, "Leaf names:\n")
     show(io, keys(getleafrecords(object)))
 end
+
+function show{ND}(io::IO, object::NodeTree{ND})
+    print(io, "\e[0mPhylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches with node information of type $ND\n")
+    print(io, "Leaf names:\n")
+    show(io, keys(getleafrecords(object)))
+end
