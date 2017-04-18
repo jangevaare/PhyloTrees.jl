@@ -1,17 +1,13 @@
 """
-    distance(tree::Tree,
-             node1::Int,
-             node2::Int)
+    distance(tree::Tree, node1, node2)
 
 Distance between two `Node`s on a `Tree`
 """
-function distance(tree::AbstractTree,
-                  node1::Int,
-                  node2::Int)
+function distance(tree::AbstractTree, node1, node2)
     path = branchpath(tree, node1, node2)
     dist = 0.0
     for b in path
-        dist += _getlength(getbranch(tree, b))
+        dist += getlength(tree, b)
     end
     return dist
 end
@@ -39,7 +35,7 @@ function distance(tree::AbstractTree,
     path = branchpath(tree, node)
     dist = 0.0
     for b in path
-        dist += _getlength(getbranch(tree, b))
+        dist += getlength(tree, b)
     end
     return dist
 end
