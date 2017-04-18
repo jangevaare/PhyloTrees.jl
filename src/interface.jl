@@ -18,9 +18,9 @@ _hasnode(tree::AbstractTree, label) = haskey(getnodes(tree), label)
 #  - _hasbranch()
 _hasbranch(tree::AbstractTree, label) = haskey(getbranches(tree), label)
 #  - _addnodes!()
-_addnodes!(tree::AbstractTree, count::Int) = map(addnode!(tree), 1:count)
+_addnodes!(tree::AbstractTree, count::Int) = map(_ -> addnode!(tree), 1:count)
 _addnodes!(tree::AbstractTree, nodes::AbstractVector) =
-    map(addnode!(tree), nodes)
+    map(node -> addnode!(tree, node), nodes)
 #  - _addbranch!()
 function _addbranch!(tree::AbstractTree, source, target,
                      length::Float64, label)
