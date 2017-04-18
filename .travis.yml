@@ -1,14 +1,24 @@
-# Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
 os:
   - linux
   - osx
+
 julia:
   - release
   - nightly
+
 notifications:
   email: false
+
 matrix:
   allow_failures:
     - julia: nightly
   fast_finish: true
+
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("PhyloTrees", coverage=true)'
+
+after_success:
+  - julia -e 'cd(Pkg.dir("PhyloTrees", "test")); include("coverage.jl")'
+#  - julia -e 'Pkg.add("Documenter"); cd(Pkg.dir("PhyloTrees")); include(joinpath("doc", "make.jl"))'
