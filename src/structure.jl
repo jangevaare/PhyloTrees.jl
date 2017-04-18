@@ -1,5 +1,3 @@
-using PhyloTrees.Interface
-
 """
     Node(Vector{Int}, Vector{Int}) <: AbstractNode
 
@@ -218,17 +216,17 @@ function _addnode!{N}(tree::SimpleTree{N}, label)
 end
 
 """
-    LeafTree
+    NamedTree
 
 Binary phylogenetic tree object with known leaves
 """
-type LeafTree <: AbstractTree{String, Int}
+type NamedTree <: AbstractTree{String, Int}
     nodes::Dict{String, BinaryNode{Int}}
     branches::Dict{Int, Branch{String}}
     leafrecord::Dict{String, TypedInfo{String}}
 end
 
-function LeafTree(lt::LeafTree; deep=true, empty=true)
+function NamedTree(lt::NamedTree; deep=true, empty=true)
     verify(lt) || error("Tree to copy is not valid")
     leafrecord = deep ? deepcopy(getleafrecord(lt)) : getleafrecord(lt)
     nodes = getnodes(lt)
@@ -237,36 +235,36 @@ function LeafTree(lt::LeafTree; deep=true, empty=true)
     elseif deep
         nodes = deepcopy(nodes)
     end
-    return LeafTree(nodes,
+    return NamedTree(nodes,
                     empty ? Dict{Int, Branch{String}}() :
                     (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
                     leafrecord)
 end
 
-function LeafTree(leaves::AbstractVector{String})
+function NamedTree(leaves::AbstractVector{String})
     leafrecord = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
     nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
-    return LeafTree(nodes, Dict{Int, Branch{String}}(), leafrecord)
+    return NamedTree(nodes, Dict{Int, Branch{String}}(), leafrecord)
 end
 
-function _getnodes(pt::LeafTree)
+function _getnodes(pt::NamedTree)
     return pt.nodes
 end
 
-function _getbranches(pt::LeafTree)
+function _getbranches(pt::NamedTree)
     return pt.branches
 end
 
-function _getleafrecord(pt::LeafTree)
+function _getleafrecord(pt::NamedTree)
     return pt.leafrecord
 end
 
-function _addnode!(tree::LeafTree, label)
+function _addnode!(tree::NamedTree, label)
     setnode!(tree, label, BinaryNode{Int}())
     return label
 end
 
-function _verify(tree::LeafTree)
+function _verify(tree::NamedTree)
     if Set(findleaves(tree) ∪ findunattacheds(tree)) !=
         Set(keys(_getleafrecord(tree)))
         warn("Leaf records do not match actual leaves of tree")
