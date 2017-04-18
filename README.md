@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/jangevaare/PhyloTrees.jl.svg?branch=master)](https://travis-ci.org/jangevaare/PhyloTrees.jl)
 [![][travis-img]][travis-url]
-[![][codecov-img]][codecov-url]
 [![][coveralls-img]][coveralls-url]
+[![][codecov-img]][codecov-url]
 
 ## Introduction
 
