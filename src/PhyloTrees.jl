@@ -26,8 +26,6 @@ export
     verify,
     getnode,
     getbranch,
-    setnode!,
-    setbranch!,
 
     # Nodes
     AbstractNode,
@@ -81,7 +79,6 @@ export
     descendantnodes,
     ancestorcount,
     ancestornodes,
-    nodetype,
 
     # Distance
     distance,
