@@ -67,6 +67,7 @@ Trees can be plotted using `plot`.
 
 There are many other functions available that are helpful when dealing
 with trees including:
+
     For trees:
     getnodes(),
     getbranches(),
