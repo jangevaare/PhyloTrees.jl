@@ -271,7 +271,7 @@ end
 Branch pathway through which a specified node connects to a root
 """
 function branchpath{NL, BL}(tree::AbstractTree{NL, BL}, node)
-    path = NL[]
+    path = BL[]
     while hasinbound(tree, node)
         push!(path, getinbound(tree, node))
         node = getsource(tree, last(path))
