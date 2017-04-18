@@ -72,7 +72,30 @@ function _branch!(tree::AbstractTree, source, length::Float64)
 end
 #  - _getleafrecords()
 function _getleafrecords(tree::AbstractTree)
-    return Dict(map(leaf -> leaf=>nothing, findleaves(tree)))
+    return Dict(map(leaf -> leaf=>nothing,
+                    findleaves(tree) ∪ findunattacheds(tree)))
+end
+#  - _getleafrecord()
+function _getleafrecord(tree::AbstractTree, label)
+    return _getleafrecords(tree)[label]
+end
+#  - _setleafrecord()
+function _setleafrecord!(tree::AbstractTree, label, value)
+    _getleafrecords(tree)[label] = value
+    return value
+end
+#  - _getnoderecords()
+function _getnodeecords(tree::AbstractTree)
+    return Dict(map(node -> node=>nothing, keys(getnodes(tree))))
+end
+#  - _getnoderecord()
+function _getnoderecord(tree::AbstractTree, label)
+    return _getnoderecords(tree)[label]
+end
+#  - _setnoderecord!()
+function _setnoderecord!(tree::AbstractTree, label, value)
+    _getnoderecords(tree)[label] = value
+    return value
 end
 #  - _verify()
 function _verify(tree::AbstractTree)
@@ -178,10 +201,55 @@ end
 """
     getleafrecords(::AbstractTree)
 
-retrieve the Dict containing the branches of the tree.
+retrieve the Dict containing the leaf records of the tree.
 """
 function getleafrecords(tree::AbstractTree)
     return _getleafrecords(tree)
+end
+
+"""
+    getleafrecord(::AbstractTree, label)
+
+retrieve the leaf record for a leaf of the tree.
+"""
+function getleafrecord(tree::AbstractTree, label)
+    return _getleafrecord(tree, label)
+end
+
+"""
+    setleafrecord(::AbstractTree, label, value)
+
+Set the leaf record for a leaf of the tree.
+"""
+function setleafrecord!(tree::AbstractTree, label, value)
+    return _setleafrecord!(tree, label, value)
+end
+
+"""
+    getnoderecords(::AbstractTree)
+
+retrieve the Dict containing the node records of the tree.
+"""
+function getnoderecords(tree::AbstractTree)
+    return _getnoderecords(tree)
+end
+
+"""
+    getnoderecord(::AbstractTree, label)
+
+retrieve the node record for a leaf of the tree.
+"""
+function getnoderecord(tree::AbstractTree, label)
+    return _getnoderecord(tree, label)
+end
+
+"""
+    setnoderecord(::AbstractTree, label, value)
+
+Set the node record for a node of the tree.
+"""
+function setnoderecord!(tree::AbstractTree, label, value)
+    return _setnoderecord!(tree, label, value)
 end
 
 """
