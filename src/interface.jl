@@ -70,8 +70,8 @@ function _branch!(tree::AbstractTree, source, length::Float64)
     end
     return target
 end
-#  - _getleafrecord()
-function _getleafrecord(tree::AbstractTree)
+#  - _getleafrecords()
+function _getleafrecords(tree::AbstractTree)
     return Dict(map(leaf -> leaf=>nothing, findleaves(tree)))
 end
 #  - _verify()
@@ -176,12 +176,12 @@ function getbranches(tree::AbstractTree)
 end
 
 """
-    getleafrecord(::AbstractTree)
+    getleafrecords(::AbstractTree)
 
 retrieve the Dict containing the branches of the tree.
 """
-function getleafrecord(tree::AbstractTree)
-    return _getleafrecord(tree)
+function getleafrecords(tree::AbstractTree)
+    return _getleafrecords(tree)
 end
 
 """

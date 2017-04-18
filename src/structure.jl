@@ -223,28 +223,29 @@ Binary phylogenetic tree object with known leaves
 type NamedTree <: AbstractTree{String, Int}
     nodes::Dict{String, BinaryNode{Int}}
     branches::Dict{Int, Branch{String}}
-    leafrecord::Dict{String, TypedInfo{String}}
+    leafrecords::Dict{String, TypedInfo{String}}
 end
 
 function NamedTree(lt::NamedTree; deep=true, empty=true)
     verify(lt) || error("Tree to copy is not valid")
-    leafrecord = deep ? deepcopy(getleafrecord(lt)) : getleafrecord(lt)
+    leafrecords = deep ? deepcopy(getleafrecords(lt)) : getleafrecords(lt)
     nodes = getnodes(lt)
     if empty
-        nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), keys(leafrecord)))
+        nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), keys(leafrecords)))
     elseif deep
         nodes = deepcopy(nodes)
     end
     return NamedTree(nodes,
                     empty ? Dict{Int, Branch{String}}() :
                     (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
-                    leafrecord)
+                    leafrecords)
 end
 
 function NamedTree(leaves::AbstractVector{String})
-    leafrecord = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
+    leafrecords = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
     nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
-    return NamedTree(nodes, Dict{Int, Branch{String}}(), leafrecord)
+    return NamedTree(nodes, Dict{Int, Branch{String}}(), leafrecords)
+end
 end
 
 function _getnodes(pt::NamedTree)
@@ -255,8 +256,8 @@ function _getbranches(pt::NamedTree)
     return pt.branches
 end
 
-function _getleafrecord(pt::NamedTree)
-    return pt.leafrecord
+function _getleafrecords(pt::NamedTree)
+    return pt.leafrecords
 end
 
 function _addnode!(tree::NamedTree, label)
@@ -266,7 +267,7 @@ end
 
 function _verify(tree::NamedTree)
     if Set(findleaves(tree) ∪ findunattacheds(tree)) !=
-        Set(keys(_getleafrecord(tree)))
+        Set(keys(_getleafrecords(tree)))
         warn("Leaf records do not match actual leaves of tree")
         return false
     end 

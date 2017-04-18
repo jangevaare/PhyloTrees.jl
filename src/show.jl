@@ -61,5 +61,5 @@ end
 function show(io::IO, object::NamedTree)
     print(io, "\e[0mPhylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches\n")
     print(io, "Leaf names:\n")
-    show(io, keys(getleafrecord(object)))
+    show(io, keys(getleafrecords(object)))
 end
