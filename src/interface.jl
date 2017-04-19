@@ -362,7 +362,7 @@ function verify{NL, BL}(tree::AbstractTree{NL, BL})
             return false
         end
         
-        if Set(mapreduce(_getoutbounds, append!, values(nodes))) !=
+        if Set(mapreduce(_getoutbounds, append!, BL[], values(nodes))) !=
             Set(keys(branches))
             warn("Node outbound branches must exactly match Branch labels")
             return false
