@@ -27,13 +27,13 @@ function treeplot{NL, BL}(tree::AbstractTree{NL, BL})
     xmax = Float64[]
     for i in nodequeue
         if !isroot(tree, i)
-            push!(tree_x, distances[[get(processorder[i]),
-                                     get(processorder[parentnode(tree, i)]),
-                                     get(processorder[parentnode(tree, i)])]])
-            push!(tree_y, height[[get(processorder[i]),
-                                  get(processorder[i]),
-                                  get(processorder[parentnode(tree, i)])]])
-            push!(xmax, distances[get(processorder[i])])
+            push!(tree_x, distances[[processorder[i],
+                                     processorder[parentnode(tree, i)],
+                                     processorder[parentnode(tree, i)]]])
+            push!(tree_y, height[[processorder[i],
+                                  processorder[i],
+                                  processorder[parentnode(tree, i)]]])
+            push!(xmax, distances[processorder[i]])
         end
     end
     return tree_x, tree_y, maximum(xmax)
