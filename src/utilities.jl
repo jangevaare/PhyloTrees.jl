@@ -100,7 +100,7 @@ Find the non-leaf `Node`s of a `Tree`
 """
 function findnonleaves{NL, BL}(tree::AbstractTree{NL, BL})
     nonleaves = NL[]
-    for i in 1:keys(getnodes(tree))
+    for i in keys(getnodes(tree))
         if !isleaf(tree, i)
             push!(nonleaves, i)
         end
