@@ -1,7 +1,7 @@
 using Compat
 
 @compat abstract type AbstractNode end
-@compat abstract type AbstractInfo{Label} end
+@compat abstract type AbstractInfo end
 @compat abstract type AbstractTree{NodeLabel, BranchLabel} end
 
 # Interfaces to an AbstractTree
@@ -138,6 +138,38 @@ function _newbranchlabel{NL}(tree::AbstractTree{NL, String})
     end
     return name
 end
+#  - _hasheight()
+function _hasheight(tree::AbstractTree, label)
+    return false
+end
+#  - _getheight() - should never be called as hasheight returns false
+function _getheight(tree::AbstractTree, label)
+    throw(NullException())
+    return NaN
+end
+#  - _setheight!() - ignore set value
+function _setheight!(tree::AbstractTree, label, value::Float64)
+    warn("Ignoring height for $label")
+    return value
+end
+#  - _hasrootheight()
+function _hasrootheight(tree::AbstractTree)
+    return false
+end
+#  - _getrootheight() - should never be called as hasrootheight returns false
+function _getrootheight(tree::AbstractTree)
+    throw(NullException())
+    return NaN
+end
+#  - _setrootheight!() - ignore set value
+function _setrootheight!(tree::AbstractTree, value::Float64)
+    warn("Ignoring root height")
+    return value
+end
+
+#  - _clearrootheight!() - ignore
+function _clearrootheight!(tree::AbstractTree)
+end
 
 # Interfaces to an AbstractNode
 # -----------------------------
@@ -179,9 +211,9 @@ _isunattached(node::AbstractNode) = _outdegree(node) == 0 && !_hasinbound(node)
 # -----------------------------
 #
 # These must be implemented by each AbstractInfo subtype:
-#  - getlabel()
-# These may be implemented by an AbstractInfo subtype (default implementations exist):
-#  - haslabel()
+#  - _getheight()
+#  - _setheight!()
+#  - _hasheight()
 
 # Interfaces to a tree
 # --------------------
@@ -264,6 +296,42 @@ Set the node record for a node of the tree.
 """
 function setnoderecord!(tree::AbstractTree, label, value)
     return _setnoderecord!(tree, label, value)
+end
+
+"""
+    hasrootheight(::AbstractTree)
+
+Returns whether the tree has a root height record.
+"""
+function hasrootheight(tree::AbstractTree)
+    return _hasrootheight(tree)
+end
+
+"""
+    getrootheight(::AbstractTree)
+
+Returns  the tree's root height record.
+"""
+function getrootheight(tree::AbstractTree)
+    return _getrootheight(tree)
+end
+
+"""
+    setrootheight!(::AbstractTree, ::Float64)
+
+Sets the tree's root height record.
+"""
+function setrootheight!(tree::AbstractTree, height::Float64)
+    return _setrootheight!(tree, height)
+end
+
+"""
+    clearrootheight(::AbstractTree)
+
+Clears the tree's root height record.
+"""
+function clearrootheight!(tree::AbstractTree)
+    _clearrootheight!(tree, height)
 end
 
 """
@@ -635,24 +703,29 @@ end
 # Interfaces to an info
 # ---------------------
 
-immutable VoidInfo <: AbstractInfo{Void} end
-immutable TypedInfo{T} <: AbstractInfo{T}
-    info::T
+function hasheight(ai::AbstractInfo)
+    return _hasheight(ai)
 end
 
-function haslabel(::AbstractInfo{Void})
-    return false
+function getheight(ai::AbstractInfo)
+    return _getheight(ai)
 end
 
-function haslabel{T}(::AbstractInfo{T})
-    return true
+function setheight!(ai::AbstractInfo, height::Float64)
+    return _setheight!(ai, height)
 end
 
-function getlabel(::AbstractInfo{Void})
-    error("No label")
-    return nothing
+function hasheight(tree::AbstractTree, label)
+    return _hasheight(getleafrecord(tree, label))
 end
 
-function getlabel{T}(ai::TypedInfo{T})
-    return as.info
+function getheight(tree::AbstractTree, label)
+    return _getheight(getleafrecord(tree, label))
+end
+
+function setheight!(tree::AbstractTree, label, height::Float64)
+    ai = getleafrecord(tree, label)
+    setheight!(ai, height)
+    setleafrecord!(tree, label, ai)
+    return height
 end

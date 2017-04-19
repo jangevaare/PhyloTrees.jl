@@ -33,47 +33,57 @@ end
 
 Binary phylogenetic tree object with known leaves and per node data
 """
-type NodeTree{NodeData} <: AbstractTree{String, Int}
+type NodeTree{LI <: AbstractInfo, ND} <: AbstractTree{String, Int}
     nodes::Dict{String, BinaryNode{Int}}
     branches::Dict{Int, Branch{String}}
-    leafrecords::Dict{String, TypedInfo{String}}
-    noderecords::Dict{String, NodeData}
+    leafrecords::Dict{String, LI}
+    noderecords::Dict{String, ND}
+    rootheight::Nullable{Float64}
 end
 
-function NodeTree{ND}(lt::NodeTree{ND}; deep=true, empty=true)
+function NodeTree{LI, ND}(lt::NodeTree{LI, ND}; copyinfo=true, empty=true)
     verify(lt) || error("Tree to copy is not valid")
-    leafrecords = deep ? deepcopy(getleafrecords(lt)) : getleafrecords(lt)
-    if empty
-        nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), keys(leafrecords)))
-        noderecords = Dict(map(leaf -> leaf => ND(), keys(leafrecords)))
-    elseif deep
+    leafnames = getleafnames(lt)
+    # Leaf records may be conserved across trees, as could be invariant?
+    leafrecords = copyinfo ? deepcopy(getleafrecords(lt)) : getleafrecords(lt)
+    if empty # Empty out everything else
+        nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leafnames))
+        branches = Dict{Int, Branch{String}}()
+        noderecords = Dict(map(leaf -> leaf => ND(), leafnames))
+    else # Make copies of everything
         nodes = deepcopy(nodes)
         noderecords = deepcopy(getnoderecords(lt))
-    else
-        nodes = getnodes(lt)
-        noderecords = getnoderecords(lt)
+        branches = deepcopy(getbranches(lt))
     end
-    return NodeTree{ND}(nodes,
-                        empty ? Dict{Int, Branch{String}}() :
-                        (deep ? deepcopy(getbranches(lt)) : getbranches(lt)),
-                        leafrecords, noderecords)
+    return NodeTree{LI, ND}(nodes, branches, leafrecords, noderecords,
+                            lt.rootheight)
 end
 
-function NodeTree{NodeData}(leaves::AbstractVector{String}, ::Type{NodeData})
+function NodeTree(leaves::AbstractVector{String};
+                  rootheight::Nullable{Float64} = Nullable{Float64}(),
+                  leaftype::Type = LeafInfo,
+                  nodetype::Type = Void)
+    leaftype <: AbstractInfo ||
+        error("Leaf information structure is not an subtype of AbstractInfo")
     nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
-    leafrecords = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
-    noderecords = Dict(map(leaf -> leaf => NodeData(), leaves))
-    return NodeTree(nodes, Dict{Int, Branch{String}}(),
-                    leafrecords, noderecords)
+    leafrecords = Dict(map(leaf -> leaf => leaftype(), leaves))
+    noderecords = Dict(map(leaf -> leaf => nodetype(), leaves))
+    return NodeTree{leaftype, nodetype}(nodes, Dict{Int, Branch{String}}(),
+                                        leafrecords, noderecords, rootheight)
 end
 
-function NodeTree{NodeData}(numleaves::Int, ::Type{NodeData})
+function NodeTree(numleaves::Int;
+                  rootheight::Nullable{Float64} = Nullable{Float64}(),
+                  leaftype::Type = LeafInfo,
+                  nodetype::Type = Void)
+    leaftype <: AbstractInfo ||
+        error("Leaf information structure is not an subtype of AbstractInfo")
     leaves = map(num -> "Leaf $num", 1:numleaves)
     nodes = Dict(map(leaf -> leaf => BinaryNode{Int}(), leaves))
-    leafrecords = Dict(map(leaf -> leaf => TypedInfo(leaf), leaves))
-    noderecords = Dict(map(leaf -> leaf => NodeData(), leaves))
-    return NodeTree{NodeData}(nodes, Dict{Int, Branch{String}}(),
-                              leafrecords, noderecords)
+    leafrecords = Dict(map(leaf -> leaf => leaftype(), leaves))
+    noderecords = Dict(map(leaf -> leaf => nodetype(), leaves))
+    return NodeTree{leaftype, nodetype}(nodes, Dict{Int, Branch{String}}(),
+                                        leafrecords, noderecords, rootheight)
 end
 
 function _getnodes(nt::NodeTree)
@@ -96,7 +106,7 @@ function _getnoderecords(nt::NodeTree)
     return nt.noderecords
 end
 
-function _addnode!{NR}(tree::NodeTree{NR}, label)
+function _addnode!{LI, NR}(tree::NodeTree{LI, NR}, label)
     setnode!(tree, label, BinaryNode{Int}())
     setnoderecord!(tree, label, NR())
     return label
@@ -115,19 +125,48 @@ function _deletenode!(tree::NodeTree, label)
     return label
 end
 
-
 function _verify(tree::NodeTree)
-    if Set(findleaves(tree) ∪ findunattacheds(tree)) !=
-        Set(keys(_getleafrecords(tree)))
+    if Set(findleaves(tree) ∪ findunattacheds(tree)) != Set(getleafnames(tree))
         warn("Leaf records do not match actual leaves of tree")
         return false
     end
-    if Set(keys(_getnoderecords(tree))) !=
-        Set(keys(_getnodes(tree)))
+    
+    if Set(keys(_getnoderecords(tree))) != Set(keys(_getnodes(tree)))
         warn("Leaf records do not match node records of tree")
         return false
     end
+    
+    rootheight = hasrootheight(tree) ? getrootheight(tree) : NaN
+    for leaf in getleafnames(tree)
+        if hasheight(tree, leaf)
+            if isnan(rootheight)
+                rootheight = getheight(tree, leaf) - getrootdistance(tree, leaf)
+            end
+            if !(getheight(tree, leaf) - rootheight ≈
+                 getrootdistance(tree, leaf))
+                warn("Leaf height ($(getheight(tree, leaf))) for $leaf does not match branches")
+                return false
+            end
+        end
+    end
     return true
+end
+
+function _hasrootheight(tree::NodeTree)
+    return !isnull(tree.rootheight)
+end
+
+function _getrootheight(tree::NodeTree)
+    return get(tree.rootheight)
+end
+
+function _setrootheight!(tree::NodeTree, height::Float64)
+    tree.rootheight = height
+    return height
+end
+
+function _clearrootheight!(tree::NodeTree)
+    tree.rootheight = Nullable{Float64}()
 end
 
 """
@@ -135,7 +174,7 @@ end
 
 Binary phylogenetic tree object with known leaves
 """
-const NamedTree = NodeTree{Void}
+const NamedTree = NodeTree{LeafInfo, Void}
 
-NamedTree(leaves::AbstractVector{String}) = NodeTree(leaves, Void)
-NamedTree(numleaves::Int) = NodeTree(numleaves, Void)
+NamedTree(leaves::AbstractVector{String}) = NodeTree(leaves)
+NamedTree(numleaves::Int) = NodeTree(numleaves)

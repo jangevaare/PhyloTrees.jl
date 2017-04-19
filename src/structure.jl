@@ -184,3 +184,14 @@ function checkbranch(id::Int, branch::Branch, tree::AbstractTree)
         !hasinbound(getnodes(tree)[gettarget(branch)]) &&
         outboundspace(getnodes(tree)[getsource(branch)])
 end
+
+
+type LeafInfo <: AbstractInfo
+    height::Nullable{Float64}
+end
+
+_hasheight(li::LeafInfo) = !isnull(li.height)
+_getheight(li::LeafInfo) = get(li.height)
+_setheight!(li::LeafInfo, height::Float64) = li.height = height
+
+LeafInfo() = LeafInfo(Nullable{Float64}())
