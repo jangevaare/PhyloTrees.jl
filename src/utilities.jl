@@ -298,8 +298,3 @@ function branchpath(tree::AbstractTree, node1, node2)
     end
     return [reverse(path1[(mrcbranch_index+1):end]); path2[mrcbranch_index+1:end]]
 end
-
-function getrootdistance(tree::AbstractTree, label)
-    return mapreduce(branch -> getlength(tree, branch), +, 0.0,
-                     branchpath(tree, label))
-end

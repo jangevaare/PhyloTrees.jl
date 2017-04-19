@@ -35,6 +35,7 @@ export
     AbstractNode,
     Node,
     BinaryNode,
+    hasnode,
     getnode,
     addnode!,
     addnodes!,
@@ -70,6 +71,7 @@ export
     
     # Information about branches
     Branch,
+    hasbranch,
     getbranch,
     addbranch!,
     branch!,

@@ -396,6 +396,15 @@ end
 
 
 """
+    hasnode(tree::AbstractTree, label)
+
+retrieve whether a specific node `label` of tree `tree` exists.
+"""
+function hasnode(tree::AbstractTree, label)
+    return _hasnode(tree, label)
+end
+
+"""
     getnode(tree::AbstractTree, label)
 
 retrieve a specific node `label` of tree `tree`.
@@ -404,6 +413,15 @@ function getnode(tree::AbstractTree, label)
     _hasnode(tree, label) ||
         error("Node $label does not exist")
     return getnodes(tree)[label]
+end
+
+"""
+    hasbranch(tree::AbstractTree, label)
+
+retrieve whether a specific branch `label` of tree `tree` exists.
+"""
+function hasbranch(tree::AbstractTree, label)
+    return _hasbranch(tree, label)
 end
 
 """
