@@ -16,10 +16,10 @@ function treeplot{NL, BL}(tree::AbstractTree{NL, BL})
         end
         queueposition += 1
     end
-    processorder = fill(Nullable{NL}(), length(getnodes(tree)))
+    processorder = Dict{NL, Int}()
     i = 1
-    for (name, node) in getnodes(tree)
-        processorder[nodequeue[i]] = name
+    for name in nodequeue
+        processorder[name] = i
         i += 1
     end
     tree_x = Vector{Float64}[]
