@@ -13,7 +13,7 @@ using Base.Test
 
     @test length(findroots(g)) == 1
     @test length(findleaves(g)) == 3
-    @test length(findnodes(g)) == 1
+    @test length(findinternals(g)) == 1
 
     for i in 1:length(g.nodes)
         @test outdegree(g, i) <= 2

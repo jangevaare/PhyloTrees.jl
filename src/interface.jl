@@ -651,8 +651,6 @@ function isinternal(tree::AbstractTree, label)
     return _isinternal(getnode(tree, label))
 end
 
-const isnode = isinternal
-
 """
     isunattached(tree::AbstractTree, label)
 

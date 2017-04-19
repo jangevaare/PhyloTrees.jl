@@ -64,14 +64,14 @@ function findleaves{NL, BL}(tree::AbstractTree{NL, BL})
 end
 
 """
-    findnodes(tree::AbstractTree)
+    findinternals(tree::AbstractTree)
 
 Find the internal `Node`s of a `Tree`
 """
-function findnodes{NL, BL}(tree::AbstractTree{NL, BL})
+function findinternals{NL, BL}(tree::AbstractTree{NL, BL})
     nodes = NL[]
     for i in keys(getnodes(tree))
-        if isnode(tree, i)
+        if isinternal(tree, i)
             push!(nodes, i)
         end
     end
@@ -109,14 +109,14 @@ function findnonleaves{NL, BL}(tree::AbstractTree{NL, BL})
 end
 
 """
-    findnonnodes(tree::AbstractTree)
+    findnoninternals(tree::AbstractTree)
 
 Find the non-internal `Node`s of a `Tree`
 """
-function findnonnodes{NL, BL}(tree::AbstractTree{NL, BL})
+function findnoninternals{NL, BL}(tree::AbstractTree{NL, BL})
     nonnodes = NL[]
     for i in keys(getnodes(tree))
-        if !isnode(tree, i)
+        if !isinternal(tree, i)
             push!(nonnodes, i)
         end
     end
