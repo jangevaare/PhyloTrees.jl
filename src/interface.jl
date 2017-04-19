@@ -139,17 +139,28 @@ function _newbranchlabel{NL}(tree::AbstractTree{NL, String})
     return name
 end
 #  - _hasheight()
-function _hasheight(tree::AbstractTree, label)
+function _hasheight(::AbstractInfo)
+    return false
+end
+function _hasheight(::Void)
     return false
 end
 #  - _getheight() - should never be called as hasheight returns false
-function _getheight(tree::AbstractTree, label)
+function _getheight(::AbstractInfo)
+    throw(NullException())
+    return NaN
+end
+function _getheight(::Void)
     throw(NullException())
     return NaN
 end
 #  - _setheight!() - ignore set value
-function _setheight!(tree::AbstractTree, label, value::Float64)
-    warn("Ignoring height for $label")
+function _setheight!(::AbstractInfo, value::Float64)
+    warn("Ignoring height")
+    return value
+end
+function _setheight!(::Void, value::Float64)
+    warn("Ignoring height")
     return value
 end
 #  - _hasrootheight()
@@ -725,7 +736,7 @@ end
 
 function setheight!(tree::AbstractTree, label, height::Float64)
     ai = getleafrecord(tree, label)
-    setheight!(ai, height)
+    _setheight!(ai, height)
     setleafrecord!(tree, label, ai)
     return height
 end
