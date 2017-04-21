@@ -41,7 +41,7 @@ function _deletenode!(tree::AbstractTree, label)
         deletebranch!(tree, _getinbound(node))
     end
     for b in _getoutbounds(node)
-        deletebranch!(tree, n)
+        deletebranch!(tree, b)
     end
     delete!(_getnodes(tree), label)
     return label
