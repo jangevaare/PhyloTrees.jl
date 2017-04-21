@@ -72,8 +72,8 @@ function show{N <: AbstractNode, NT}(io::IO, p::Pair{NT, N})
 end
 
 function show{NT}(io::IO, object::Branch{NT})  
-    source = NT <: Number ? "$(_getsource(p[2]))" : "\"$(_getsource(p[2]))\""
-    target = NT <: Number ? "$(_gettarget(p[2]))" : "\"$(_gettarget(p[2]))\""
+    source = NT <: Number ? "$(_getsource(object))" : "\"$(_getsource(object))\""
+    target = NT <: Number ? "$(_gettarget(object))" : "\"$(_gettarget(object))\""
     print(io, "[node $source]-->[$(_getlength(object)) length branch]-->[node $target]")   
 end  
  
