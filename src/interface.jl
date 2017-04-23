@@ -90,7 +90,7 @@ function _setleafrecord!(tree::AbstractTree, label, value)
     return value
 end
 #  - _getnoderecords()
-function _getnodeecords(tree::AbstractTree)
+function _getnoderecords(tree::AbstractTree)
     return Dict(map(node -> node=>nothing, keys(getnodes(tree))))
 end
 #  - _getnoderecord()
