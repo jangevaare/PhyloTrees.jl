@@ -43,3 +43,15 @@ function distance(tree::Tree,
   end
   return dist
 end
+
+
+"""
+distance(tree::Tree,
+         node::Vector{Int64})
+
+Distance between a `Node` and it's associated root
+"""
+function distance(tree::Tree,
+                  nodes::Vector{Int64})
+  [distance(tree, nodes[i]) for i = 1:length(nodes)]
+end
