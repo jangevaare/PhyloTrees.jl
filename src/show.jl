@@ -1,43 +1,129 @@
-function show(io::IO, object::Node)
-  if length(object.in) == 0
-    if length(object.out) > 0
-      for i in 1:length(object.out)
-        if i == 1
-          print(io, "\r\e[0m[\e[1mroot node\e[0m]-->[branch $(object.out[i])]")
-        elseif i < length(object.out)
-          print(io, "\n\e[0m$(repeat(" ", length("[root node]")))-->[branch $(object.out[i])]")
+function show(io::IO, object::AbstractNode, n::String = "")
+    node = "node"
+    if !isempty(n)
+        node *= " $n"
+    end
+    if !_hasinbound(object)
+        if _outdegree(object) > 0
+            blank = repeat(" ", length("[root $node]") + (isempty(n) ? 0 : 1))
+            for (i, bn) in zip(1:_outdegree(object), _getoutbounds(object))
+                b = typeof(bn) <: Number ? "$bn" : "\"$bn\""
+                if _outdegree(object) == 1
+                    print(io, "[root $node]-->[branch $b]")
+                elseif get(io, :compact, false)
+                    if i == 1
+                        print(io, "[root $node]-->[branches $b")
+                    elseif i < _outdegree(object)
+                        print(io, ", $b")
+                    else
+                        print(io, " and $b]")
+                    end
+                else # multiline view
+                    if i == 1
+                        print(io, "[root $node]-->[branch $b]\n")
+                    elseif i < _outdegree(object)
+                        print(io, "$blank-->[branch $b]\n")
+                    else
+                        print(io, "$blank-->[branch $b]")
+                    end
+                end
+            end
         else
-          print(io, "\n\e[0m$(repeat(" ", length("[root node]")))-->[branch $(object.out[i])]")
+            print(io, "[unattached $node]")
         end
-      end
+    else # hasinbound
+        inb = typeof(_getinbound(object)) <: Number ? 
+            "$(_getinbound(object))" : "\"$(_getinbound(object))\""
+        if _outdegree(object) == 0
+            print(io, "[branch $inb]-->[leaf $node]")
+        elseif _hasinbound(object)
+            blank = repeat(" ",
+                           length("[branch $inb]-->[internal $node]") +
+                           (isempty(n) ? 0 : 1))
+            for (i, bn) in zip(1:_outdegree(object), _getoutbounds(object))
+                b = typeof(bn) <: Number ? "$bn" : "\"$bn\""
+                if _outdegree(object) == 1
+                    print(io, "[branch $inb]-->[internal $node]-->[branch $b]")
+                elseif get(io, :compact, false)
+                    if i == 1
+                        print(io, "[branch $inb]-->[internal $node]-->[branches $b")
+                    elseif i < _outdegree(object)
+                        print(io, ", $b")
+                    else
+                        print(io, " and $b]")
+                    end
+                else # multiline view
+                    if i == 1
+                        print(io, "[branch $inb]-->[internal $node]-->[branch $b]\n")
+                    elseif i < _outdegree(object)
+                        print(io, "$blank-->[branch $b]\n")
+                    else
+                        print(io, "$blank-->[branch $b]")
+                    end
+                end
+            end
+        end
+    end
+end
+
+function show{N <: AbstractNode, NT}(io::IO, p::Pair{NT, N})
+    n = NT <: Number ? "$(p[1])" : "\"$(p[1])\""
+    show(io, p[2], "$n")
+end
+
+function show{NT}(io::IO, object::Branch{NT})  
+    source = NT <: Number ? "$(_getsource(object))" : "\"$(_getsource(object))\""
+    target = NT <: Number ? "$(_gettarget(object))" : "\"$(_gettarget(object))\""
+    print(io, "[node $source]-->[$(_getlength(object)) length branch]-->[node $target]")   
+end  
+ 
+function show{BT, NT}(io::IO, p::Pair{BT, Branch{NT}})
+    source = NT <: Number ? "$(_getsource(p[2]))" : "\"$(_getsource(p[2]))\""
+    target = NT <: Number ? "$(_gettarget(p[2]))" : "\"$(_gettarget(p[2]))\""
+    branch = BT <: Number ? "$(p[1])" : "\"$(p[1])\""
+    print(io, "[node $source]-->[$(_getlength(p[2])) length branch $branch]-->[node $target]")
+end
+
+function show(io::IO, object::AbstractTree)
+    print(io, "Phylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches")
+end
+
+function show(io::IO, object::NamedTree)
+    if get(io, :compact, false)
+        print(io, "NamedTree phylogenetic tree with $(length(getnodes(object))) nodes ($(length(getleafrecords(object))) leaves) and $(length(getbranches(object))) branches")
     else
-      print(io, "\r\e[0m[\e[1munattached node\e[0m]")
+        print(io, "NamedTree phylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches\n") 
+        print(io, "Leaf names:\n")
+        print(io, keys(getleafrecords(object)))
     end
-  elseif length(object.in) == 1
-    if length(object.out) == 0
-      print(io, "\r\e[0m[branch $(object.in[1])]-->[\e[1mleaf node\e[0m]")
-    elseif length(object.in) == 1
-      for i in 1:length(object.out)
-        if length(object.out) == 1
-          print(io, "\r\e[0m[branch $(object.in[1])]-->[\e[1minternal node\e[0m]-->[branch $(object.out[i])]")
-        elseif i == 1
-          print(io, "\r\e[0m[branch $(object.in[1])]-->[\e[1minternal node\e[0m]-->[branch $(object.out[i])]")
-        elseif i < length(object.out)
-          print(io, "\n\e[0m$(repeat(" ", length("[branch $(object.in[1])]-->[internal node]")))-->[branch $(object.out[i])]")
-        else
-          print(io, "\n\e[0m$(repeat(" ", length("[branch $(object.in[1])]-->[internal node]")))-->[branch $(object.out[i])]")
-        end
-      end
-    end
-  end
 end
 
-
-function show(io::IO, object::Branch)
-  print(io, "\r\e[0m[node $(object.source)]-->[\e[1m$(object.length) branch\e[0m]-->[node $(object.target)]")
+function show{ND}(io::IO, object::NodeTree{ND})
+    if get(io, :compact, false)
+        print(io, "$(string(typeof(object))) phylogenetic tree with $(length(getnodes(object))) nodes ($(length(getleafrecords(object))) leaves) and $(length(getbranches(object))) branches")
+    else
+        print(io, "$(string(typeof(object))) phylogenetic tree with $(length(getnodes(object))) nodes and $(length(getbranches(object))) branches\n") 
+        print(io, "Leaf names:\n")
+        print(io, keys(getleafrecords(object)))
+    end
 end
 
+function showall(io::IO, object::AbstractTree)
+    print(io, object)
+    print(io, "Nodes:\n") 
+    print(io, getnodes(object))
+    print(io, "Branches:\n") 
+    print(io, getbranches(object))
+end
 
-function show(io::IO, object::Tree)
-  print(io, "\r\e[0mPhylogenetic tree with $(length(object.nodes)) nodes and $(length(object.branches)) branches")
+function showall{ND}(io::IO, object::NodeTree{ND})
+    print(io, object)
+    print(io, "\nNodes:\n") 
+    print(io, getnodes(object))
+    print(io, "\nBranches:\n") 
+    print(io, getbranches(object))
+    if ND != Void
+        print(io, "\nNodeData:\n") 
+        print(io, getnoderecords(object))
+    end
 end

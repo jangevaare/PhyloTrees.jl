@@ -1,25 +1,41 @@
-using PhyloTrees
-using Base.Test
+# Identify files in test/ that are testing matching files in src/
+#  - src/Source.jl will be matched by test/test_Source.jl
 
-g = Tree()
-addnode!(g)
-branch!(g, 1, 10.0)
-branch!(g, 1, 5.0)
-branch!(g, 2, 20.0)
+filebase = map(file -> replace(file, r"(.*).jl", s"\1"),
+                filter(file -> ismatch(r".*\.jl", file), readdir("../src")))
+testbase = map(file -> replace(file, r"test_(.*).jl", s"\1"),
+                filter(str -> ismatch(r"^test_.*\.jl$", str), readdir()))
 
-@test length(findroots(g)) == 1
-@test length(findleaves(g)) - 1 == length(findnodes(g))
+info("Running tests for files:")
+for t in testbase
+    println("    = $t.jl")
+end
+println()
 
-for i = 1:length(g.nodes)
-  @test length(g.nodes[i].out) <= 2
-  @test length(g.nodes[i].in) <= 1
+info("Running tests...")
+for t in testbase
+    fn = "test_$t.jl"
+    println("    * Testing $t.jl ...")
+    include(fn)
+    println()
 end
 
-@test areconnected(g, 1, 2)
-@test nodepath(g, 1, 2) == [1, 2]
-@test branchpath(g, 1, 2) == [1]
-@test distance(g, 1, 2) == 10.0
-@test distance(g, 1, 4) == 30.0
-@test distance(g, 4, 3) == 35.0
+# Identify tests with no matching file
+superfluous = filter(f -> f ∉ filebase, testbase)
+if length(superfluous) > 0
+    info("Potentially superfluous tests:")
+    for f in superfluous
+        println("    + $f.jl")
+    end
+    println()
+end
 
-@test sum(distance(g)) > 0. 
+# Identify files with no matching test
+missing = filter(f -> f ∉ testbase, filebase)
+if length(missing) > 0
+    info("Potentially missing tests:")
+    for f in missing
+        println("    - $f.jl")
+    end
+    println()
+end
