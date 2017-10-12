@@ -21,3 +21,5 @@ end
 @test distance(g, 1, 2) == 10.0
 @test distance(g, 1, 4) == 30.0
 @test distance(g, 4, 3) == 35.0
+
+@test sum(distance(g)) > 0. 
