@@ -1,7 +1,7 @@
 """
 A parametric node of phylogenetic tree
 """
-type Node
+struct Node
   in::Vector{Int64}
   out::Vector{Int64}
 
@@ -14,14 +14,14 @@ end
 """
 A directed parametric branch connecting two nodes of phylogenetic tree
 """
-type Branch
+struct Branch
   source::Int64
   target::Int64
   length::Float64
 
   function Branch(source::Int64, target::Int64, length::Float64)
     if length < 0.
-      error("Branch length must be positive")
+      error("Branch length is < 0.0")
     end
     new(source, target, length)
   end
@@ -35,7 +35,7 @@ end
 """
 Parametric phylogenetic tree object
 """
-type Tree
+struct Tree
   nodes::Dict{Int64, Node}
   branches::Dict{Int64, Branch}
   height::Float64
