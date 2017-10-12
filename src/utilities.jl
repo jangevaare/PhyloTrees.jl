@@ -61,13 +61,13 @@ end
 
 
 """
-isnode(tree::Tree,
-       node::Int64)
+isinternal(tree::Tree,
+           node::Int64)
 
 Determine if a `Node` is an internal `Node`
 """
-function isnode(tree::Tree,
-                node::Int64)
+function isinternal(tree::Tree,
+                    node::Int64)
   if outdegree(tree, node) > 0 && indegree(tree, node) == 1
     return true
   else
@@ -145,14 +145,14 @@ end
 
 
 """
-findnodes(tree::Tree)
+findinternals(tree::Tree)
 
 Find the internal `Node`s of a `Tree`
 """
-function findnodes(tree::Tree)
+function findinternals(tree::Tree)
   nodes = Int64[]
   for i in keys(tree.nodes)
-    if isnode(tree, i)
+    if isinternal(tree, i)
       push!(nodes, i)
     end
   end
@@ -202,21 +202,21 @@ end
 
 
 """
-findnonnodes(tree::Tree)
+findexternals(tree::Tree)
 
-Find the non-internal `Node`s of a `Tree`
+Find the external `Node`s of a `Tree`
 """
-function findnonnodes(tree::Tree)
-  nonnodes = Int64[]
+function findexternals(tree::Tree)
+  externals = Int64[]
   for i in keys(tree.nodes)
-    if !isnode(tree, i)
-      push!(nonnodes, i)
+    if !isinternal(tree, i)
+      push!(externals, i)
     end
   end
-  if length(nonnodes) == 0
-    warn("No non-internal nodes detected")
+  if length(externals) == 0
+    warn("No external nodes detected")
   end
-  return nonnodes
+  return externals
 end
 
 
@@ -312,7 +312,7 @@ nodepath(tree::Tree,
 function nodepath(tree::Tree,
                   node::Int64)
   path = [node]
-  while isleaf(tree, path[end]) || isnode(tree, path[end])
+  while isleaf(tree, path[end]) || isinternal(tree, path[end])
     push!(path, parentnode(tree, path[end]))
   end
   return path
@@ -414,7 +414,7 @@ Branch pathway through which a specified node connects to a root
 function branchpath(tree::Tree,
                     node::Int64)
   path = Int64[]
-  while isleaf(tree, node) || isnode(tree, node)
+  while isleaf(tree, node) || isinternal(tree, node)
     push!(path, tree.nodes[node].in[1])
     node = tree.branches[path[end]].source
   end

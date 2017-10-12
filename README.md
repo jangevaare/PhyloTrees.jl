@@ -45,7 +45,7 @@ Branches have `Float64` lengths
 We can quickly look at the nodes present in our `Tree`:
 
     > collect(exampletree.nodes)
-    
+
     [unattached node]
     [branch 1]-->[internal node]-->[branch 2]
     [branch 2]-->[leaf node]                 
@@ -64,13 +64,13 @@ There are many other functions available that are helpful when dealing with tree
 `outdegree`,
 `isroot`,
 `isleaf`,
-`isnode`,
+`isinternal`,
 `findroots`,
 `findleaves`,
-`findnodes`,
+`findinternal`,
 `findnonroots`,
 `findnonleaves`,
-`findnonnodes`,
+`findexternal`,
 `areconnected`,
 `nodepath`,
 `branchpath`,

@@ -8,7 +8,7 @@ branch!(g, 1, 5.0)
 branch!(g, 2, 20.0)
 
 @test length(findroots(g)) == 1
-@test length(findleaves(g)) - 1 == length(findnodes(g))
+@test length(findleaves(g)) - 1 == length(findinternals(g))
 
 for i = 1:length(g.nodes)
   @test length(g.nodes[i].out) <= 2
@@ -22,4 +22,4 @@ end
 @test distance(g, 1, 4) == 30.0
 @test distance(g, 4, 3) == 35.0
 
-@test sum(distance(g)) > 0. 
+@test sum(distance(g)) > 0.
