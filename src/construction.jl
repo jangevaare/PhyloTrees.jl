@@ -1,3 +1,20 @@
+const changeheight!(tree, height) = setheight!(tree, height)
+const changetarget!(tree, branch, new_target) = settarget!(tree, branch, new_target)
+const changesource!(tree, branch, new_source) = setsource!(tree, branch, new_source)
+const changelength!(tree, branch, new_length) = setlength!(tree, branch, new_length)
+
+"""
+setheight!(tree::Tree,
+           height::Float64)
+
+Sets the height of a `Tree`
+"""
+function setheight!(tree::Tree,
+                    height::Float64)
+    tree.height = height
+    return tree
+end
+
 """
 addnode!(tree::Tree)
 
@@ -137,13 +154,13 @@ end
 
 
 """
-changesource!(tree::Tree,
+setsource!(tree::Tree,
               branch::Int64,
               new_source::Int64)
 
-Change the source `Node` of a `Branch`
+Set the source `Node` of a `Branch`
 """
-function changesource!(tree::Tree,
+function setsource!(tree::Tree,
                        branch::Int64,
                        new_source::Int64)
   # Error checking
@@ -168,13 +185,13 @@ end
 
 
 """
-changetarget!(tree::Tree,
+settarget!(tree::Tree,
               branch::Int64,
               new_target::Int64)
 
-Change the source `Node` of a `Branch`
+Set the source `Node` of a `Branch`
 """
-function changetarget!(tree::Tree,
+function settarget!(tree::Tree,
                        branch::Int64,
                        new_target::Int64)
   if !haskey(tree.branches, branch)
@@ -194,6 +211,25 @@ function changetarget!(tree::Tree,
   tree.branches[branch].target = new_target
   # Return updated tree
   return tree
+end
+
+
+"""
+setlength!(tree::Tree,
+              branch::Int64,
+              new_length::Float64)
+
+Set the length of a `Branch`
+"""
+function setlength!(tree::Tree,
+                       branch::Int64,
+                       new_length::Float64)
+    if !haskey(tree.branches, branch)
+        error("Branch does not exist")
+    elseif new_length < 0.0
+        error("New branch length is < 0.0")
+    end
+    tree.branches[branch].length = new_length
 end
 
 

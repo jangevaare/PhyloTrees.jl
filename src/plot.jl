@@ -30,17 +30,20 @@ function treeplot(tree::Tree)
       push!(xmax, distances[get(processorder[i])])
     end
   end
-  return tree_x, tree_y, maximum(xmax)
+  tree_x += tree.height
+  xmin = tree.height
+  xmax += tree.height
+  return tree_x, tree_y, xmin, maximum(xmax)
 end
 
 
 @recipe function plot(tree::Tree)
-  tree_x, tree_y, xmax = treeplot(tree)
+  tree_x, tree_y, xmin, xmax = treeplot(tree)
   seriestype := :path
   linecolor --> :black
   legend := false
   yticks --> nothing
-  xlims --> (-1., xmax+1.)
+  xlims --> (xmin-1., xmax+1.)
   ylims --> (0., 1.)
   tree_x, tree_y
 end

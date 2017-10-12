@@ -38,6 +38,8 @@ Parametric phylogenetic tree object
 type Tree
   nodes::Dict{Int64, Node}
   branches::Dict{Int64, Branch}
+  height::Float64
 
-  Tree() = new(Dict{Int64, Node}(), Dict{Int64, Branch}())
+  Tree() = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), 0.0)
+  Tree(x::Float64) = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), x)
 end
