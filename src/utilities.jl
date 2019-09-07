@@ -441,7 +441,12 @@ function branchpath(tree::Tree,
   if minlength == 0
     mrcbranch_index = 0
   else
-    mrcbranch_index = findlast(path1[1:minlength] .== path2[1:minlength])
+      branch_match = path1[1:minlength] .== path2[1:minlength]
+      if any(branch_match)
+          mrcbranch_index = findlast(branch_match)
+      else
+          mrcbranch_index = 0
+      end
   end
   return [reverse(path1[(mrcbranch_index+1):end]); path2[mrcbranch_index+1:end]]
 end
