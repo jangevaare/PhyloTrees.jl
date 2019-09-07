@@ -2,10 +2,6 @@ __precompile__()
 
 module PhyloTrees
 
-  # Dependencies
-  using
-    RecipesBase
-
   # Methods expanded
   import
     Base.show,
@@ -69,5 +65,4 @@ module PhyloTrees
   include("utilities.jl")
   include("distance.jl")
   include("traversal.jl")
-  include("plot.jl")
 end
