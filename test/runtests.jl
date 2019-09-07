@@ -1,5 +1,5 @@
 using PhyloTrees
-using Base.Test
+using Test
 
 g = Tree()
 addnode!(g)
