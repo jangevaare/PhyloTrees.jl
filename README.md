@@ -1,15 +1,26 @@
 # PhyloTrees.jl
-
+[![Latest Release](https://img.shields.io/github/release/jangevaare/PhyloTrees.jl.svg)](https://github.com/jangevaare/PhyloTrees.jl/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jangevaare/PhyloTrees.jl/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/jangevaare/PhyloTrees.jl.svg?branch=master)](https://travis-ci.org/jangevaare/PhyloTrees.jl)
 
 ## Introduction
 
-The objective of `PhyloTrees.jl` is to provide simple, fast, and flexible tools for working with rooted phylogenetic trees in [Julia](http://julialang.org).
+The objective of `PhyloTrees.jl` is to provide fast and simple tools for working with rooted phylogenetic trees in [Julia](http://julialang.org).
 
 ## Installation
-    Pkg.add("PhyloTrees")
 
-To enable plotting, install [Plots.jl](https://github.com/tbreloff/Plots.jl) and one of its [supported backends](http://plots.readthedocs.io/en/latest/backends/).
+Julia 1.0.x, 1.1.x, and 1.2.x are currently supported. The current release can be installed
+from the Julia REPL:
+
+```julia
+pkg> add PhyloTrees
+```
+
+The development version (master branch) can be installed as:
+
+```julia
+pkg> add PhyloTrees#master
+```
 
 ## Usage
 
@@ -55,8 +66,6 @@ We can quickly look at the nodes present in our `Tree`:
 
 Distance between nodes can be calculated using the `distance` function. A node visit ordering for postorder traversal of a tree can be found with `postorder`.
 
-Trees can be plotted using `plot`.
-
 There are many other functions available that are helpful when dealing with trees including:
 `changesource!`,
 `changetarget!`,
@@ -80,4 +89,4 @@ There are many other functions available that are helpful when dealing with tree
 `descendantnodes`,
 `ancestorcount`,
 `ancestornodes`, and
-`nodetype`
+`nodetype`.
