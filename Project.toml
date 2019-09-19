@@ -1,6 +1,6 @@
 name = "PhyloTrees"
 uuid = "4c47b132-0681-5a5d-b498-3afcf53fd314"
-authors = ["justin <justinangevaare@gmail.com>"]
+authors = ["Justin Angevaare <justinangevaare@gmail.com>"]
 version = "0.10.0"
 
 [compat]
