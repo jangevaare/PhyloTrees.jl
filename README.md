@@ -2,6 +2,7 @@
 [![Latest Release](https://img.shields.io/github/release/jangevaare/PhyloTrees.jl.svg)](https://github.com/jangevaare/PhyloTrees.jl/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jangevaare/PhyloTrees.jl/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/jangevaare/PhyloTrees.jl.svg?branch=master)](https://travis-ci.org/jangevaare/PhyloTrees.jl)
+[![codecov.io](http://codecov.io/github/jangevaare/PhyloTrees.jl/coverage.svg?branch=master)](http://codecov.io/github/jangevaare/PhyloTrees.jl?branch=master)
 
 ## Introduction
 
@@ -9,14 +10,13 @@ The objective of `PhyloTrees.jl` is to provide fast and simple tools for working
 
 ## Installation
 
-Julia 1.0.x, 1.1.x, and 1.2.x are currently supported. The current release can be installed
-from the Julia REPL:
+The current release can be installed from the Julia REPL with:
 
 ```julia
 pkg> add PhyloTrees
 ```
 
-The development version (master branch) can be installed as:
+The development version (master branch) can be installed with:
 
 ```julia
 pkg> add PhyloTrees#master
