@@ -161,8 +161,8 @@ setsource!(tree::Tree,
 Set the source `Node` of a `Branch`
 """
 function setsource!(tree::Tree,
-                       branch::Int64,
-                       new_source::Int64)
+                    branch::Int64,
+                    new_source::Int64)
   # Error checking
   if !haskey(tree.branches, branch)
     error("Branch does not exist")
@@ -192,8 +192,8 @@ settarget!(tree::Tree,
 Set the source `Node` of a `Branch`
 """
 function settarget!(tree::Tree,
-                       branch::Int64,
-                       new_target::Int64)
+                    branch::Int64,
+                    new_target::Int64)
   if !haskey(tree.branches, branch)
     error("Branch does not exist")
   elseif !haskey(tree.nodes, new_target)
@@ -222,8 +222,8 @@ setlength!(tree::Tree,
 Set the length of a `Branch`
 """
 function setlength!(tree::Tree,
-                       branch::Int64,
-                       new_length::Float64)
+                    branch::Int64,
+                    new_length::Float64)
     if !haskey(tree.branches, branch)
         error("Branch does not exist")
     elseif new_length < 0.0

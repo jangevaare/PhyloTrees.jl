@@ -276,6 +276,31 @@ end
 
 
 """
+leafnodes(tree::Tree,
+          node::Int64)
+
+Find descendant `Node`s which are leaves
+"""
+function leafnodes(tree::Tree,
+                   node::Int64)
+  x = descendantnodes(tree, node)
+  return x[isleaf.(Ref(tree), x)]
+end
+
+
+"""
+leafcount(tree::Tree,
+          node::Int64)
+
+Count the descendant `Node`s which are leaves
+"""
+function leafcount(tree::Tree,
+                   node::Int64)
+  return sum(leafnodes(tree, node))
+end
+
+
+"""
 descendantcount(tree::Tree,
                 node::Int64)
 

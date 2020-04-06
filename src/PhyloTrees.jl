@@ -48,6 +48,8 @@ module PhyloTrees
     childnodes,
     descendantcount,
     descendantnodes,
+    leafnodes,
+    leafcount,
     ancestorcount,
     ancestornodes,
     nodetype,

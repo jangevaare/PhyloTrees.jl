@@ -1,6 +1,6 @@
 function treeplot(tree::Tree)
   nodequeue = findroots(tree)
-  treesize = descendantcount.(Ref(tree), nodequeue) .+ 1
+  treesize = leafcount.(Ref(tree), nodequeue) .+ 1
   distances = distance(tree, nodequeue)
   countpct = treesize / sum(treesize)
   height = cumsum(countpct) .- (0.5 * countpct)
@@ -9,7 +9,7 @@ function treeplot(tree::Tree)
     children = childnodes(tree, nodequeue[queueposition])
     if length(children) > 0
       append!(nodequeue, children)
-      subtreesize = descendantcount.(Ref(tree), children) .+ 1
+      subtreesize = leafcount.(Ref(tree), children) .+ 1
       append!(distances, distance(tree, children))
       append!(countpct, subtreesize / sum(treesize))
       append!(height, (height[queueposition] - (countpct[queueposition] / 2)) .+ (cumsum(countpct[end-length(subtreesize)+1:end]) .- (0.5 * countpct[end-length(subtreesize)+1:end])))
@@ -45,7 +45,9 @@ function treeplot(tree::Tree)
   @series begin
     seriestype := :path
     linecolor --> :black
-    tree_x, tree_y
+    # tree_x, tree_y
+    [tree_x[i][1:3] for i = eachindex(tree_x)],
+    [tree_y[i][1:3] for i = eachindex(tree_y)]
   end
   @series begin
     seriestype := :scatter
