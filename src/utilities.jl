@@ -288,22 +288,6 @@ end
 
 
 """
-descendantcount(tree::Tree,
-                nodes::Array{Int64})
-
-Find the number of descendant `Nodes`
-"""
-function descendantcount(tree::Tree,
-                         nodes::Array{Int64})
-  count = fill(0, size(nodes))
-  for i in eachindex(nodes)
-    count[i] += descendantcount(tree, nodes[i])
-  end
-  return count
-end
-
-
-"""
 nodepath(tree::Tree,
          node::Int64)
 
@@ -340,21 +324,6 @@ Number of ancestral `Node`s
 function ancestorcount(tree::Tree,
                        node::Int64)
   return length(ancestornodes(tree, node))
-end
-
-
-"""
-ancestorcount(tree::Tree,
-              node::Array{Int64})
-
-Number of ancestral `Node`s
-"""
-function ancestorcount(tree::Tree, nodes::Array{Int64})
-  count = fill(0, size(nodes))
-  for i in eachindex(nodes)
-    count[i] += ancestorcount(tree, nodes[i])
-  end
-  return count
 end
 
 

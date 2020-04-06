@@ -1,0 +1,20 @@
+{ "description": "<p>Fast and simple tools for working with rooted phylogenetic trees in Julia</p>",
+  "language": "eng",
+  "license": "MIT",
+  "upload_type": "software",
+  "creators": [
+    {
+        "orcid": "0000-0002-3373-5009",
+        "affiliation": "University of Guelph",
+        "name": "Angevaare, Justin"
+    },
+    {
+        "affiliation": "University of Guelph",
+        "name": "Feng, Zeny"
+    },
+    {
+        "affiliation": "University of Calgary",
+        "name": "Deardon, Rob"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-__precompile__()
-
 module PhyloTrees
+
+  using RecipesBase
 
   # Methods expanded
   import
@@ -65,4 +65,5 @@ module PhyloTrees
   include("utilities.jl")
   include("distance.jl")
   include("traversal.jl")
+  include("plotrecipe.jl")
 end
