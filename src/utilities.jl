@@ -296,7 +296,7 @@ Count the descendant `Node`s which are leaves
 """
 function leafcount(tree::Tree,
                    node::Int64)
-  return sum(leafnodes(tree, node))
+  return length(leafnodes(tree, node))
 end
 
 

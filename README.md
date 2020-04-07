@@ -59,12 +59,15 @@ We can quickly look at the nodes present in our `Tree`:
 
     [unattached node]
     [branch 1]-->[internal node]-->[branch 2]
-    [branch 2]-->[leaf node]                 
+    [branch 2]-->[leaf node]
     [root node]-->[branch 1]
 
 ### Other capabilities
 
 Distance between nodes can be calculated using the `distance` function. A node visit ordering for postorder traversal of a tree can be found with `postorder`.
+
+A [plot recipe](https://github.com/JuliaPlots/RecipesBase.jl) is provided for `Tree`s. e.g.
+![Tree Plot](treeplot.png)
 
 There are many other functions available that are helpful when dealing with trees including:
 `changesource!`,
@@ -85,8 +88,10 @@ There are many other functions available that are helpful when dealing with tree
 `branchpath`,
 `parentnode`,
 `childnodes`,
-`descendantcount`,
 `descendantnodes`,
+`descendantcount`,
+`leafnodes`,
+`leafcount`,
 `ancestorcount`,
 `ancestornodes`, and
-`nodetype`.
+`nodetype`. These work nicely with [Julia's elegant function vectorization](https://docs.julialang.org/en/v1/manual/functions/#man-vectorized-1). An example of this in action can be seen in the in our [plot recipe code](src/plotrecipe.jl).
