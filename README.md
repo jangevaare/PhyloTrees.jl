@@ -67,7 +67,8 @@ We can quickly look at the nodes present in our `Tree`:
 
 Distance between nodes can be calculated using the `distance` function. A node visit ordering for postorder traversal of a tree can be found with `postorder`.
 
-A [plot recipe](https://github.com/JuliaPlots/RecipesBase.jl) is provided for `Tree`s. e.g.
+A [plot recipe](https://github.com/JuliaPlots/RecipesBase.jl) is provided for `Tree`s. The following `Tree` has been generated and plotted using code in [READMETREE.jl](READMETREE.jl).
+
 ![Tree Plot](treeplot.png)
 
 There are many other functions available that are helpful when dealing with trees including:
