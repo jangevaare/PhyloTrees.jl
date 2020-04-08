@@ -1,4 +1,5 @@
 # PhyloTrees.jl
+[![DOI](https://zenodo.org/badge/52979997.svg)](https://zenodo.org/badge/latestdoi/52979997)
 [![Latest Release](https://img.shields.io/github/release/jangevaare/PhyloTrees.jl.svg)](https://github.com/jangevaare/PhyloTrees.jl/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/jangevaare/PhyloTrees.jl/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/jangevaare/PhyloTrees.jl.svg?branch=master)](https://travis-ci.org/jangevaare/PhyloTrees.jl)
