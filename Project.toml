@@ -1,7 +1,7 @@
 name = "PhyloTrees"
 uuid = "4c47b132-0681-5a5d-b498-3afcf53fd314"
 authors = ["Justin Angevaare <justinangevaare@gmail.com>"]
-version = "0.11.0"
+version = "0.11.1"
 
 [deps]
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"

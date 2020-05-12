@@ -23,3 +23,5 @@ end
 @test distance(g, 4, 3) == 35.0
 
 @test sum(distance(g)) > 0.
+
+@test_nowarn PhyloTrees._treeplot(g)

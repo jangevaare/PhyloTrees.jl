@@ -41,6 +41,10 @@ function _treeplot(tree::Tree)
   # distance from root + tree.height as node height/distance
   heights = distance.(Ref(tree), nodequeue) .+ tree.height
 
+  if any(heights .== Inf)
+    error("Inf heights not supported in plotting")
+  end
+
   tree_x = Vector{Float64}[]
   tree_y = Vector{Float64}[]
   leaf_indices = Int64[]
@@ -75,7 +79,7 @@ function _treeplot(tree::Tree)
     @series begin
       seriestype := :scatter
       marker --> :diamond
-      markersize --> 100 * length(leaf_indices)^-1
+      markersize --> min(3, 100 * length(leaf_indices)^-1)
       if hover_ids
         hover := ["Node $x" for x in node_ids[leaf_indices]]
       end
