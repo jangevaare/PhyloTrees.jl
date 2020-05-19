@@ -119,7 +119,7 @@ function findroots(tree::Tree)
     end
   end
   if length(roots) == 0
-    warn("No roots detected")
+    @warn "No roots detected"
   end
   return roots
 end
@@ -138,7 +138,7 @@ function findleaves(tree::Tree)
     end
   end
   if length(leaves) == 0
-    warn("No leaves detected")
+    @warn "No leaves detected"
   end
   return leaves
 end
@@ -157,7 +157,7 @@ function findinternals(tree::Tree)
     end
   end
   if length(nodes) == 0
-    warn("No internal nodes detected")
+    @warn "No internal nodes detected"
   end
   return nodes
 end
@@ -176,7 +176,7 @@ function findnonroots(tree::Tree)
     end
   end
   if length(nonroots) == 0
-    warn("No non-roots detected")
+    @warn "No non-roots detected"
   end
   return nonroots
 end
@@ -195,7 +195,7 @@ function findnonleaves(tree::Tree)
     end
   end
   if length(nonleaves) == 0
-    warn("No non-leaves detected")
+    @warn "No non-leaves detected"
   end
   return nonleaves
 end
@@ -214,7 +214,7 @@ function findexternals(tree::Tree)
     end
   end
   if length(externals) == 0
-    warn("No external nodes detected")
+    @warn "No external nodes detected"
   end
   return externals
 end

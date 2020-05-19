@@ -166,7 +166,7 @@ function setsource!(tree::Tree,
   # Error checking
   if !haskey(tree.branches, branch)
     error("Branch does not exist")
-  elseif !haskey(tree.nodes, newsource)
+  elseif !haskey(tree.nodes, new_source)
     error("New source node does not exist")
   elseif new_source == tree.branches[branch].target
     error("Branch must connect unique nodes")
@@ -176,7 +176,7 @@ function setsource!(tree::Tree,
   # Remove branch reference from old source node
   splice!(tree.nodes[old_source].out, findfirst(tree.nodes[old_source].out .== branch))
   # Update new source node with branch reference
-  push!(tree.nodes[newsource].out, branch)
+  push!(tree.nodes[new_source].out, branch)
   # Update branch with new source node reference
   tree.branches[branch].source = new_source
   # Return updated tree

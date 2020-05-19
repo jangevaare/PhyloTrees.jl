@@ -1,6 +1,6 @@
 module PhyloTrees
 
-  using RecipesBase
+  using RecipesBase, Logging
 
   # Methods expanded
   import

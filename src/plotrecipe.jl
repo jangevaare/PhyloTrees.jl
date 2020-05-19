@@ -17,13 +17,13 @@ function _treeplot(tree::Tree)
       @debug "Number of leaves per child = $subtreesize"
 
       append!(countpct, subtreesize / sum(treesize))
-      @debug "Proportion of total leaves per child = $(subtreesize / sum(treesize))"
+      @debug "Proportion of total leaves per child = $(round.(subtreesize / sum(treesize), digits=3))"
       # calculate the positions
       # 1a - find parent node postion
       # 1b - find left-most leaf position of subtree
       subtree_left = left_pos[queueposition] - 0.5 * countpct[queueposition]
-      @debug "Position of parent node = $(left_pos[queueposition])"
-      @debug "Leftmost descendant leaf node position = $subtree_left"
+      @debug "Position of parent node = $(round(left_pos[queueposition], digits=3))"
+      @debug "Leftmost descendant leaf node position = $(round(subtree_left, digits=3))"
       
       # 2a - find indices of children
       c_ind = (length(countpct) - length(children) + 1):length(countpct)
@@ -32,17 +32,17 @@ function _treeplot(tree::Tree)
       # 2c - use a cumulative sum based on leaf node count %
       # 2d - adjust these cumulative-sum-based positions down to their midpoints
       append!(left_pos, subtree_left .+ cumsum(countpct[c_ind]) .- 0.5 * countpct[c_ind])
-      @debug "Position of children = $(left_pos[c_ind])"
+      @debug "Position of children = $(round.(left_pos[c_ind], digits=3))"
     end
     queueposition += 1
-    @debug "Increment queue position" NewPosition = queueposition
+    @debug "Increment queue position to $queueposition"
   end
 
   # distance from root + tree.height as node height/distance
   heights = distance.(Ref(tree), nodequeue) .+ tree.height
 
   if any(heights .== Inf)
-    error("Inf heights not supported in plotting")
+    error("Inf heights are not supported in plotting")
   end
 
   tree_x = Vector{Float64}[]
@@ -65,7 +65,7 @@ function _treeplot(tree::Tree)
  end
 
 
-@recipe function plot(tree::Tree; plot_leaves::Bool = true, hover_ids::Bool = false)
+@recipe function plot(tree::Tree; plot_leaves = true, hover_ids = false)
   tree_x, tree_y, leaf_indices, node_ids = _treeplot(tree)
   yaxis := false
   grid := :x
