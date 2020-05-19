@@ -35,7 +35,6 @@ module PhyloTrees
     isleaf,
     isinternal,
     findroots,
-    findroot,
     findleaves,
     findinternals,
     findexternals,
