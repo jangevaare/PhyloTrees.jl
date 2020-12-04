@@ -20,7 +20,7 @@ addnode!(tree::Tree)
 
 Adds a single `Node` to a `Tree`
 """
-function addnode!(tree::Tree)
+function addnode!(tree::Tree, label::Union{Missing, Symbol} = missing)
   # Find highest node index
   if length(tree.nodes) == 0
     max_node = 0
@@ -29,6 +29,10 @@ function addnode!(tree::Tree)
   end
   # Add the new node
   tree.nodes[max_node+1] = Node()
+  if !ismissing(label)
+    tree.node_to_label[max_node+1] = label
+    tree.label_to_node[label] = max_node+1
+  end
   # Return the updated tree
   return tree
 end
@@ -57,6 +61,12 @@ function addnodes!(tree::Tree,
 end
 
 
+function addnodes!(tree::Tree, labels::Vector{Symbol})
+  for l in labels
+    addnode!(tree, l)
+  end
+  return tree
+end
 """
 deletenode!(tree::Tree,
             nodes::Int64)

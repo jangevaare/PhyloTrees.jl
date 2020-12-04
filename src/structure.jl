@@ -39,7 +39,9 @@ struct Tree
   nodes::Dict{Int64, Node}
   branches::Dict{Int64, Branch}
   height::Float64
+  node_to_label::Dict{Int64, Symbol}
+  label_to_node::Dict{Symbol, Int64}
 
-  Tree() = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), 0.0)
-  Tree(x::Float64) = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), x)
+  Tree() = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), 0.0, Dict{Int64, Symbol}(), Dict{Symbol, Int64}())
+  Tree(x::Float64) = new(Dict{Int64, Node}(), Dict{Int64, Branch}(), x, Dict{Int64, Symbol}(), Dict{Symbol, Int64}())
 end
