@@ -3,10 +3,17 @@ on:
   schedule:
     - cron: 0 0 * * *
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   CompatHelper:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
       - name: "Add the General registry via Git"
         run: |
           import Pkg
