@@ -54,3 +54,42 @@ end
   addbranch!(forest, 20, 10, 1.0)
   @test_throws ArgumentError postorder(forest)
 end
+
+
+@testset "Indexed distances" begin
+  index = DistanceIndex(g)
+  for a in keys(g.nodes), b in keys(g.nodes)
+    @test distance(index, a, b) ≈ distance(g, a, b)
+  end
+  for a in keys(g.nodes)
+    @test distance(index, a) ≈ distance(g, a)
+  end
+  leaves = findleaves(g)
+  @test distance(g) ≈ [distance(g, a, b) for a in leaves, b in leaves]
+  @test size(distance(Tree())) == (0, 0)
+  t = Tree()
+  for id in (10, 20, 30, 40, 99)
+    t.nodes[id] = PhyloTrees.Node()
+  end
+  addbranch!(t, 10, 20, 1e16)
+  addbranch!(t, 20, 30, 1.0)
+  addbranch!(t, 20, 40, 2.0)
+  snapshot = DistanceIndex(t)
+  @test distance(snapshot, 30, 40) == 3.0
+  @test distance(snapshot, 99) == 0.0
+  @test_throws ErrorException distance(snapshot, 30, 99)
+  @test_throws KeyError distance(snapshot, 30, 100)
+  t.branches[3] = PhyloTrees.Branch(20, 40, 5.0)
+  @test distance(snapshot, 30, 40) == 3.0
+  @test distance(DistanceIndex(t), 30, 40) == 6.0
+  # Exercise multiple lifting levels, ancestor queries, and a zero-length edge.
+  chain = Tree()
+  addnodes!(chain, 65)
+  for i in 2:65
+    addbranch!(chain, i-1, i, i == 2 ? 0.0 : i/10)
+  end
+  snapshot = DistanceIndex(chain)
+  for a in (1, 2, 17, 32, 65), b in (1, 3, 18, 33, 64)
+    @test distance(snapshot, a, b) ≈ distance(chain, a, b)
+  end
+end
