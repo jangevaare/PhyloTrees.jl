@@ -55,6 +55,7 @@ module PhyloTrees
 
     # Distance
     distance,
+    DistanceIndex,
 
     # Traversal
     postorder
