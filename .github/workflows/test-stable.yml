@@ -1,6 +1,10 @@
 name: julia-stable
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+    tags: ['**']
+  pull_request:
 
 permissions:
   contents: read
