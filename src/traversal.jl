@@ -1,31 +1,33 @@
 """
-postorder(tree::Tree)
+    postorder(tree::Tree)
 
-`Node` postorder traversal order
+Return node IDs with children before their parents. Supports forests, isolated
+nodes, and arbitrary node IDs. Throws `ArgumentError` for a directed cycle.
 """
 function postorder(tree::Tree)
-  nodes = collect(keys(tree.nodes))
-  visited = Dict{Int64, Bool}(i => false for i in nodes)
-  visit_order = Int64[]
-  next = nodes[findfirst(.!collect(values(visited)))]
-  while !all(collect(values(visited)))
-    sub_visited = Bool[]
-    for i in tree.nodes[next].out
-      push!(sub_visited, visited[tree.branches[i].target])
-    end
-    if all(sub_visited) || length(sub_visited) == 0
-      push!(visit_order, next)
-      visited[next] = true
-      if !all(collect(values(visited)))
-        if length(tree.nodes[next].in) == 1
-          next = tree.branches[tree.nodes[next].in[1]].source
-        else
-          next = nodes[findfirst(.!collect(values(visited)))]
+  order = Int64[]
+  sizehint!(order, length(tree.nodes))
+  state = Dict{Int64, UInt8}()
+  stack = Tuple{Int64, Bool}[]
+  for start in keys(tree.nodes)
+    get(state, start, 0x00) == 0x02 && continue
+    push!(stack, (start, false))
+    while !isempty(stack)
+      node, expanded = pop!(stack)
+      if expanded
+        state[node] = 0x02
+        push!(order, node)
+      else
+        status = get(state, node, 0x00)
+        status == 0x02 && continue
+        status == 0x01 && throw(ArgumentError("Tree contains a directed cycle"))
+        state[node] = 0x01
+        push!(stack, (node, true))
+        for edge in Iterators.reverse(tree.nodes[node].out)
+          push!(stack, (tree.branches[edge].target, false))
         end
       end
-    else
-      next = tree.branches[tree.nodes[next].out[.!sub_visited][1]].target
     end
   end
-  return visit_order
+  return order
 end
